@@ -36,7 +36,7 @@ export default function Login() {
         <div className="absolute inset-0" style={{ background: "linear-gradient(to top, rgba(0,20,15,0.85), rgba(0,20,15,0.1))" }} />
         <div className="absolute bottom-10 left-10">
           <div className="text-sm mb-4 font-semibold" style={{ color: "#E0EAB8" }}>ФЛАГМАНСКОЕ СОБЫТИЕ</div>
-          <h2 className="text-5xl font-bold text-white leading-tight mb-4">RES EXPO<br/>2026</h2>
+          <h2 className="text-5xl font-bold text-white leading-tight mb-4">RES EXPO<br/>2027</h2>
           <p className="text-xl" style={{ color: "#D9E3DC" }}>20–22 мая, Астана, Казахстан</p>
         </div>
       </div>

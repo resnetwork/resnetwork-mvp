@@ -1,4 +1,7 @@
-import { Landmark, Globe2, Building2, Briefcase, Handshake, Link2 } from "lucide-react";
+"use client";
+
+import { useState } from "react";
+import { Landmark, Globe2, Building2, Briefcase, Handshake, Link2, X } from "lucide-react";
 import EventCalendar from "./components/EventCalendar";
 import PartnersMarquee from "./components/PartnersMarquee";
 import NewsAndDirections from "./components/NewsAndDirections";
@@ -19,6 +22,8 @@ const EVENTS = [
 ];
 
 export default function Home() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   return (
     <main className="min-h-screen overflow-x-hidden" style={{ backgroundColor: "#FAF9F4" }}>
       <header className="absolute top-0 left-0 right-0 z-20 flex justify-between items-center px-16 py-8">
@@ -27,7 +32,13 @@ export default function Home() {
           <a href="#about">О нас</a>
           <a href="#events">Мероприятия</a>
           <a href="#news">Новости</a>
-          <a href="https://wa.me/77066768053" target="_blank" rel="noopener noreferrer" className="px-5 py-2.5 rounded-full font-semibold text-sm" style={{ backgroundColor: "#2E8656" }}>Связаться с нами</a>
+          <button 
+            onClick={() => setIsModalOpen(true)} 
+            className="px-5 py-2.5 rounded-full font-semibold text-sm transition-transform hover:scale-105" 
+            style={{ backgroundColor: "#2E8656" }}
+          >
+            Связаться с нами
+          </button>
         </nav>
       </header>
 
@@ -135,6 +146,48 @@ export default function Home() {
         </div>
         <PartnersMarquee />
       </section>
+
+      {/* Модальное окно */}
+      {isModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <div className="bg-white rounded-3xl p-8 max-w-md w-full relative shadow-2xl" style={{ border: "1px solid #E4E7DD" }}>
+            <button 
+              onClick={() => setIsModalOpen(false)}
+              className="absolute top-6 right-6 text-gray-400 hover:text-gray-800 transition-colors"
+            >
+              <X size={24} />
+            </button>
+            
+            <h3 className="text-3xl font-bold mb-6" style={{ color: "#10241D" }}>Связаться с нами</h3>
+            
+            <form className="flex flex-col gap-5" onSubmit={(e) => { e.preventDefault(); /* Здесь логика отправки */ setIsModalOpen(false); }}>
+              <div>
+                <label className="block text-sm font-bold mb-2" style={{ color: "#4A5A52" }}>Ваше имя</label>
+                <input required type="text" className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:border-[#2E8656] focus:ring-1 focus:ring-[#2E8656] bg-gray-50" placeholder="Иван Иванов" />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-bold mb-2" style={{ color: "#4A5A52" }}>Email</label>
+                <input required type="email" className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:border-[#2E8656] focus:ring-1 focus:ring-[#2E8656] bg-gray-50" placeholder="ivan@example.com" />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-bold mb-2" style={{ color: "#4A5A52" }}>Номер телефона</label>
+                <input required type="tel" className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:border-[#2E8656] focus:ring-1 focus:ring-[#2E8656] bg-gray-50" placeholder="+7 (___) ___-__-__" />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-bold mb-2" style={{ color: "#4A5A52" }}>Название компании</label>
+                <input required type="text" className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:border-[#2E8656] focus:ring-1 focus:ring-[#2E8656] bg-gray-50" placeholder="ООО ЭкоТех" />
+              </div>
+              
+              <button type="submit" className="w-full py-4 mt-2 rounded-xl text-white font-bold text-lg transition-transform hover:scale-[1.02]" style={{ backgroundColor: "#2E8656" }}>
+                Отправить заявку
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
     </main>
   );
 }
