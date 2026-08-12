@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { Landmark, Globe2, Building2, Briefcase, Handshake, Link2, X } from "lucide-react";
 import EventCalendar from "./components/EventCalendar";
+import EventsSection from "./components/EventsSection";
+import BrandContentSection from "./components/BrandContentSection";
 import PartnersMarquee from "./components/PartnersMarquee";
 import NewsAndDirections from "./components/NewsAndDirections";
 
@@ -15,11 +17,6 @@ const STATS = [
   { Icon: Link2, num: "10 000+", label: "Связей создано" },
 ];
 
-const EVENTS = [
-  { name: "BioHack 2026", day: "15", month: "ОКТ", img: "https://images.unsplash.com/photo-1576086213369-97a306d36557?w=800&q=80&auto=format&fit=crop" },
-  { name: "RES Expo 2027", day: "20", month: "МАЙ", img: "https://images.unsplash.com/photo-1466611653911-95081537e5b7?w=800&q=80&auto=format&fit=crop" },
-  { name: "Green Finance Forum", day: "08", month: "МАЙ", img: "https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?w=800&q=80&auto=format&fit=crop" },
-];
 
 export default function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -42,7 +39,7 @@ export default function Home() {
         </nav>
       </header>
 
-      <section className="relative min-h-[720px] flex items-center px-16 pb-24 overflow-hidden" style={{ backgroundColor: "#003C32" }}>
+      <section className="relative min-h-[720px] flex items-center px-16 pb-24 overflow-hidden" style={{ backgroundColor: "#061D3D" }}>
         <video autoPlay muted loop playsInline className="absolute inset-0 w-full h-full object-cover">
           <source src="https://videos.pexels.com/video-files/4842993/4842993-uhd_2560_1440_30fps.mp4" type="video/mp4" />
         </video>
@@ -50,11 +47,12 @@ export default function Home() {
 
         <div className="relative z-10 max-w-4xl">
           <h1 className="text-6xl font-extrabold text-white leading-[1.08] tracking-tight">
-            Платформа сотрудничества<br/>для <span style={{ color: "#E0EAB8" }}>устойчивого развития</span>
+            Региональная платформа<br/>для <span style={{ color: "#B8D97A" }}>новых возможностей</span>
           </h1>
-          <p className="mt-8 text-xl max-w-xl" style={{ color: "#D9E3DC" }}>Объединяем правительства, бизнес и инвесторов Центральной Азии на одной экосистеме событий.</p>
+          <p className="mt-8 text-xl max-w-xl" style={{ color: "#D9E3DC" }}>Соединяем бизнес, инвесторов, государства и международные организации для совместного развития Центральной Азии.</p>
         </div>
       </section>
+      <BrandContentSection />
 
       <div className="px-16 relative z-10" style={{ marginTop: "-64px" }}>
         <div className="grid grid-cols-6 rounded-3xl overflow-hidden" style={{ backgroundColor: "#02493F", boxShadow: "0 24px 60px rgba(0,20,15,0.25)" }}>
@@ -103,24 +101,7 @@ export default function Home() {
 
         <div className="mb-10"><EventCalendar /></div>
 
-        <div className="grid grid-cols-3 gap-6">
-          {EVENTS.map((event) => (
-            <div key={event.name} className="rounded-2xl overflow-hidden bg-white" style={{ border: "1px solid #E4E7DD", boxShadow: "0 10px 30px rgba(16,36,29,0.06)" }}>
-              <div className="relative">
-                <img src={event.img} alt={event.name} className="w-full h-44 object-cover" />
-                <div className="absolute top-4 left-4 rounded-lg px-3 py-1.5 text-center bg-white" style={{ boxShadow: "0 4px 14px rgba(16,36,29,0.15)" }}>
-                  <div className="text-lg font-extrabold leading-none" style={{ color: "#10241D" }}>{event.day}</div>
-                  <div className="text-[10px] font-bold" style={{ color: "#2E8656" }}>{event.month}</div>
-                </div>
-              </div>
-              <div className="p-6">
-                <h3 className="font-bold text-xl" style={{ color: "#10241D" }}>{event.name}</h3>
-                <p className="text-sm mt-1" style={{ color: "#5B6B62" }}>Астана, Казахстан</p>
-                <a href="/res365" className="text-sm mt-3 inline-block font-bold" style={{ color: "#2E8656" }}>Зарегистрироваться →</a>
-              </div>
-            </div>
-          ))}
-        </div>
+        <EventsSection />
       </section>
 
       <section id="news" className="relative px-16 pb-24" style={{ backgroundColor: "#EDF3E4" }}>

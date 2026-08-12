@@ -35,23 +35,23 @@ export default function NewsAndDirections() {
   const [featured, ...rest] = pageItems;
 
   return (
-    <div className="grid grid-cols-2 gap-20">
+    <div className="grid gap-12 lg:grid-cols-[minmax(0,1.65fr)_minmax(320px,.85fr)]">
       <div>
         <span className="inline-block text-sm font-bold tracking-wide mb-2" style={{ color: "#2E8656" }}>ЧТО НОВОГО</span>
         <h2 className="text-4xl font-bold mb-8" style={{ color: "#10241D" }}>Новости</h2>
 
-        <div onClick={() => setSelectedNews(featuredIndex)} className="rounded-2xl overflow-hidden mb-6 cursor-pointer transition-all hover:-translate-y-1 bg-white" style={{ border: "1px solid #E4E7DD", boxShadow: "0 10px 30px rgba(16,36,29,0.08)" }}>
-          <img src={featured.img} alt={featured.title} className="w-full h-56 object-cover" />
-          <div className="p-6">
+        <div onClick={() => setSelectedNews(featuredIndex)} className="rounded-2xl overflow-hidden mb-6 cursor-pointer transition-all hover:-translate-y-1 bg-white" style={{ boxShadow: "0 10px 30px rgba(6,29,61,.12)" }}>
+          <img src={featured.img} alt={featured.title} className="w-full h-80 object-cover" />
+          <div className="p-8">
             <span className="text-xs font-bold" style={{ color: "#2E8656" }}>{featured.tag}</span>
-            <h3 className="font-bold text-xl mt-2" style={{ color: "#10241D" }}>{featured.title}</h3>
+            <h3 className="font-bold text-3xl mt-2" style={{ color: "#061D3D" }}>{featured.title}</h3>
             <p className="text-xs mt-3" style={{ color: "#8B978C" }}>{featured.date}</p>
           </div>
         </div>
 
         <div className="flex flex-col gap-4 mb-8">
           {rest.map((news, i) => (
-            <div key={news.title} onClick={() => setSelectedNews(featuredIndex + i + 1)} className="flex gap-4 items-center p-3 rounded-xl bg-white cursor-pointer transition-all hover:-translate-y-1" style={{ border: "1px solid #E4E7DD", boxShadow: "0 4px 14px rgba(16,36,29,0.05)" }}>
+            <div key={news.title} onClick={() => setSelectedNews(featuredIndex + i + 1)} className="flex gap-5 items-center p-4 rounded-xl bg-white cursor-pointer transition-all hover:-translate-y-1" style={{ boxShadow: "0 4px 14px rgba(6,29,61,.06)" }}>
               <img src={news.img} alt={news.title} className="w-16 h-16 object-cover rounded-lg flex-shrink-0" />
               <div>
                 <span className="text-xs font-bold" style={{ color: "#2E8656" }}>{news.tag}</span>
@@ -75,10 +75,10 @@ export default function NewsAndDirections() {
       <div>
         <span className="inline-block text-sm font-bold tracking-wide mb-2" style={{ color: "#2E8656" }}>СФЕРЫ ФОКУСА</span>
         <h2 className="text-4xl font-bold mb-8" style={{ color: "#10241D" }}>Направления</h2>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid gap-3">
           {DIRECTIONS.map((d, i) => (
-            <button key={d.title} onClick={() => setSelectedDirection(i)} className="text-left p-6 rounded-2xl bg-white transition-all hover:-translate-y-1" style={{ border: "1px solid #E4E7DD", boxShadow: "0 8px 24px rgba(16,36,29,0.06)" }}>
-              <div className="w-11 h-11 rounded-full flex items-center justify-center mb-4" style={{ backgroundColor: "#E0EAB8" }}>
+            <button key={d.title} onClick={() => setSelectedDirection(i)} className="flex items-center gap-4 text-left p-5 rounded-2xl bg-white transition-all hover:-translate-y-1" style={{ boxShadow: "0 8px 24px rgba(6,29,61,.06)" }}>
+              <div className="w-11 h-11 shrink-0 rounded-full flex items-center justify-center" style={{ backgroundColor: "#E0EAB8" }}>
                 <d.Icon size={20} color="#02493F" />
               </div>
               <div className="font-bold text-sm" style={{ color: "#10241D" }}>{d.title}</div>
@@ -102,7 +102,7 @@ export default function NewsAndDirections() {
 
       {selectedNews !== null && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-6" style={{ backgroundColor: "rgba(0,20,15,0.65)" }} onClick={() => setSelectedNews(null)}>
-          <div className="relative max-w-3xl w-full rounded-3xl overflow-hidden bg-white" style={{ maxHeight: "90vh", overflowY: "auto" }} onClick={(e) => e.stopPropagation()}>
+          <div className="relative max-w-5xl w-full rounded-3xl overflow-hidden bg-white" style={{ maxHeight: "90vh", overflowY: "auto" }} onClick={(e) => e.stopPropagation()}>
             <button onClick={() => setSelectedNews(null)} className="absolute top-5 right-5 z-10 w-10 h-10 rounded-full flex items-center justify-center bg-white" style={{ boxShadow: "0 4px 14px rgba(16,36,29,0.2)" }}>
               <X size={18} color="#10241D" />
             </button>
