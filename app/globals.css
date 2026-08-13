@@ -28,3 +28,22 @@ body {
 html, body {
   overflow-x: hidden;
 }
+html {
+  scroll-behavior: smooth;
+}
+
+@keyframes drift {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(30px, -20px) scale(1.05); }
+}
+.animate-drift {
+  animation: drift 12s ease-in-out infinite;
+}
+
+@keyframes drift-slow {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-25px, 25px) scale(1.08); }
+}
+.animate-drift-slow {
+  animation: drift-slow 16s ease-in-out infinite;
+}

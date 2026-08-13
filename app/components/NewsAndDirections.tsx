@@ -40,7 +40,7 @@ export default function NewsAndDirections() {
         <span className="inline-block text-sm font-bold tracking-wide mb-2" style={{ color: "#2E8656" }}>ЧТО НОВОГО</span>
         <h2 className="text-4xl font-bold mb-8" style={{ color: "#10241D" }}>Новости</h2>
 
-        <div onClick={() => setSelectedNews(featuredIndex)} className="rounded-2xl overflow-hidden mb-6 cursor-pointer transition-all hover:-translate-y-1 bg-white" style={{ boxShadow: "0 10px 30px rgba(6,29,61,.12)" }}>
+        <div onClick={() => setSelectedNews(featuredIndex)} className="rounded-2xl overflow-hidden mb-6 cursor-pointer bg-white hover:-translate-y-2 hover:shadow-2xl transition-all duration-300" style={{ boxShadow: "0 10px 30px rgba(6,29,61,.12)" }}>
           <img src={featured.img} alt={featured.title} className="w-full h-80 object-cover" />
           <div className="p-8">
             <span className="text-xs font-bold" style={{ color: "#2E8656" }}>{featured.tag}</span>
@@ -51,7 +51,7 @@ export default function NewsAndDirections() {
 
         <div className="flex flex-col gap-4 mb-8">
           {rest.map((news, i) => (
-            <div key={news.title} onClick={() => setSelectedNews(featuredIndex + i + 1)} className="flex gap-5 items-center p-4 rounded-xl bg-white cursor-pointer transition-all hover:-translate-y-1" style={{ boxShadow: "0 4px 14px rgba(6,29,61,.06)" }}>
+            <div key={news.title} onClick={() => setSelectedNews(featuredIndex + i + 1)} className="flex gap-4 items-center p-3 rounded-xl bg-white cursor-pointer hover:-translate-y-2 hover:shadow-2xl transition-all duration-300" style={{ boxShadow: "0 4px 14px rgba(6,29,61,.06)" }}>
               <img src={news.img} alt={news.title} className="w-16 h-16 object-cover rounded-lg flex-shrink-0" />
               <div>
                 <span className="text-xs font-bold" style={{ color: "#2E8656" }}>{news.tag}</span>
@@ -77,7 +77,7 @@ export default function NewsAndDirections() {
         <h2 className="text-4xl font-bold mb-8" style={{ color: "#10241D" }}>Направления</h2>
         <div className="grid gap-3">
           {DIRECTIONS.map((d, i) => (
-            <button key={d.title} onClick={() => setSelectedDirection(i)} className="flex items-center gap-4 text-left p-5 rounded-2xl bg-white transition-all hover:-translate-y-1" style={{ boxShadow: "0 8px 24px rgba(6,29,61,.06)" }}>
+            <button key={d.title} onClick={() => setSelectedDirection(i)} className="text-left p-6 rounded-2xl bg-white hover:-translate-y-2 hover:shadow-2xl transition-all duration-300" style={{ boxShadow: "0 8px 24px rgba(6,29,61,.06)" }}>
               <div className="w-11 h-11 shrink-0 rounded-full flex items-center justify-center" style={{ backgroundColor: "#E0EAB8" }}>
                 <d.Icon size={20} color="#02493F" />
               </div>
