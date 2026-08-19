@@ -1,33 +1,33 @@
-export default function Dashboard() {
+import { auth } from "@/auth";
+import { prisma } from "@/app/lib/prisma";
+import EventCarousel from "@/app/components/EventCarousel";
+
+export default async function DashboardPage() {
+  const session = await auth();
+  
+  // Получаем все публичные ивенты или ивенты клуба
+  const events = await prisma.event.findMany({
+    orderBy: { date: 'asc' },
+    include: {
+      creatorCompany: true,
+      tickets: {
+        where: { userId: session?.user?.id }
+      }
+    }
+  });
+
   return (
-    <main className="min-h-screen px-8 py-6" style={{ backgroundColor: "#003C32" }}>
-      <header className="flex justify-between items-center mb-8">
-        <a href="/"><img src="/logo1.png.png" alt="RES Network" className="h-10" /></a>
-        <div className="text-sm" style={{ color: "#A1BB94" }}>Айгуль К. · ЭкоТех LLP</div>
-      </header>
+    <div className="h-full flex flex-col">
+      <div className="mb-8 border-b border-emerald-500/20 pb-4">
+        <nav className="flex gap-8 text-sm font-bold uppercase tracking-wider">
+          <span className="text-white border-b-2 border-emerald-500 pb-4 -mb-[17px]">Афиша Событий</span>
+          <a href="/res365/dashboard/tickets" className="text-emerald-500/60 hover:text-emerald-400 transition-colors pb-4 -mb-[17px]">Мои билеты</a>
+        </nav>
+      </div>
 
-      <section className="mb-10">
-        <h2 className="font-semibold text-white mb-3">Мои билеты</h2>
-        <div className="rounded p-4 flex justify-between items-center w-96" style={{ backgroundColor: "#02493F" }}>
-          <div>
-            <div className="font-medium text-white">RES Expo 2027</div>
-            <div className="text-sm" style={{ color: "#A1BB94" }}>20–22 мая · Астана</div>
-          </div>
-          <div className="w-16 h-16 flex items-center justify-center text-xs rounded" style={{ backgroundColor: "#FFFFFF", color: "#003C32" }}>
-            QR
-          </div>
-        </div>
-      </section>
-
-      <section>
-        <h2 className="font-semibold text-white mb-3">Мои события (как организатор)</h2>
-        <div className="rounded p-4 w-96" style={{ backgroundColor: "#02493F" }}>
-          <div className="font-medium text-white">BioHack 2026</div>
-          <div className="text-sm mb-2" style={{ color: "#A1BB94" }}>15 окт · Астана</div>
-          <div className="text-sm" style={{ color: "#D9E3DC" }}>Зарегистрировано: <b style={{ color: "#2E8656" }}>247</b></div>
-          <div className="text-sm" style={{ color: "#D9E3DC" }}>Пришли (по чекину): <b style={{ color: "#2E8656" }}>0</b></div>
-        </div>
-      </section>
-    </main>
+      <div className="flex-1 min-h-[600px]">
+        <EventCarousel initialEvents={events} userId={session?.user?.id || ""} />
+      </div>
+    </div>
   );
 }

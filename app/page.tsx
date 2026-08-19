@@ -1,15 +1,18 @@
 "use client";
 
 import { useState } from "react";
-import { X, ArrowUpRight } from "lucide-react";
+import { X, ArrowUpRight, Menu } from "lucide-react";
 import EventsSection from "./components/EventsSection";
-import BrandContentSection from "./components/BrandContentSection";
+import AboutSection from "./components/AboutSection";
 import PartnersMarquee from "./components/PartnersMarquee";
-import NewsAndDirections from "./components/NewsAndDirections";
-import Reveal from "./components/Reveal";
+import NewsSection from "./components/NewsSection";
+import FloatingRadialDirections from "./components/FloatingRadialDirections";
+import FocusRevealHeading from "./components/FocusRevealHeading";
 import dynamic from "next/dynamic";
 
 const CentralAsiaMap = dynamic(() => import("./components/CentralAsiaMap"), { ssr: false });
+const LiquidGridBackground = dynamic(() => import("./components/LiquidGridBackground"), { ssr: false });
+
 // ===== Палитра =====
 const PAGE_BG = "#081712";   // фон всей страницы — глубокий тёмно-зелёный/почти чёрный
 const PANEL_BG = "#064e3b";  // фон панелей (о нас, цитата)
@@ -26,301 +29,253 @@ const NAV_ITEMS = [
 export default function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
   return (
     <main className="min-h-screen overflow-x-hidden" style={{ backgroundColor: PAGE_BG }}>
-      <header
-        className="relative z-30 flex items-center justify-between px-16 py-5"
-        style={{ backgroundColor: PAGE_BG }}
-      >
-        <a href="/">
-          <img src="/logo1.png.png" alt="RES Network" className="h-16" />
-        </a>
+      {/* Обертка Header + Hero с живым интерактивным фоном Liquid Grid */}
+      <div className="relative w-full overflow-hidden">
+        <LiquidGridBackground />
 
-        <nav className="hidden md:flex items-center gap-10 absolute left-1/2 -translate-x-1/2">
-          {NAV_ITEMS.map((item) => (
+        <header
+          className="relative z-30 flex items-center justify-between px-4 md:px-16 py-4 md:py-8 bg-transparent"
+        >
+          <a href="/" className="flex items-center">
+            <img src="/logo1.png.png" alt="RES Network" className="h-16 md:h-24 w-auto object-contain" />
+          </a>
+
+          {/* ПК Навигация */}
+          <nav className="hidden md:flex items-center gap-4 lg:gap-6 absolute left-1/2 -translate-x-1/2">
+            {NAV_ITEMS.map((item) => (
+              <a
+                key={item.href}
+                href={item.href}
+                className="px-5 py-2.5 rounded-full text-sm font-bold uppercase tracking-wider border border-transparent hover:border-emerald-500/40 hover:bg-emerald-950/40 hover:shadow-[0_0_20px_rgba(74,222,128,0.25)] hover:text-emerald-300 transition-all duration-300"
+                style={{ color: TEXT_LIGHT }}
+              >
+                {item.label}
+              </a>
+            ))}
+          </nav>
+
+          <div className="flex items-center gap-3">
             <a
-              key={item.href}
-              href={item.href}
-              className="text-xs font-bold uppercase tracking-widest hover:opacity-70 transition-opacity duration-200"
+              href="/res365"
+              className="px-5 md:px-7 py-2.5 md:py-3 rounded-full font-bold text-xs md:text-sm bg-gradient-to-r from-emerald-600 to-emerald-500 text-white border border-emerald-400/50 hover:border-emerald-300 hover:shadow-[0_0_25px_rgba(74,222,128,0.6)] hover:scale-105 transition-all duration-300"
+            >
+              RES Platform
+            </a>
+
+            {/* Мобильное бургер-меню */}
+            <button 
+              className="md:hidden p-2 text-emerald-400 border border-emerald-500/30 rounded-lg hover:bg-emerald-900/50"
+              onClick={() => setIsMobileMenuOpen(true)}
+            >
+              <Menu size={24} />
+            </button>
+          </div>
+        </header>
+
+        <section
+          className="relative z-20 flex flex-col items-center justify-center text-center px-4 pt-16 md:pt-32 pb-20 bg-transparent min-h-[80vh] md:min-h-0"
+        >
+          <h1
+            className="max-w-5xl text-5xl md:text-7xl font-medium leading-[1.1] tracking-tight"
+            style={{ color: TEXT_LIGHT }}
+          >
+            Региональная <span className="italic font-light" style={{ color: ACCENT }}>платформа</span>
+            <br />
+            для новых возможностей
+          </h1>
+
+          <div className="mt-6 md:mt-8 max-w-3xl space-y-1.5 text-sm md:text-lg leading-relaxed font-normal px-2" style={{ color: TEXT_MUTED }}>
+            <p>
+              Соединяем бизнес, инвесторов, государства и международные организации —
+            </p>
+            <p>
+              создаём совместные проекты, которые двигают развитие <span className="whitespace-nowrap">Центральной Азии</span> вперёд.
+            </p>
+          </div>
+
+          <div className="mt-10 flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto px-4 sm:px-0">
+            <a
+              href="#events"
+              className="w-full sm:w-auto flex items-center justify-center gap-2 px-7 py-4 rounded-full font-semibold text-sm md:text-base border border-emerald-400/50 hover:border-emerald-300 hover:shadow-[0_0_30px_rgba(74,222,128,0.6)] transition-all duration-300 shadow-lg shadow-emerald-950/60"
+              style={{ backgroundColor: ACCENT, color: TEXT_LIGHT }}
+            >
+              Смотреть мероприятия <ArrowUpRight size={18} />
+            </a>
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="w-full sm:w-auto px-7 py-4 rounded-full font-semibold text-sm md:text-base border border-emerald-500/30 hover:border-emerald-400 hover:bg-emerald-950/40 hover:shadow-[0_0_20px_rgba(74,222,128,0.3)] transition-all duration-300 cursor-pointer backdrop-blur-sm"
               style={{ color: TEXT_LIGHT }}
             >
-              {item.label}
-            </a>
-          ))}
-        </nav>
-
-        <a
-          href="/res365"
-          className="px-6 py-3 rounded-full font-bold text-sm hover:opacity-90 transition-opacity duration-200"
-          style={{ backgroundColor: ACCENT, color: TEXT_LIGHT }}
-        >
-          RES Platform
-        </a>
-      </header>
-
-      <section
-        className="relative flex flex-col items-center justify-center text-center px-6 pt-40 pb-24"
-        style={{ backgroundColor: PAGE_BG }}
-      >
-        <h1
-          className="max-w-5xl text-6xl md:text-7xl font-medium leading-[1.05] tracking-tight"
-          style={{ color: TEXT_LIGHT }}
-        >
-          Региональная <span className="italic font-light" style={{ color: ACCENT }}>платформа</span>
-          <br />
-          для новых возможностей.
-        </h1>
-
-        <p className="mt-8 max-w-2xl text-lg" style={{ color: TEXT_MUTED }}>
-          Соединяем бизнес, инвесторов, государства и международные организации —
-          создаём совместные проекты, которые двигают развитие Центральной Азии вперёд.
-        </p>
-
-        <div className="mt-10 flex items-center gap-4">
-          <a
-            href="#events"
-            className="flex items-center gap-2 px-7 py-4 rounded-full font-semibold text-base hover:opacity-90 transition-opacity duration-200"
-            style={{ backgroundColor: ACCENT, color: TEXT_LIGHT }}
-          >
-            Смотреть мероприятия <ArrowUpRight size={18} />
-          </a>
-          <button
-            onClick={() => setIsModalOpen(true)}
-            className="px-7 py-4 rounded-full font-semibold text-base border hover:opacity-70 transition-opacity duration-200"
-            style={{ borderColor: TEXT_LIGHT, color: TEXT_LIGHT, backgroundColor: "transparent" }}
-          >
-            Связаться с нами
-          </button>
-        </div>
-      </section>
+              Связаться с нами
+            </button>
+          </div>
+        </section>
+      </div>
 
       <CentralAsiaMap />
 
-      <BrandContentSection />
+      <AboutSection onOpenContact={() => setIsModalOpen(true)} />
 
-      <Reveal>
-        <section
-          id="about"
-          className="relative px-16 py-28 overflow-hidden"
-          style={{ backgroundColor: PANEL_BG }}
-        >
-          <div
-            className="absolute rounded-full animate-drift"
-            style={{
-              width: "480px",
-              height: "480px",
-              backgroundColor: ACCENT,
-              opacity: 0.15,
-              filter: "blur(100px)",
-              top: "-120px",
-              left: "-100px",
-            }}
+      <section id="events" className="px-8 md:px-16 py-20 md:py-28" style={{ backgroundColor: PAGE_BG }}>
+        <div className="mb-10">
+          <FocusRevealHeading
+            tokens={[
+              { text: "Ближайшие", isAccent: false },
+              { text: "мероприятия", isAccent: true },
+            ]}
+            className="text-3xl md:text-5xl font-bold tracking-tight text-[#f2ede2]"
+            align="left"
           />
-          <div className="relative grid grid-cols-2 gap-16 items-center">
-            <div className="relative">
-              <div
-                className="relative rounded-3xl overflow-hidden"
-                style={{ boxShadow: "0 30px 80px rgba(0,0,0,0.45)" }}
-              >
-                <img
-                  src="https://images.unsplash.com/photo-1497435334941-8c899ee9e8e9?w=900&q=80&auto=format&fit=crop"
-                  alt="RES Network"
-                  className="w-full h-[460px] object-cover"
-                />
-              </div>
-            </div>
-
-            <div>
-              <span
-                className="inline-block px-3 py-1 rounded-full text-xs font-bold tracking-wide mb-5"
-                style={{ backgroundColor: ACCENT, color: TEXT_LIGHT }}
-              >
-                О НАС
-              </span>
-              <h2 className="text-5xl font-bold leading-tight mb-6" style={{ color: TEXT_LIGHT }}>
-                Экосистема экологического сотрудничества
-              </h2>
-              <p className="text-lg leading-relaxed mb-8" style={{ color: TEXT_MUTED }}>
-                RES Network объединяет правительства, бизнес, инвесторов и международные
-                организации Центральной Азии для развития совместных проектов устойчивого
-                развития — от выставок и форумов до долгосрочных партнёрств.
-              </p>
-              <div className="flex flex-col gap-4">
-                {[
-                  "Международное партнёрство на уровне правительств и организаций",
-                  "Экспертная сеть из компаний и инвесторов региона",
-                  "Прозрачная статистика по каждому мероприятию",
-                ].map((text) => (
-                  <div key={text} className="flex items-start gap-3">
-                    <div
-                      className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5"
-                      style={{ backgroundColor: ACCENT }}
-                    >
-                      <div className="w-2 h-2 rounded-full" style={{ backgroundColor: TEXT_LIGHT }} />
-                    </div>
-                    <span className="text-sm" style={{ color: TEXT_MUTED }}>
-                      {text}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-          <svg
-            viewBox="0 0 1440 100"
-            className="absolute bottom-0 left-0 w-full"
-            style={{ height: "70px", transform: "translateY(69px)" }}
-            preserveAspectRatio="none"
-          >
-            <path d="M0,50 C400,0 1040,100 1440,50 L1440,0 L0,0 Z" fill={PANEL_BG} />
-          </svg>
-        </section>
-      </Reveal>
-
-      <section id="events" className="px-16 py-24" style={{ backgroundColor: PAGE_BG }}>
-        <span className="inline-block text-sm font-bold tracking-wide mb-2" style={{ color: ACCENT }}>
-          РАСПИСАНИЕ
-        </span>
-        <div className="flex justify-between items-end mb-10">
-          <h2 className="text-5xl font-bold" style={{ color: TEXT_LIGHT }}>
-            Ближайшие мероприятия
-          </h2>
-          <a
-            href="/res365"
-            className="px-6 py-3 rounded-full text-base font-bold"
-            style={{ backgroundColor: ACCENT, color: TEXT_LIGHT }}
-          >
-            + Создать ивент
-          </a>
         </div>
 
         <EventsSection />
       </section>
 
-      <section id="news" className="relative px-16 pb-24" style={{ backgroundColor: PAGE_BG }}>
-        <svg
-          viewBox="0 0 1440 100"
-          className="absolute top-0 left-0 w-full"
-          style={{ height: "70px", transform: "translateY(-69px)" }}
-          preserveAspectRatio="none"
-        >
-          <path d="M0,50 C400,100 1040,0 1440,50 L1440,100 L0,100 Z" fill={PAGE_BG} />
-        </svg>
-        <div className="pt-20">
-          <NewsAndDirections />
-        </div>
+      <section id="news" className="relative px-8 md:px-16 py-20 md:py-28" style={{ backgroundColor: PAGE_BG }}>
+        <NewsSection />
       </section>
 
-      <section className="relative px-16 py-28 overflow-hidden" style={{ backgroundColor: PANEL_BG }}>
-        <div
-          className="absolute rounded-full"
-          style={{
-            width: "400px",
-            height: "400px",
-            backgroundColor: ACCENT,
-            opacity: 0.15,
-            filter: "blur(90px)",
-            top: "-100px",
-            left: "50%",
-            transform: "translateX(-50%)",
-          }}
-        />
-        <p className="relative text-3xl md:text-4xl font-semibold max-w-3xl mx-auto text-center leading-snug" style={{ color: TEXT_LIGHT }}>
-          «Мы верим, что устойчивое будущее Центральной Азии строится через сотрудничество — а не в одиночку.»
-        </p>
-        <p className="relative text-center text-sm font-bold tracking-wide mt-6" style={{ color: TEXT_LIGHT, opacity: 0.6 }}>
-          RES NETWORK
-        </p>
-      </section>
-
-      <section className="px-16 py-28" style={{ backgroundColor: PAGE_BG }}>
+      <section className="px-8 md:px-16 py-24 md:py-28" style={{ backgroundColor: PAGE_BG }}>
         <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold" style={{ color: TEXT_LIGHT }}>
-            Наши партнёры
-          </h2>
+          <FocusRevealHeading
+            tokens={[
+              { text: "Наши", isAccent: false },
+              { text: "партнёры", isAccent: true },
+            ]}
+            className="text-3xl md:text-5xl font-bold tracking-tight text-[#f2ede2]"
+            align="center"
+          />
         </div>
         <PartnersMarquee />
       </section>
 
-      {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-          <div className="relative w-full max-w-md overflow-hidden rounded-3xl bg-white shadow-2xl">
-            <div className="relative px-8 pt-8 pb-7" style={{ backgroundColor: PANEL_BG }}>
-              <button
-                onClick={() => setIsModalOpen(false)}
-                className="absolute top-5 right-5 flex h-9 w-9 items-center justify-center rounded-full"
-                style={{ backgroundColor: "rgba(242,237,226,0.15)" }}
+      {/* Фирменный футер */}
+      <footer className="px-8 md:px-16 py-12 border-t border-emerald-500/20 text-[#f2ede2] flex flex-col md:flex-row items-center justify-between gap-6 text-xs" style={{ backgroundColor: PAGE_BG }}>
+        <div className="flex items-center gap-3">
+          <img src="/logo1.png.png" alt="RES Network" className="h-9 w-auto object-contain" />
+          <span className="text-[#9fb7a8]">© 2026 RES Network. Региональная экосистема Центральной Азии.</span>
+        </div>
+        <div className="flex items-center gap-8 font-semibold text-emerald-300">
+          <a href="#about" className="hover:text-white transition-colors">О нас</a>
+          <a href="#events" className="hover:text-white transition-colors">Мероприятия</a>
+          <a href="#news" className="hover:text-white transition-colors">Новости</a>
+          <a href="/res365" className="hover:text-white transition-colors">RES Platform</a>
+        </div>
+      </footer>
+
+      {/* Плавающее радиальное меню сфер фокуса (как виджет поддержки) */}
+      <FloatingRadialDirections />
+
+      {/* Мобильное меню (Overlay) */}
+      {isMobileMenuOpen && (
+        <div 
+          className="fixed inset-0 z-[60] bg-[#081712]/95 backdrop-blur-xl flex flex-col p-8 md:hidden animate-in fade-in zoom-in-95 duration-300"
+        >
+          <button
+            onClick={() => setIsMobileMenuOpen(false)}
+            className="absolute top-6 right-6 p-2 text-emerald-400 hover:text-white bg-emerald-900/50 rounded-full"
+          >
+            <X size={24} />
+          </button>
+          
+          <div className="flex-1 flex flex-col items-center justify-center gap-8">
+            {NAV_ITEMS.map((item) => (
+              <a
+                key={item.href}
+                href={item.href}
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="text-2xl font-bold uppercase tracking-wider text-[#f2ede2] hover:text-emerald-400 transition-colors"
               >
-                <X size={16} color={TEXT_LIGHT} />
-              </button>
-              <span className="text-xs font-extrabold tracking-[.16em]" style={{ color: ACCENT }}>
-                RES NETWORK
-              </span>
-              <h3 className="mt-3 text-3xl font-bold" style={{ color: TEXT_LIGHT }}>Связаться с нами</h3>
-              <p className="mt-2 text-sm" style={{ color: TEXT_LIGHT, opacity: 0.8 }}>
-                Расскажите о себе — мы свяжемся в течение рабочего дня
-              </p>
-            </div>
+                {item.label}
+              </a>
+            ))}
+            <button
+              onClick={() => {
+                setIsMobileMenuOpen(false);
+                setIsModalOpen(true);
+              }}
+              className="mt-4 px-8 py-4 rounded-full font-bold text-sm bg-gradient-to-r from-emerald-600 to-emerald-500 text-white shadow-[0_0_25px_rgba(74,222,128,0.4)]"
+            >
+              Связаться с нами
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Модалка контактов */}
+      {isModalOpen && (
+        <div
+          className="fixed inset-0 z-[70] flex items-center justify-center p-4 bg-black/75 backdrop-blur-md animate-in fade-in duration-200"
+          onClick={() => setIsModalOpen(false)}
+        >
+          <div
+            className="relative w-full max-w-lg overflow-hidden rounded-3xl border border-emerald-500/30 bg-gradient-to-b from-[#063325]/95 to-[#041a13]/98 p-8 md:p-10 backdrop-blur-2xl shadow-2xl animate-in zoom-in-95 duration-200"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/15 rounded-full blur-3xl pointer-events-none" />
+
+            <button
+              onClick={() => setIsModalOpen(false)}
+              className="absolute top-5 right-5 flex h-9 w-9 items-center justify-center rounded-full bg-emerald-950/80 border border-emerald-500/30 text-emerald-200 hover:text-white hover:bg-emerald-900 transition-all cursor-pointer"
+            >
+              <X size={16} />
+            </button>
+
+            <span className="text-xs font-bold uppercase tracking-widest text-emerald-400">
+              RES NETWORK
+            </span>
+            <h3 className="mt-2 text-3xl font-bold text-[#f2ede2]">Связаться с нами</h3>
+            <p className="mt-1 text-sm text-[#9fb7a8]">
+              Расскажите о вашей организации — мы ответим в течение рабочего дня
+            </p>
 
             <form
-              className="flex flex-col gap-4 p-8"
+              className="flex flex-col gap-4 mt-6"
               onSubmit={(e) => {
                 e.preventDefault();
                 setIsModalOpen(false);
               }}
             >
               <div>
-                <label className="block text-xs font-bold mb-2" style={{ color: "#4A5A52" }}>
-                  ВАШЕ ИМЯ
+                <label className="block text-xs font-bold uppercase tracking-wider mb-1.5 text-emerald-300">
+                  Ваше имя
                 </label>
                 <input
                   required
                   type="text"
-                  className="w-full px-4 py-3 rounded-xl bg-gray-50 focus:outline-none focus:ring-2"
-                  style={{ border: "1px solid #E4E7DD" }}
+                  className="w-full px-4 py-3.5 rounded-2xl bg-emerald-950/40 border border-emerald-500/30 text-[#f2ede2] placeholder:text-emerald-500/40 focus:outline-none focus:border-emerald-400 transition-colors"
                   placeholder="Иван Иванов"
                 />
               </div>
               <div>
-                <label className="block text-xs font-bold mb-2" style={{ color: "#4A5A52" }}>
-                  EMAIL
+                <label className="block text-xs font-bold uppercase tracking-wider mb-1.5 text-emerald-300">
+                  Email
                 </label>
                 <input
                   required
                   type="email"
-                  className="w-full px-4 py-3 rounded-xl bg-gray-50 focus:outline-none focus:ring-2"
-                  style={{ border: "1px solid #E4E7DD" }}
+                  className="w-full px-4 py-3.5 rounded-2xl bg-emerald-950/40 border border-emerald-500/30 text-[#f2ede2] placeholder:text-emerald-500/40 focus:outline-none focus:border-emerald-400 transition-colors"
                   placeholder="ivan@example.com"
                 />
               </div>
               <div>
-                <label className="block text-xs font-bold mb-2" style={{ color: "#4A5A52" }}>
-                  НОМЕР ТЕЛЕФОНА
-                </label>
-                <input
-                  required
-                  type="tel"
-                  className="w-full px-4 py-3 rounded-xl bg-gray-50 focus:outline-none focus:ring-2"
-                  style={{ border: "1px solid #E4E7DD" }}
-                  placeholder="+7 (___) ___-__-__"
-                />
-              </div>
-              <div>
-                <label className="block text-xs font-bold mb-2" style={{ color: "#4A5A52" }}>
-                  НАЗВАНИЕ КОМПАНИИ
+                <label className="block text-xs font-bold uppercase tracking-wider mb-1.5 text-emerald-300">
+                  Организация / Компания
                 </label>
                 <input
                   required
                   type="text"
-                  className="w-full px-4 py-3 rounded-xl bg-gray-50 focus:outline-none focus:ring-2"
-                  style={{ border: "1px solid #E4E7DD" }}
+                  className="w-full px-4 py-3.5 rounded-2xl bg-emerald-950/40 border border-emerald-500/30 text-[#f2ede2] placeholder:text-emerald-500/40 focus:outline-none focus:border-emerald-400 transition-colors"
                   placeholder="ООО ЭкоТех"
                 />
               </div>
               <button
                 type="submit"
-                className="mt-2 w-full rounded-full py-4 text-lg font-bold text-white hover:opacity-90 transition-opacity duration-200"
-                style={{ backgroundColor: ACCENT }}
+                className="mt-2 w-full rounded-full py-4 text-base font-bold text-white bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 transition-all duration-300 shadow-xl shadow-emerald-950/80 cursor-pointer"
               >
                 Отправить заявку
               </button>

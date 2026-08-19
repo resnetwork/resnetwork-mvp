@@ -10,6 +10,7 @@ declare module "react-simple-maps" {
   export const Marker: ComponentType<any>;
   export const Line: ComponentType<any>;
 }
+
 declare module "topojson-client" {
   export function feature(topology: any, object: any): any;
 }
