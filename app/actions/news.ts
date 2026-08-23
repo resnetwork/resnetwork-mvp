@@ -51,18 +51,14 @@ export async function getRSSNews() {
       // Google News не всегда отдает картинки в RSS, так что ставим дефолтную качественную эко-картинку 
       // с хешированием, чтобы на одной новости всегда была одна картинка, и они не повторялись подряд
       const FALLBACK_IMAGES = [
-        "https://images.unsplash.com/photo-1497435334941-8c899ebd9ee5?w=900&q=80&auto=format&fit=crop",
-        "https://images.unsplash.com/photo-1466611653911-95081537e5b7?w=900&q=80&auto=format&fit=crop",
-        "https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=900&q=80&auto=format&fit=crop",
-        "https://images.unsplash.com/photo-1497440001374-f26997328c1b?w=900&q=80&auto=format&fit=crop",
-        "https://images.unsplash.com/photo-1531266752426-aad472b7bbf4?w=900&q=80&auto=format&fit=crop",
-        "https://images.unsplash.com/photo-1473448912268-2022ce9509d8?w=900&q=80&auto=format&fit=crop",
-        "https://images.unsplash.com/photo-1509316785289-025f5b846b35?w=900&q=80&auto=format&fit=crop",
-        "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=900&q=80&auto=format&fit=crop",
-        "https://images.unsplash.com/photo-1472214103451-9374bd1c798e?w=900&q=80&auto=format&fit=crop",
-        "https://images.unsplash.com/photo-1511497584788-876760111969?w=900&q=80&auto=format&fit=crop",
-        "https://images.unsplash.com/photo-1508361001413-7a9dca21d08a?w=900&q=80&auto=format&fit=crop",
-        "https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?w=900&q=80&auto=format&fit=crop"
+        "https://images.unsplash.com/photo-1466611653911-95081537e5b7?w=900&q=80&auto=format&fit=crop", // ветряки
+        "https://images.unsplash.com/photo-1497440001374-f26997328c1b?w=900&q=80&auto=format&fit=crop", // природа
+        "https://images.unsplash.com/photo-1531266752426-aad472b7bbf4?w=900&q=80&auto=format&fit=crop", // чистая вода
+        "https://images.unsplash.com/photo-1473448912268-2022ce9509d8?w=900&q=80&auto=format&fit=crop", // лес
+        "https://images.unsplash.com/photo-1509316785289-025f5b846b35?w=900&q=80&auto=format&fit=crop", // солнечные панели
+        "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=900&q=80&auto=format&fit=crop", // эко
+        "https://images.unsplash.com/photo-1472214103451-9374bd1c798e?w=900&q=80&auto=format&fit=crop", // пейзаж
+        "https://images.unsplash.com/photo-1511497584788-876760111969?w=900&q=80&auto=format&fit=crop"  // природа лес
       ];
       
       let hash = 0;
