@@ -16,11 +16,14 @@ const RSS_FEEDS = [
   { url: "https://tengrinews.kz/news.rss", sourceName: "Tengrinews" },
   { url: "https://inbusiness.kz/ru/rss", sourceName: "Inbusiness" },
   { url: "https://kapital.kz/rss", sourceName: "Kapital.kz" },
-  { url: "https://www.inform.kz/rss/rus.xml", sourceName: "Kazinform" }, // альтернативный урл информбюро/казинформ
+  { url: "https://www.inform.kz/rss/rus.xml", sourceName: "Kazinform" },
 ];
 
-// Строгая регулярка. Ищет слова целиком с учетом кириллицы (исключает "экономика" и т.д.)
-const ECO_REGEX = /(^|[^а-яёa-z])(эколог[а-я]*|esg|устойчивое развитие|зелен[а-я]* энергети[а-я]*|переработка|выбросы|климат|возобновляем[а-я]* энерги[а-я]*|чист[а-я]* энерги[а-я]*)([^а-яёa-z]|$)/iu;
+// Ищем ключевые слова ТОЛЬКО в заголовке, чтобы избежать случайных упоминаний "Министерства экологии" в тексте
+const TITLE_ECO_REGEX = /(^|[^а-яёa-z])(эколог[а-я]*|esg|устойчив[а-я]* развит[а-я]*|зелен[а-я]* энергети[а-я]*|зелен[а-я]* экономик[а-я]*|переработк[а-я]* отходов|выброс[а-я]*|климат[а-я]*|возобновляем[а-я]* энерги[а-я]*|чист[а-я]* энерги[а-я]*|декарбонизац[а-я]*|углеродн[а-я]*|ВИЭ|стартап[а-я]*)([^а-яёa-z]|$)/iu;
+
+// Слова-исключения (даже если есть ключевое слово, игнорируем новость)
+const NEGATIVE_REGEX = /(питомц|животн|собак|кошк|дтп|убийств|криминал|погод)/iu;
 
 // Очищает HTML от тегов
 function stripHtml(html: string): string {
@@ -28,12 +31,19 @@ function stripHtml(html: string): string {
   return html.replace(/<[^>]*>?/gm, '').trim();
 }
 
-// Извлекает ссылку на картинку из HTML-строки
+// Извлекает ссылку на картинку из HTML-строки и проверяет её валидность
 function extractImageFromHtml(html: string): string | null {
   if (!html) return null;
-  const imgRegex = /<img[^>]+src="([^">]+)"/i;
+  const imgRegex = /<img[^>]+src=["']([^"'>]+)["']/i;
   const match = html.match(imgRegex);
-  return match ? match[1] : null;
+  if (match && match[1]) {
+    const url = match[1];
+    // Игнорируем пиксели-трекеры, иконки и относительные пути
+    if (url.startsWith('http') && !url.includes('1x1') && !url.includes('.gif')) {
+      return url;
+    }
+  }
+  return null;
 }
 
 const FALLBACK_IMAGES = [
@@ -44,16 +54,12 @@ const FALLBACK_IMAGES = [
   "https://images.unsplash.com/photo-1531266752426-aad472b7bbf4?w=900&q=80&auto=format&fit=crop",
   "https://images.unsplash.com/photo-1473448912268-2022ce9509d8?w=900&q=80&auto=format&fit=crop",
   "https://images.unsplash.com/photo-1509316785289-025f5b846b35?w=900&q=80&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=900&q=80&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1472214103451-9374bd1c798e?w=900&q=80&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1511497584788-876760111969?w=900&q=80&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1508361001413-7a9dca21d08a?w=900&q=80&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?w=900&q=80&auto=format&fit=crop"
+  "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=900&q=80&auto=format&fit=crop"
 ];
 
 export async function getRSSNews() {
   const allNews = [];
-  const seenTitles = new Set(); // Чтобы избежать дубликатов (например про тигра)
+  const seenTitles = new Set();
 
   for (const feed of RSS_FEEDS) {
     try {
@@ -61,24 +67,21 @@ export async function getRSSNews() {
       
       for (const item of feedData.items) {
         const title = item.title || "";
-        // Пропускаем дубликаты
         if (seenTitles.has(title)) continue;
 
         const description = stripHtml(item.contentSnippet || item.description || "");
-        const fullTextForSearch = `${title} ${description}`;
-
-        // Строгая проверка по регулярному выражению
-        if (ECO_REGEX.test(fullTextForSearch)) {
+        
+        // ПРОВЕРКА 1: Ключевое слово должно быть В ЗАГОЛОВКЕ (чтобы отсечь случайные упоминания министерств в тексте)
+        // ПРОВЕРКА 2: В заголовке не должно быть стоп-слов
+        if (TITLE_ECO_REGEX.test(title) && !NEGATIVE_REGEX.test(title)) {
           seenTitles.add(title);
 
-          // Пытаемся найти оригинальную картинку
           let imageUrl = null;
-          if (item.enclosure?.url) imageUrl = item.enclosure.url;
-          else if (item.mediaContent?.$?.url) imageUrl = item.mediaContent.$.url;
+          if (item.enclosure?.url && item.enclosure.url.startsWith('http')) imageUrl = item.enclosure.url;
+          else if (item.mediaContent?.$?.url && item.mediaContent.$.url.startsWith('http')) imageUrl = item.mediaContent.$.url;
           else if (item.content) imageUrl = extractImageFromHtml(item.content);
           else if (item.contentSnippet) imageUrl = extractImageFromHtml(item.contentSnippet);
 
-          // Если оригинальной картинки нет, берем уникальную заглушку на основе строки заголовка
           if (!imageUrl) {
             let hash = 0;
             for (let i = 0; i < title.length; i++) {
@@ -105,9 +108,10 @@ export async function getRSSNews() {
     }
   }
 
-  // Сортируем по дате (самые свежие сначала)
   allNews.sort((a, b) => b.rawPubDate - a.rawPubDate);
 
-  // Возвращаем топ-8 (чтобы полностью заполнить сетку)
+  // Если новостей меньше 8 (потому что фильтр стал очень строгим), 
+  // Next.js на фронте все равно отрисует их (просто будет меньше карточек)
+  // Мы можем запрашивать больше лент, если нужно.
   return allNews.slice(0, 8);
 }
