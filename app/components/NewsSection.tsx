@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { X, ArrowUpRight, TrendingUp } from "lucide-react";
 import FocusRevealHeading from "./FocusRevealHeading";
 
@@ -88,11 +88,36 @@ const NEWS_ALL = [
 ];
 
 export default function NewsSection() {
-  const [selectedNews, setSelectedNews] = useState<typeof NEWS_ALL[0] | null>(null);
+  const [newsData, setNewsData] = useState<any[]>(NEWS_ALL);
+  const [selectedNews, setSelectedNews] = useState<any | null>(null);
 
-  const featured = NEWS_ALL[0];
-  const sideNews = NEWS_ALL.slice(1, 3);
-  const bottomGrid = NEWS_ALL.slice(3, 7);
+  useEffect(() => {
+    import("@/app/actions/news").then(({ getRSSNews }) => {
+      getRSSNews().then(feedNews => {
+        if (feedNews && feedNews.length > 0) {
+          // Маппим данные под наш UI
+          const mapped = feedNews.map(n => ({
+            id: n.id,
+            title: n.title,
+            tag: n.category,
+            date: n.date,
+            img: n.image,
+            content: n.summary,
+            readTime: "RSS",
+            sourceUrl: n.sourceUrl
+          }));
+          
+          // Дополняем нашими новостями, если нужно (чтобы сетка не ломалась, нужно минимум 8)
+          const combined = [...mapped, ...NEWS_ALL];
+          setNewsData(combined.slice(0, 8));
+        }
+      });
+    });
+  }, []);
+
+  const featured = newsData[0];
+  const sideNews = newsData.slice(1, 3);
+  const bottomGrid = newsData.slice(3, 7);
 
   return (
     <div className="relative w-full">
@@ -118,29 +143,26 @@ export default function NewsSection() {
         >
           <div className="relative overflow-hidden h-72 md:h-96">
             <img
-              src={featured.img}
-              alt={featured.title}
+              src={featured?.img}
+              alt={featured?.title}
               className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-[#041a13] via-[#041a13]/30 to-transparent" />
             <span className="absolute top-5 left-5 px-3.5 py-1.5 rounded-full text-xs font-extrabold uppercase tracking-wider bg-black/75 border border-emerald-400/30 text-emerald-300 backdrop-blur-md">
-              {featured.tag}
-            </span>
-            <span className="absolute top-5 right-5 px-3 py-1 rounded-full text-[11px] font-mono bg-black/60 text-emerald-300/80 backdrop-blur-md">
-              {featured.readTime}
+              {featured?.tag}
             </span>
           </div>
 
           <div className="p-8">
-            <span className="text-xs text-emerald-400/70 font-mono block mb-2">{featured.date}</span>
-            <h3 className="text-2xl md:text-3xl font-bold text-[#f2ede2] leading-snug group-hover:text-emerald-300 transition-colors">
-              {featured.title}
+            <span className="text-xs text-emerald-400/70 font-mono block mb-2">{featured?.date}</span>
+            <h3 className="text-2xl md:text-3xl font-bold text-[#f2ede2] leading-snug group-hover:text-emerald-300 transition-colors line-clamp-2">
+              {featured?.title}
             </h3>
             <p className="mt-3 text-sm md:text-base text-[#9fb7a8] leading-relaxed line-clamp-2">
-              {featured.content}
+              {featured?.content}
             </p>
             <div className="mt-6 flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-emerald-400 group-hover:text-emerald-300 transition-colors">
-              <span>Читать полностью</span>
+              <span>Подробнее</span>
               <ArrowUpRight size={15} className="transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
             </div>
           </div>
@@ -270,14 +292,27 @@ export default function NewsSection() {
                 {selectedNews.content}
               </p>
 
-              <div className="mt-10 pt-6 border-t border-emerald-500/20 flex items-center justify-between">
+              <div className="mt-10 pt-6 border-t border-emerald-500/20 flex flex-col sm:flex-row items-center justify-between gap-4">
                 <span className="text-xs text-emerald-400/80">Информационная служба RES Network</span>
-                <button
-                  onClick={() => setSelectedNews(null)}
-                  className="px-6 py-2.5 rounded-full text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-500 transition-colors cursor-pointer"
-                >
-                  Закрыть
-                </button>
+                
+                <div className="flex gap-3 w-full sm:w-auto">
+                  {selectedNews.sourceUrl && (
+                    <a
+                      href={selectedNews.sourceUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="flex-1 sm:flex-none text-center px-6 py-2.5 rounded-full text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-500 transition-colors"
+                    >
+                      Читать оригинал
+                    </a>
+                  )}
+                  <button
+                    onClick={() => setSelectedNews(null)}
+                    className="flex-1 sm:flex-none px-6 py-2.5 rounded-full text-xs font-bold text-emerald-300 bg-emerald-950/40 border border-emerald-500/30 hover:bg-emerald-900/60 transition-colors cursor-pointer"
+                  >
+                    Закрыть
+                  </button>
+                </div>
               </div>
             </div>
           </div>
