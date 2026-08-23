@@ -111,7 +111,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
               <div className="mt-10">
                 <h2 className="text-xl font-bold text-emerald-300 mb-4">В программе:</h2>
                 <div className="grid gap-3">
-                  {event.details.map((detail) => (
+                  {event.details.map((detail: string) => (
                     <div
                       key={detail}
                       className="flex items-start gap-3 p-4 rounded-2xl border border-emerald-500/15 bg-emerald-950/20"
@@ -132,7 +132,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
                 <h3 className="text-sm font-bold uppercase tracking-wider text-emerald-400 mb-2">
                   Контакты и регистрация
                 </h3>
-                {event.contact.map((line, i) => (
+                {event.contact.map((line: string, i: number) => (
                   <p key={i} className="text-sm text-[#9fb7a8] mt-1">
                     {line}
                   </p>
