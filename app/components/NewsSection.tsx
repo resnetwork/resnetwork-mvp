@@ -88,7 +88,7 @@ const NEWS_ALL = [
 ];
 
 export default function NewsSection() {
-  const [newsData, setNewsData] = useState<any[]>(NEWS_ALL);
+  const [newsData, setNewsData] = useState<any[] | null>(null);
   const [selectedNews, setSelectedNews] = useState<any | null>(null);
 
   useEffect(() => {
@@ -107,13 +107,19 @@ export default function NewsSection() {
             sourceUrl: n.sourceUrl
           }));
           
-          // Дополняем нашими новостями, если нужно (чтобы сетка не ломалась, нужно минимум 8)
-          const combined = [...mapped, ...NEWS_ALL];
-          setNewsData(combined.slice(0, 8));
+          setNewsData(mapped);
         }
       });
     });
   }, []);
+
+  if (!newsData) {
+    return (
+      <div className="relative w-full py-20 flex justify-center items-center">
+        <div className="w-10 h-10 border-4 border-emerald-500/30 border-t-emerald-500 rounded-full animate-spin"></div>
+      </div>
+    );
+  }
 
   const featured = newsData[0];
   const sideNews = newsData.slice(1, 3);

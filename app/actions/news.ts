@@ -8,34 +8,13 @@ const parser = new Parser({
       ['media:content', 'mediaContent'],
       ['enclosure', 'enclosure'],
       ['description', 'description'],
+      ['source', 'source']
     ],
   }
 });
 
-const RSS_FEEDS = [
-  { url: "https://kapital.kz/rss", sourceName: "Kapital.kz" },
-  { url: "https://inbusiness.kz/ru/rss", sourceName: "Inbusiness" },
-  { url: "https://tengrinews.kz/news.rss", sourceName: "Tengrinews" },
-];
-
-const KEYWORDS = [
-  "эколог", "эко", "устойчивое развитие", "esg", "стартап", "зелен", 
-  "климат", "переработка", "выброс", "энерги", "возобновляем", "технологи"
-];
-
-function containsKeyword(text: string): boolean {
-  if (!text) return false;
-  const lowerText = text.toLowerCase();
-  return KEYWORDS.some(keyword => lowerText.includes(keyword));
-}
-
-// Извлекает ссылку на картинку из HTML-строки
-function extractImageFromHtml(html: string): string | null {
-  if (!html) return null;
-  const imgRegex = /<img[^>]+src="([^">]+)"/i;
-  const match = html.match(imgRegex);
-  return match ? match[1] : null;
-}
+// Google News RSS Search query
+const GOOGLE_NEWS_URL = 'https://news.google.com/rss/search?q=' + encodeURIComponent('экология OR ESG OR "зеленая энергетика" OR стартапы Казахстан') + '&hl=ru&gl=KZ&ceid=KZ:ru';
 
 // Очищает HTML от тегов
 function stripHtml(html: string): string {
@@ -46,42 +25,56 @@ function stripHtml(html: string): string {
 export async function getRSSNews() {
   const allNews = [];
 
-  for (const feed of RSS_FEEDS) {
-    try {
-      const feedData = await parser.parseURL(feed.url);
+  try {
+    const feedData = await parser.parseURL(GOOGLE_NEWS_URL);
+    
+    for (const item of feedData.items) {
+      // Описание Google News часто содержит просто повторение заголовка или лишний HTML
+      // Мы берем snippet
+      const cleanDescription = stripHtml(item.contentSnippet || item.description || "");
       
-      for (const item of feedData.items) {
-        // Ищем картинку в разных полях
-        let imageUrl = null;
-        if (item.enclosure?.url) imageUrl = item.enclosure.url;
-        else if (item.mediaContent?.$?.url) imageUrl = item.mediaContent.$.url;
-        else if (item.content) imageUrl = extractImageFromHtml(item.content);
-        else if (item.contentSnippet) imageUrl = extractImageFromHtml(item.contentSnippet);
-        
-        // Описание без HTML
-        const cleanDescription = stripHtml(item.contentSnippet || item.description || "");
-        
-        // Проверяем по ключевым словам (заголовок или описание)
-        const isRelevant = containsKeyword(item.title || "") || containsKeyword(cleanDescription);
-        
-        if (isRelevant) {
-          allNews.push({
-            id: item.guid || item.link || Math.random().toString(),
-            title: item.title,
-            summary: cleanDescription.substring(0, 150) + "...",
-            date: item.pubDate ? new Date(item.pubDate).toLocaleDateString("ru-RU", { day: 'numeric', month: 'long', year: 'numeric' }) : "Недавно",
-            category: feed.sourceName,
-            image: imageUrl || "https://images.unsplash.com/photo-1497435334941-8c899ebd9ee5?q=80&w=2070&auto=format&fit=crop", // Заглушка, если нет картинки
-            sourceUrl: item.link
-          });
-        }
+      // Имя источника в Google News идет после " - " в заголовке или в теге source
+      let sourceName = "Новости";
+      let cleanTitle = item.title || "";
+      
+      if (item.source) {
+        sourceName = typeof item.source === 'string' ? item.source : item.source._;
+      } else if (cleanTitle.includes(" - ")) {
+        const parts = cleanTitle.split(" - ");
+        sourceName = parts.pop()?.trim() || "Новости";
+        cleanTitle = parts.join(" - ");
       }
-    } catch (error) {
-      console.error(`Ошибка при чтении RSS ${feed.sourceName}:`, error);
+
+      // Google News не всегда отдает картинки в RSS, так что ставим дефолтную качественную эко-картинку 
+      // с небольшим рандомом для красоты сетки
+      const randomImages = [
+        "https://images.unsplash.com/photo-1497435334941-8c899ebd9ee5?w=900&q=80&auto=format&fit=crop",
+        "https://images.unsplash.com/photo-1466611653911-95081537e5b7?w=900&q=80&auto=format&fit=crop",
+        "https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=900&q=80&auto=format&fit=crop",
+        "https://images.unsplash.com/photo-1497440001374-f26997328c1b?w=900&q=80&auto=format&fit=crop",
+        "https://images.unsplash.com/photo-1531266752426-aad472b7bbf4?w=900&q=80&auto=format&fit=crop",
+        "https://images.unsplash.com/photo-1473448912268-2022ce9509d8?w=900&q=80&auto=format&fit=crop",
+        "https://images.unsplash.com/photo-1509316785289-025f5b846b35?w=900&q=80&auto=format&fit=crop",
+        "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=900&q=80&auto=format&fit=crop"
+      ];
+      
+      // Псевдослучайный выбор картинки на основе длины заголовка чтобы она не менялась каждую секунду
+      const imgIndex = cleanTitle.length % randomImages.length;
+
+      allNews.push({
+        id: item.guid || item.link || Math.random().toString(),
+        title: cleanTitle,
+        summary: cleanDescription.substring(0, 180) + "...",
+        date: item.pubDate ? new Date(item.pubDate).toLocaleDateString("ru-RU", { day: 'numeric', month: 'long', year: 'numeric' }) : "Недавно",
+        category: sourceName,
+        image: randomImages[imgIndex],
+        sourceUrl: item.link
+      });
     }
+  } catch (error) {
+    console.error(`Ошибка при чтении Google News RSS:`, error);
   }
 
-  // Сортируем по дате (если pubDate парсится нормально) и отдаем топ-10
-  // Из-за разных форматов дат, мы просто возьмем первые 10 актуальных
-  return allNews.slice(0, 10);
+  // Возвращаем топ-8 релевантных новостей (чтобы заполнить всю сетку)
+  return allNews.slice(0, 8);
 }
