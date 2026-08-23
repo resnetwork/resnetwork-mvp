@@ -1,10 +1,36 @@
 import { notFound } from "next/navigation";
 import { ArrowLeft, CalendarDays, MapPin, Sparkles, ArrowUpRight, CheckCircle2 } from "lucide-react";
 import { EVENTS } from "../../data/events";
+import { prisma } from "@/app/lib/prisma";
 
 export default async function EventPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const event = EVENTS.find((item) => item.slug === slug);
+  
+  // Try DB first
+  let dbEvent = await prisma.event.findUnique({
+    where: { id: slug },
+    include: { creatorCompany: true }
+  }).catch(() => null);
+
+  let event: any = null;
+
+  if (dbEvent) {
+    event = {
+      slug: dbEvent.id,
+      title: dbEvent.title,
+      summary: dbEvent.description || "Без описания",
+      date: new Date(dbEvent.date).toLocaleDateString(),
+      location: dbEvent.location || "Онлайн",
+      image: dbEvent.imageUrl || "https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=2070&auto=format&fit=crop",
+      category: dbEvent.creatorCompany?.name || "Событие",
+      details: [],
+      contact: [],
+      source: null
+    };
+  } else {
+    event = EVENTS.find((item) => item.slug === slug);
+  }
+
   if (!event) notFound();
 
   return (

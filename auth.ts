@@ -8,6 +8,7 @@ import authConfig from "./auth.config"
 export const { handlers, signIn, signOut, auth } = NextAuth({
   adapter: PrismaAdapter(prisma),
   session: { strategy: "jwt" }, // При использовании PrismaAdapter с Edge Middleware, стратегия сессий должна быть jwt
+  secret: process.env.AUTH_SECRET,
   ...authConfig,
   providers: [
     ...authConfig.providers,

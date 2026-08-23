@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Ticket, Bell, LogOut, ArrowLeft, CalendarDays, PlusCircle, ChevronLeft, ChevronRight } from "lucide-react";
+import { Ticket, Bell, LogOut, ArrowLeft, CalendarDays, PlusCircle, ChevronLeft, ChevronRight, ShieldCheck } from "lucide-react";
 
 export default function DashboardSidebar({ user }: { user: any }) {
   const [isOpen, setIsOpen] = useState(true);
@@ -83,6 +83,16 @@ export default function DashboardSidebar({ user }: { user: any }) {
               >
                 <PlusCircle size={18} />
                 {isOpen && <span>Создать событие</span>}
+              </Link>
+            )}
+
+            {user.role === "SYSTEM_ADMIN" && (
+              <Link 
+                href="/res365/admin" 
+                className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-bold transition-all mt-4 bg-yellow-500/10 text-yellow-500 border border-yellow-500/30 hover:bg-yellow-500/20 ${!isOpen && 'justify-center'}`}
+              >
+                <ShieldCheck size={18} />
+                {isOpen && <span>Админ-панель</span>}
               </Link>
             )}
           </nav>

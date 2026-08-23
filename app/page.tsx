@@ -235,9 +235,15 @@ export default function Home() {
 
             <form
               className="flex flex-col gap-4 mt-6"
-              onSubmit={(e) => {
-                e.preventDefault();
-                setIsModalOpen(false);
+              action={async (formData) => {
+                const { submitContactRequest } = await import("@/app/actions/contact");
+                const result = await submitContactRequest(formData);
+                if (result.success) {
+                  alert("Заявка успешно отправлена!");
+                  setIsModalOpen(false);
+                } else {
+                  alert(result.error);
+                }
               }}
             >
               <div>
@@ -246,6 +252,7 @@ export default function Home() {
                 </label>
                 <input
                   required
+                  name="name"
                   type="text"
                   className="w-full px-4 py-3.5 rounded-2xl bg-emerald-950/40 border border-emerald-500/30 text-[#f2ede2] placeholder:text-emerald-500/40 focus:outline-none focus:border-emerald-400 transition-colors"
                   placeholder="Иван Иванов"
@@ -257,6 +264,7 @@ export default function Home() {
                 </label>
                 <input
                   required
+                  name="email"
                   type="email"
                   className="w-full px-4 py-3.5 rounded-2xl bg-emerald-950/40 border border-emerald-500/30 text-[#f2ede2] placeholder:text-emerald-500/40 focus:outline-none focus:border-emerald-400 transition-colors"
                   placeholder="ivan@example.com"
@@ -264,14 +272,37 @@ export default function Home() {
               </div>
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider mb-1.5 text-emerald-300">
+                  Телефон
+                </label>
+                <input
+                  name="phone"
+                  type="tel"
+                  className="w-full px-4 py-3.5 rounded-2xl bg-emerald-950/40 border border-emerald-500/30 text-[#f2ede2] placeholder:text-emerald-500/40 focus:outline-none focus:border-emerald-400 transition-colors"
+                  placeholder="+7 777 000 00 00"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider mb-1.5 text-emerald-300">
                   Организация / Компания
                 </label>
                 <input
-                  required
+                  name="company"
                   type="text"
                   className="w-full px-4 py-3.5 rounded-2xl bg-emerald-950/40 border border-emerald-500/30 text-[#f2ede2] placeholder:text-emerald-500/40 focus:outline-none focus:border-emerald-400 transition-colors"
                   placeholder="ООО ЭкоТех"
                 />
+              </div>
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider mb-1.5 text-emerald-300">
+                  Сообщение
+                </label>
+                <textarea
+                  required
+                  name="message"
+                  rows={3}
+                  className="w-full px-4 py-3.5 rounded-2xl bg-emerald-950/40 border border-emerald-500/30 text-[#f2ede2] placeholder:text-emerald-500/40 focus:outline-none focus:border-emerald-400 transition-colors resize-none"
+                  placeholder="Опишите, как мы можем вам помочь..."
+                ></textarea>
               </div>
               <button
                 type="submit"

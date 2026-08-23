@@ -10,9 +10,30 @@ export default function EventsSection() {
   const [page, setPage] = useState(0);
   const [visible, setVisible] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  const [dbEvents, setDbEvents] = useState<any[]>([]);
 
-  const totalPages = Math.ceil(EVENTS.length / PAGE_SIZE);
-  const pageItems = EVENTS.slice(page * PAGE_SIZE, page * PAGE_SIZE + PAGE_SIZE);
+  useEffect(() => {
+    import("@/app/actions/events").then(({ getPublicEvents }) => {
+      getPublicEvents().then(events => {
+        // Map DB events to match the UI structure
+        const mapped = events.map(e => ({
+          slug: e.id,
+          title: e.title,
+          summary: e.description || "Без описания",
+          date: new Date(e.date).toLocaleDateString(),
+          location: e.location || "Онлайн",
+          image: e.imageUrl || "https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=2070&auto=format&fit=crop",
+          category: e.creatorCompany?.name || "Событие"
+        }));
+        
+        // Combine DB events with hardcoded events for now (to not leave the page empty)
+        setDbEvents([...mapped, ...EVENTS]);
+      });
+    });
+  }, []);
+
+  const totalPages = Math.ceil(dbEvents.length / PAGE_SIZE);
+  const pageItems = dbEvents.slice(page * PAGE_SIZE, page * PAGE_SIZE + PAGE_SIZE);
 
   const goPrev = () => setPage((p) => (p === 0 ? totalPages - 1 : p - 1));
   const goNext = () => setPage((p) => (p === totalPages - 1 ? 0 : p + 1));

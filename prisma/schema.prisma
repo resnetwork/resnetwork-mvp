@@ -131,3 +131,18 @@ model Ticket {
   @@unique([eventId, userId]) // Один пользователь может получить только один билет на конкретный ивент
   @@map("tickets")
 }
+
+model ContactRequest {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  phone     String?
+  company   String?
+  message   String
+  status    String   @default("NEW") // NEW, PROCESSED
+  
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("contact_requests")
+}
