@@ -92,11 +92,18 @@ export async function createEvent(formData: FormData, userId: string, companyId:
     const description = formData.get("description") as string;
     const dateStr = formData.get("date") as string;
     const location = formData.get("location") as string;
-    const imageUrl = formData.get("imageUrl") as string;
+    const imageFile = formData.get("imageFile") as File | null;
     const isPublic = formData.get("isPublic") === "on";
 
     if (!title || !dateStr) {
       return { success: false, error: "Название и дата обязательны" };
+    }
+
+    let imageUrl = null;
+    if (imageFile && imageFile.size > 0) {
+      const buffer = await imageFile.arrayBuffer();
+      const base64 = Buffer.from(buffer).toString('base64');
+      imageUrl = `data:${imageFile.type};base64,${base64}`;
     }
 
     const event = await prisma.event.create({

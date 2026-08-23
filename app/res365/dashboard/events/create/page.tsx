@@ -78,12 +78,12 @@ export default async function CreateEventPage() {
         </div>
 
         <div>
-          <label className="block text-xs font-bold text-emerald-500 uppercase tracking-wider mb-2">Ссылка на обложку (опционально)</label>
+          <label className="block text-xs font-bold text-emerald-500 uppercase tracking-wider mb-2">Обложка (опционально)</label>
           <input 
-            type="url" 
-            name="imageUrl" 
-            placeholder="https://images.unsplash.com/..." 
-            className="w-full bg-black/40 border border-emerald-900/50 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-emerald-500 transition-colors placeholder:text-white/20"
+            type="file" 
+            name="imageFile" 
+            accept="image/*"
+            className="w-full bg-black/40 border border-emerald-900/50 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-emerald-500 transition-colors file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-emerald-500 file:text-black hover:file:bg-emerald-400"
           />
         </div>
 

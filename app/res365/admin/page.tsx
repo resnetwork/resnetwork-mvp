@@ -15,15 +15,8 @@ export default async function AdminPanel({ searchParams }: { searchParams: Promi
   const currentTab = tab || "companies";
 
   // --- Вкладка Компании ---
-  const pendingCompanies = currentTab === "companies" ? await prisma.company.findMany({
-    where: { status: "PENDING" },
+  const allCompanies = currentTab === "companies" ? await prisma.company.findMany({
     orderBy: { createdAt: "desc" }
-  }) : [];
-
-  const approvedCompanies = currentTab === "companies" ? await prisma.company.findMany({
-    where: { status: "APPROVED" },
-    orderBy: { createdAt: "desc" },
-    take: 10
   }) : [];
 
   // --- Вкладка Ивенты ---
@@ -81,17 +74,17 @@ export default async function AdminPanel({ searchParams }: { searchParams: Promi
           <div className="animate-in fade-in duration-300">
             <section className="mb-12">
               <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-yellow-400 animate-pulse" />
-                Заявки на рассмотрении ({pendingCompanies.length})
+                <Building className="text-emerald-400 w-5 h-5" />
+                Все зарегистрированные компании ({allCompanies.length})
               </h2>
 
-              {pendingCompanies.length === 0 ? (
+              {allCompanies.length === 0 ? (
                 <div className="p-8 rounded-2xl border border-emerald-500/20 bg-emerald-950/20 text-center text-emerald-400/60 font-mono text-sm">
-                  Нет новых заявок
+                  Нет компаний
                 </div>
               ) : (
                 <div className="grid grid-cols-1 gap-4">
-                  {pendingCompanies.map(company => (
+                  {allCompanies.map(company => (
                     <div key={company.id} className="flex flex-col md:flex-row md:items-center justify-between p-5 rounded-2xl border border-emerald-500/30 bg-[#06241a] gap-4">
                       <div>
                         <h3 className="font-bold text-lg text-white">{company.name}</h3>
@@ -101,52 +94,14 @@ export default async function AdminPanel({ searchParams }: { searchParams: Promi
                       </div>
                       
                       <div className="flex items-center gap-3">
-                        <form action={async () => {
-                          "use server";
-                          await prisma.company.update({
-                            where: { id: company.id },
-                            data: { status: "REJECTED" }
-                          });
-                          revalidatePath("/res365/admin");
-                        }}>
-                          <button className="p-2 rounded-full border border-red-500/30 text-red-400 hover:bg-red-500/20 transition-colors">
-                            <X size={18} />
-                          </button>
-                        </form>
-                        
-                        <form action={async () => {
-                          "use server";
-                          await prisma.company.update({
-                            where: { id: company.id },
-                            data: { status: "APPROVED" }
-                          });
-                          revalidatePath("/res365/admin");
-                        }}>
-                          <button className="flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/20 border border-emerald-500/50 text-emerald-300 font-bold text-xs hover:bg-emerald-500 hover:text-white transition-colors">
-                            <Check size={16} />
-                            Одобрить
-                          </button>
-                        </form>
+                        <span className={`px-3 py-1 rounded-full text-xs font-bold ${company.status === 'APPROVED' ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30'}`}>
+                          {company.status === 'APPROVED' ? 'Одобрена' : 'На рассмотрении'}
+                        </span>
                       </div>
                     </div>
                   ))}
                 </div>
               )}
-            </section>
-
-            <section>
-              <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
-                <Building className="text-emerald-400 w-5 h-5" />
-                Недавно одобренные компании
-              </h2>
-              <div className="grid grid-cols-1 gap-3">
-                {approvedCompanies.map(company => (
-                  <div key={company.id} className="flex items-center justify-between p-4 rounded-xl border border-emerald-500/10 bg-emerald-950/20">
-                    <span className="font-bold">{company.name}</span>
-                    <span className="text-xs text-emerald-400/60 font-mono">Одобрена</span>
-                  </div>
-                ))}
-              </div>
             </section>
           </div>
         )}

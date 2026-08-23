@@ -72,8 +72,7 @@ export default function EventCarousel({ initialEvents, userId }: { initialEvents
               className={`
                 absolute inset-0 p-6 md:p-8 flex flex-col justify-between
                 transition-opacity duration-500 delay-100
-                opacity-100 pointer-events-auto
-                md:${isActive ? 'opacity-100' : 'opacity-0 pointer-events-none'}
+                ${isActive ? 'opacity-100 pointer-events-auto md:opacity-100 md:pointer-events-auto' : 'opacity-100 pointer-events-auto md:opacity-0 md:pointer-events-none'}
               `}
             >
               <div className="space-y-4">
