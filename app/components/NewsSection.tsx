@@ -76,16 +76,11 @@ export default function NewsSection() {
 
           {/* Header */}
           <div className="px-8 pt-10 pb-6 shrink-0">
-            <h2 className="text-3xl sm:text-4xl font-black uppercase tracking-tight text-white leading-tight mb-3">
-              Глобальный & региональный{" "}
-              <span className="text-[#AFE552]">контекст</span>
-            </h2>
-            <p className="text-base text-res-text-muted mb-6">
-              Нажмите на заголовок — новость раскроется, а глобус повернётся к месту события.
-            </p>
-
-            {/* search */}
-            <div className="relative">
+            <h1 className="text-3xl sm:text-4xl lg:text-[42px] font-black text-white leading-[1.1] tracking-tight uppercase">
+              Глобальный & <br /> Региональный <span className="text-[#AFE552]">Контекст</span>
+            </h1>
+            
+            <div className="relative mt-8">
               <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-res-text-muted pointer-events-none" />
               <input
                 type="text"
@@ -230,12 +225,8 @@ export default function NewsSection() {
             markerConfig={globeMarkers}
             dots={{ color: "#ffffff", size: 5, density: 4, allDots: false }}
             detail={8}
-            showOutline={false}
+            showOutline={true}
           />
-
-          <p className="absolute bottom-4 text-center text-xs text-[#A1BB94]">
-            Глобус вращается к месту событий · Можно тянуть мышкой
-          </p>
         </div>
       </div>
     </div>

@@ -191,7 +191,8 @@ export async function getRSSNews(): Promise<NewsItem[]> {
     const seenKeys = new Set<string>();
     const dedupCa: NewsItem[] = [];
     for (const item of rawCa) {
-      const key = item.title.toLowerCase().substring(0, 50);
+      // Deduplicate by city/location name to avoid same event from different sources
+      const key = item.location.name.toLowerCase().trim();
       if (!seenKeys.has(key)) {
         seenKeys.add(key);
         dedupCa.push(item);
@@ -201,7 +202,7 @@ export async function getRSSNews(): Promise<NewsItem[]> {
     // Deduplicate World (also skip keys already in CA)
     const dedupWorld: NewsItem[] = [];
     for (const item of rawWorld) {
-      const key = item.title.toLowerCase().substring(0, 50);
+      const key = item.location.name.toLowerCase().trim();
       if (!seenKeys.has(key)) {
         seenKeys.add(key);
         dedupWorld.push(item);
