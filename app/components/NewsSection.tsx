@@ -1,329 +1,240 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { X, ArrowUpRight, TrendingUp } from "lucide-react";
-import FocusRevealHeading from "./FocusRevealHeading";
+import { useState, useEffect, useMemo } from "react";
+import { Search, ExternalLink, MapPin, ChevronDown } from "lucide-react";
+import Globe, { GlobeLocation } from "./Globe";
+import { NewsItem } from "@/app/actions/news";
 
-const NEWS_ALL = [
-  {
-    id: 0,
-    title: "Кентау признали зоной экологического бедствия",
-    tag: "Климат и политика",
-    date: "27 июля 2026",
-    img: "https://images.unsplash.com/photo-1632103996718-4a47cf68b75e?w=900&q=80&auto=format&fit=crop",
-    content:
-      "Правительство официально признало город Кентау зоной экологического бедствия из-за многолетнего загрязнения от горнодобывающих предприятий. Власти анонсировали комплексную государственную программу рекультивации земель, очистки подземных вод и переселения жителей из наиболее пострадавших районов с привлечением международных экологов.",
-    readTime: "3 мин",
-  },
-  {
-    id: 1,
-    title: "Экологическая ситуация в Жамбылской области",
-    tag: "Водные ресурсы",
-    date: "27 июля 2026",
-    img: "https://images.unsplash.com/photo-1579227114496-27346f474519?w=900&q=80&auto=format&fit=crop",
-    content:
-      "Экологи фиксируют ухудшение качества воды в реках региона. Инициирована совместная межведомственная проверка с участием местных властей, экспертов RES Network и международных наблюдателей для оценки масштаба проблемы и разработки плана защиты водных артерий.",
-    readTime: "4 мин",
-  },
-  {
-    id: 2,
-    title: "Казахстан и ЕС расширяют сотрудничество в зелёной энергетике",
-    tag: "Партнёрство",
-    date: "15 мая 2026",
-    img: "https://images.unsplash.com/photo-1466611653911-95081537e5b7?w=900&q=80&auto=format&fit=crop",
-    content:
-      "Подписан стратегический меморандум о расширении инвестиций в возобновляемую энергетику и водородные технологии Казахстана. ЕС выделит грантовое и льготное финансирование на развитие солнечных и ветровых электростанций в рамках европейской инициативы Global Gateway.",
-    readTime: "5 мин",
-  },
-  {
-    id: 3,
-    title: "Международные инвесторы изучают возможности в Центральной Азии",
-    tag: "Инвестиции",
-    date: "8 мая 2026",
-    img: "https://images.unsplash.com/photo-1515548212260-ac87067b15ab?w=900&q=80&auto=format&fit=crop",
-    content:
-      "Делегация глобальных климатических фондов посетила несколько ключевых проектов устойчивого развития в Узбекистане и Казахстане, оценивая потенциал синдицированных инвестиций в зелёную энергетику, логистику и промышленную декарбонизацию на сумму свыше $1.8 млрд.",
-    readTime: "4 мин",
-  },
-  {
-    id: 4,
-    title: "Новая программа поддержки водосбережения запущена в регионе",
-    tag: "Водные ресурсы",
-    date: "2 апреля 2026",
-    img: "https://images.unsplash.com/photo-1509316785289-025f5b846b35?w=900&q=80&auto=format&fit=crop",
-    content:
-      "Региональные власти совместно с международными финансовыми институтами запустили масштабную программу модернизации ирригационных систем, субсидирования капельного орошения и цифрового учета трансграничных каналов, направленную на сокращение потерь воды на 35%.",
-    readTime: "3 мин",
-  },
-  {
-    id: 5,
-    title: "Astana Hub объявил грантовый конкурс для зелёных стартапов",
-    tag: "Инновации",
-    date: "20 марта 2026",
-    img: "https://images.unsplash.com/photo-1559526324-4b87b5e36e44?w=900&q=80&auto=format&fit=crop",
-    content:
-      "Технопарк выделит безвозмездное финансирование стартапам в сфере чистых технологий (CleanTech), мониторинга выбросов и переработки отходов. Победители получат акселерацию и прямой доступ к ведущим венчурным фондам региона.",
-    readTime: "3 мин",
-  },
-  {
-    id: 6,
-    title: "Форум по критическим минералам пройдёт в Алматы",
-    tag: "Критические минералы",
-    date: "5 марта 2026",
-    img: "https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=900&q=80&auto=format&fit=crop",
-    content:
-      "Саммит соберёт представителей добывающих компаний, регуляторов и технологических лидеров для обсуждения устойчивой добычи лития, меди и редкоземельных металлов, необходимых для глобального энергоперехода и аккумуляторной индустрии.",
-    readTime: "4 мин",
-  },
-  {
-    id: 7,
-    title: "Отчёт: инвестиции в ВИЭ Центральной Азии выросли на 18%",
-    tag: "Аналитика",
-    date: "14 февраля 2026",
-    img: "https://images.unsplash.com/photo-1497440001374-f26997328c1b?w=900&q=80&auto=format&fit=crop",
-    content:
-      "Согласно свежему аналитическому отчёту RES Network и международных агентств, регион демонстрирует рекордный темп привлечения частного капитала в солнечные и ветровые парки, превысив $3.4 млрд за прошедший год.",
-    readTime: "6 мин",
-  },
+/* ── Seed data shown instantly before API response ─────────────── */
+const SEED: NewsItem[] = [
+  { id:"s1", title:"Казахстан добавляет мощности: в Текели запустили новую генерацию", summary:"В Жетысуской области расширили мощности регионального энергетического узла с акцентом на модернизацию распределительных сетей и ввод новых чистых генерирующих установок. Проект нацелен на покрытие растущего промышленного энергопотребления и снижение углеродоемкости региональной энергосистемы. Энергокомплекс за два года нарастил генерацию до 53 мегаватт.", pubDate:Date.now()-7200000, dateFormatted:"31 августа 2026 г.", source:"Inbusiness.kz", sourceUrl:"https://inbusiness.kz", region:"ca", readTime:"3 мин", location:{name:"Текели",country:"Казахстан",lat:44.83,lng:78.82}},
+  { id:"s2", title:"Record solar and battery growth as clean energy shift accelerates globally", summary:"Global renewable investments reached historic milestones with battery energy storage systems (BESS) and utility-scale solar farms leading global grid decarbonization across North America, Europe, and the Asia-Pacific region. Analysts forecast continued double-digit growth through the end of the decade.", pubDate:Date.now()-10800000, dateFormatted:"31 августа 2026 г.", source:"pv magazine", sourceUrl:"https://www.pv-magazine.com", region:"world", readTime:"4 мин", location:{name:"Сидней",country:"Австралия",lat:-33.87,lng:151.21}},
+  { id:"s3", title:"Корейские фонды инвестируют $340 млн в солнечные и ветровые кластеры ЦА", summary:"Международные институциональные инвесторы согласовали синдицированное финансирование новых парков ВИЭ на юге Казахстана и в Навоийской области Узбекистана в рамках расширения трансграничного зеленого коридора. Программа включает строительство солнечных электростанций суммарной мощностью более 200 МВт.", pubDate:Date.now()-18000000, dateFormatted:"30 августа 2026 г.", source:"DKNews.kz", sourceUrl:"https://dknews.kz", region:"ca", readTime:"4 мин", location:{name:"Астана",country:"Казахстан",lat:51.17,lng:71.45}},
 ];
 
 export default function NewsSection() {
-  const [newsData, setNewsData] = useState<any[] | null>(null);
-  const [selectedNews, setSelectedNews] = useState<any | null>(null);
+  const [news, setNews] = useState<NewsItem[]>(SEED);
+  const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
-    import("@/app/actions/news").then(({ getRSSNews }) => {
-      getRSSNews().then(feedNews => {
-        if (feedNews && feedNews.length > 0) {
-          // Маппим данные под наш UI
-          const mapped = feedNews.map(n => ({
-            id: n.id,
-            title: n.title,
-            tag: n.category,
-            date: n.date,
-            img: n.image,
-            content: n.summary,
-            readTime: "RSS",
-            sourceUrl: n.sourceUrl
-          }));
-          
-          setNewsData(mapped);
-        }
-      });
-    });
+    fetch("/api/news")
+      .then((r) => r.json())
+      .then((d) => { if (d.success && d.news?.length) setNews(d.news); })
+      .catch(() => {});
   }, []);
 
-  if (!newsData) {
-    return (
-      <div className="relative w-full py-20 flex justify-center items-center">
-        <div className="w-10 h-10 border-4 border-emerald-500/30 border-t-emerald-500 rounded-full animate-spin"></div>
-      </div>
+  const filtered = useMemo(() => {
+    if (!search.trim()) return news;
+    const q = search.toLowerCase();
+    return news.filter(
+      (n) =>
+        n.title.toLowerCase().includes(q) ||
+        n.summary.toLowerCase().includes(q) ||
+        n.source.toLowerCase().includes(q) ||
+        n.location?.name.toLowerCase().includes(q) ||
+        n.location?.country.toLowerCase().includes(q)
     );
-  }
+  }, [news, search]);
 
-  const featured = newsData[0];
-  const sideNews = newsData.slice(1, 3);
-  const bottomGrid = newsData.slice(3, 7);
+  const expandedItem = filtered.find((n) => n.id === expandedId) ?? null;
+  const globeTarget: GlobeLocation | null = expandedItem?.location ?? null;
+
+  const toggle = (id: string) => setExpandedId((prev) => (prev === id ? null : id));
+
+  // Compute globe markers based on currently filtered news
+  const globeMarkers = useMemo(() => {
+    return {
+      markers: filtered.map(item => ({
+        lat: item.location.lat,
+        lng: item.location.lng
+      })),
+      color: "#02B779",
+      size: 50
+    };
+  }, [filtered]);
 
   return (
-    <div className="relative w-full">
-      {/* Заголовок секции с эффектом Focus Reveal */}
-      <div className="mb-10">
-        <FocusRevealHeading
-          tokens={[
-            { text: "Новости", isAccent: false },
-            { text: "экосистемы", isAccent: true },
-          ]}
-          className="text-3xl md:text-5xl font-bold tracking-tight text-[#f2ede2]"
-          align="left"
-        />
-      </div>
+    <div className="relative w-full overflow-hidden rounded-3xl bg-[#0a1f18]/80 backdrop-blur-xl border border-[#A1BB94]/20 shadow-[0_15px_50px_rgba(0,0,0,0.5)]">
+      <style>{`
+        .hide-scrollbar::-webkit-scrollbar {
+          display: none;
+        }
+        .hide-scrollbar {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+      `}</style>
+      {/* decorative blurs */}
+      <div className="absolute top-0 right-1/4 w-[500px] h-[500px] bg-[#02B779]/8 rounded-full blur-[130px] pointer-events-none" />
+      <div className="absolute bottom-0 left-1/4 w-[400px] h-[400px] bg-[#AFE552]/8 rounded-full blur-[110px] pointer-events-none" />
 
-      {/* Верхний Bento-ряд новостей (Главная новость + Боковые карточки + Виджет инсайтов) */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-6">
-        
-        {/* Главная большая новость (Left 7 cols) */}
-        <div
-          onClick={() => setSelectedNews(featured)}
-          className="lg:col-span-7 relative overflow-hidden rounded-3xl border border-emerald-500/25 bg-gradient-to-b from-[#063325]/75 to-[#041a13]/90 backdrop-blur-xl transition-all duration-500 hover:-translate-y-1.5 hover:border-emerald-400/50 hover:shadow-[0_20px_60px_rgba(0,0,0,0.7)] group cursor-pointer flex flex-col justify-between"
-        >
-          <div className="relative overflow-hidden h-72 md:h-96">
-            <img
-              src={featured?.img}
-              alt={featured?.title}
-              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#041a13] via-[#041a13]/30 to-transparent" />
-            <span className="absolute top-5 left-5 px-3.5 py-1.5 rounded-full text-xs font-extrabold uppercase tracking-wider bg-black/75 border border-emerald-400/30 text-emerald-300 backdrop-blur-md">
-              {featured?.tag}
-            </span>
-          </div>
+      <div className="flex flex-col lg:flex-row h-auto lg:h-[860px]">
 
-          <div className="p-8">
-            <span className="text-xs text-emerald-400/70 font-mono block mb-2">{featured?.date}</span>
-            <h3 className="text-2xl md:text-3xl font-bold text-[#f2ede2] leading-snug group-hover:text-emerald-300 transition-colors line-clamp-2">
-              {featured?.title}
-            </h3>
-            <p className="mt-3 text-sm md:text-base text-[#9fb7a8] leading-relaxed line-clamp-2">
-              {featured?.content}
+        {/* ─── LEFT: news accordion ─────────────────────────────── */}
+        <div className="lg:w-[45%] flex flex-col bg-[#071610]/60 z-10 border-b lg:border-b-0 lg:border-r border-[#A1BB94]/15">
+
+          {/* Header */}
+          <div className="px-8 pt-10 pb-6 shrink-0">
+            <h2 className="text-3xl sm:text-4xl font-black uppercase tracking-tight text-white leading-tight mb-3">
+              Глобальный & региональный{" "}
+              <span className="text-[#AFE552]">контекст</span>
+            </h2>
+            <p className="text-base text-res-text-muted mb-6">
+              Нажмите на заголовок — новость раскроется, а глобус повернётся к месту события.
             </p>
-            <div className="mt-6 flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-emerald-400 group-hover:text-emerald-300 transition-colors">
-              <span>Подробнее</span>
-              <ArrowUpRight size={15} className="transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-            </div>
-          </div>
-        </div>
 
-        {/* Правая колонка (2 новости + инсайт виджет) */}
-        <div className="lg:col-span-5 flex flex-col gap-5">
-          {sideNews.map((news) => (
-            <div
-              key={news.id}
-              onClick={() => setSelectedNews(news)}
-              className="flex gap-4 items-center p-4 rounded-3xl border border-emerald-500/20 bg-[#06241a]/60 backdrop-blur-md cursor-pointer hover:-translate-y-1 hover:border-emerald-400/40 hover:bg-[#062d21]/75 transition-all duration-300 group"
-            >
-              <img
-                src={news.img}
-                alt={news.title}
-                className="w-24 h-24 md:w-28 md:h-28 object-cover rounded-2xl shrink-0"
+            {/* search */}
+            <div className="relative">
+              <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-res-text-muted pointer-events-none" />
+              <input
+                type="text"
+                placeholder="Поиск по новостям, странам…"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="w-full pl-12 pr-5 py-3.5 rounded-2xl bg-white/[0.04] border border-white/10 text-base text-white placeholder-res-text-muted focus:outline-none focus:border-[#02B779] transition-colors"
               />
-              <div className="flex-1 pr-2">
-                <div className="flex items-center justify-between gap-2 mb-1">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-400">
-                    {news.tag}
-                  </span>
-                  <span className="text-[10px] text-emerald-400/60 font-mono">{news.readTime}</span>
-                </div>
-                <h4 className="font-bold text-sm md:text-base text-[#f2ede2] group-hover:text-emerald-300 transition-colors line-clamp-2 leading-snug">
-                  {news.title}
-                </h4>
-                <span className="text-[11px] text-emerald-400/70 font-mono mt-1 block">{news.date}</span>
-              </div>
-            </div>
-          ))}
-
-          {/* Инсайт-виджет недели */}
-          <div className="p-6 rounded-3xl border border-emerald-500/30 bg-gradient-to-br from-[#063b2c]/80 to-[#041d14]/95 backdrop-blur-xl relative overflow-hidden flex-1 flex flex-col justify-between">
-            <div className="absolute top-0 right-0 w-48 h-48 bg-emerald-400/10 rounded-full blur-2xl pointer-events-none" />
-            <div>
-              <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-emerald-400 mb-2">
-                <TrendingUp size={15} />
-                <span>Тренд недели в ЦА</span>
-              </div>
-              <h4 className="text-lg font-bold text-[#f2ede2] leading-snug">
-                +18% рост прямых инвестиций в солнечную генерацию региона
-              </h4>
-              <p className="text-xs text-[#9fb7a8] mt-2 leading-relaxed">
-                Инвестиционный портфель ветровых и солнечных станций 5 стран Центральной Азии превысил $4.2 млрд.
-              </p>
             </div>
           </div>
-        </div>
 
-      </div>
+          {/* Scrollable accordion list — bigger cards, max ~5 visible */}
+          <div className="flex-1 overflow-y-auto hide-scrollbar px-6 pb-8 space-y-3">
+            {filtered.length === 0 && (
+              <p className="text-center py-16 text-res-text-muted text-sm">Ничего не найдено</p>
+            )}
 
-      {/* Нижняя 4-колоночная сетка остальных новостей */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-        {bottomGrid.map((news) => (
-          <div
-            key={news.id}
-            onClick={() => setSelectedNews(news)}
-            className="rounded-3xl border border-emerald-500/20 bg-[#06241a]/50 backdrop-blur-md overflow-hidden cursor-pointer hover:-translate-y-1 hover:border-emerald-400/40 hover:bg-[#062d21]/70 transition-all duration-300 group flex flex-col justify-between"
-          >
-            <div>
-              <div className="relative h-40 overflow-hidden">
-                <img
-                  src={news.img}
-                  alt={news.title}
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                />
-                <span className="absolute top-3 left-3 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-black/70 border border-emerald-400/30 text-emerald-300 backdrop-blur-md">
-                  {news.tag}
-                </span>
-              </div>
-              <div className="p-5">
-                <span className="text-[10px] text-emerald-400/70 font-mono block mb-1.5">{news.date}</span>
-                <h4 className="font-bold text-sm md:text-base text-[#f2ede2] group-hover:text-emerald-300 transition-colors leading-snug line-clamp-2">
-                  {news.title}
-                </h4>
-              </div>
-            </div>
+            {filtered.map((item) => {
+              const isOpen = expandedId === item.id;
+              const isCA = item.region === "ca";
 
-            <div className="px-5 pb-5 pt-1 flex items-center justify-between text-xs text-emerald-400 font-bold">
-              <span>Читать</span>
-              <ArrowUpRight size={14} className="transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Детальный Pop-up новости */}
-      {selectedNews && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-6 bg-black/80 backdrop-blur-md animate-in fade-in duration-200"
-          onClick={() => setSelectedNews(null)}
-        >
-          <div
-            className="relative max-w-4xl w-full rounded-3xl overflow-hidden border border-emerald-500/40 bg-gradient-to-b from-[#064e3b]/95 to-[#041a13]/98 shadow-[0_25px_80px_rgba(0,0,0,0.85)] backdrop-blur-2xl animate-in zoom-in-95 duration-200"
-            style={{ maxHeight: "90vh", overflowY: "auto" }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <button
-              onClick={() => setSelectedNews(null)}
-              className="absolute top-5 right-5 z-20 w-10 h-10 rounded-full flex items-center justify-center bg-black/60 border border-emerald-500/30 text-emerald-200 hover:text-white hover:bg-black/80 transition-colors cursor-pointer"
-            >
-              <X size={18} />
-            </button>
-
-            <img
-              src={selectedNews.img}
-              alt={selectedNews.title}
-              className="w-full object-cover h-72 md:h-96"
-            />
-
-            <div className="p-8 md:p-12">
-              <div className="flex items-center gap-3 mb-3">
-                <span className="text-xs font-bold uppercase tracking-wider text-emerald-400 px-3 py-1 rounded-full bg-emerald-950/60 border border-emerald-500/30">
-                  {selectedNews.tag}
-                </span>
-                <span className="text-xs text-emerald-400/70 font-mono">{selectedNews.date}</span>
-                <span className="text-xs text-emerald-400/60 font-mono">· {selectedNews.readTime} чтения</span>
-              </div>
-
-              <h3 className="text-2xl md:text-4xl font-bold mt-2 mb-6 leading-tight text-[#f2ede2]">
-                {selectedNews.title}
-              </h3>
-
-              <p className="text-base md:text-lg leading-relaxed text-[#9fb7a8] whitespace-pre-line">
-                {selectedNews.content}
-              </p>
-
-              <div className="mt-10 pt-6 border-t border-emerald-500/20 flex flex-col sm:flex-row items-center justify-between gap-4">
-                <span className="text-xs text-emerald-400/80">Информационная служба RES Network</span>
-                
-                <div className="flex gap-3 w-full sm:w-auto">
-                  {selectedNews.sourceUrl && (
-                    <a
-                      href={selectedNews.sourceUrl}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="flex-1 sm:flex-none text-center px-6 py-2.5 rounded-full text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-500 transition-colors"
-                    >
-                      Читать оригинал
-                    </a>
-                  )}
+              return (
+                <div
+                  key={item.id}
+                  className={`rounded-2xl border transition-all duration-200 ${
+                    isOpen
+                      ? "border-[#02B779]/60 bg-[#02B779]/[0.08] shadow-[0_4px_24px_rgba(2,183,121,0.18)]"
+                      : "border-white/[0.06] bg-white/[0.02] hover:bg-white/[0.05] hover:border-white/15"
+                  }`}
+                >
+                  {/* ── Header row (always visible) ── */}
                   <button
-                    onClick={() => setSelectedNews(null)}
-                    className="flex-1 sm:flex-none px-6 py-2.5 rounded-full text-xs font-bold text-emerald-300 bg-emerald-950/40 border border-emerald-500/30 hover:bg-emerald-900/60 transition-colors cursor-pointer"
+                    type="button"
+                    onClick={() => toggle(item.id)}
+                    className="w-full text-left px-6 py-5 flex items-start gap-4 cursor-pointer group"
                   >
-                    Закрыть
+                    {/* region badge */}
+                    <span className={`mt-1 shrink-0 px-2.5 py-1 rounded-md text-[11px] font-mono font-bold uppercase tracking-wider ${
+                      isCA
+                        ? "bg-[#02B779]/25 text-[#AFE552] border border-[#02B779]/40"
+                        : "bg-cyan-500/25 text-cyan-300 border border-cyan-500/40"
+                    }`}>
+                      {isCA ? "ЦА" : "МИР"}
+                    </span>
+
+                    {/* title + meta */}
+                    <div className="flex-1 min-w-0">
+                      <h4 className={`font-bold text-[17px] sm:text-lg leading-snug transition-colors ${
+                        isOpen ? "text-white line-clamp-none mb-3" : "text-white/90 group-hover:text-white line-clamp-2"
+                      }`}>
+                        {item.title}
+                      </h4>
+                      <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 mt-2.5 text-[13px] text-res-text-muted">
+                        <span className="font-bold text-[#AFE552]/90">{item.source}</span>
+                        <span className="font-mono text-[12px]">{item.dateFormatted}</span>
+                        {item.location && (
+                          <span className="inline-flex items-center gap-1.5">
+                            <MapPin size={13} className="text-[#02B779]" />
+                            <span>{item.location.name}</span>
+                          </span>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* chevron */}
+                    <ChevronDown
+                      size={22}
+                      className={`shrink-0 mt-2 text-res-text-muted transition-transform duration-200 ${
+                        isOpen ? "rotate-180 text-[#02B779]" : ""
+                      }`}
+                    />
                   </button>
+
+                  {/* ── Expanded accordion body ── */}
+                  {isOpen && (
+                    <div className="px-6 pb-6 pt-0 animate-in fade-in slide-in-from-top-2 duration-200">
+                      <div className="ml-12 border-t border-white/10 pt-5 space-y-5">
+                        {/* Location pill */}
+                        {item.location && (
+                          <div className="inline-flex items-center gap-2 text-[15px] font-mono text-[#E0EAB8] px-4 py-2 rounded-full bg-white/5 border border-white/10">
+                            <MapPin size={16} className="text-[#02B779]" />
+                            {item.location.name}, {item.location.country}
+                          </div>
+                        )}
+
+                        {/* Full summary text — much larger */}
+                        <p className="text-base sm:text-[17px] leading-[1.8] text-[#EDF7EE]/90">
+                          {item.summary}
+                        </p>
+
+                        {/* Read time */}
+                        {item.readTime && (
+                          <p className="text-[13px] text-res-text-muted font-mono">
+                            Время чтения: {item.readTime}
+                          </p>
+                        )}
+
+                        {/* Source link button */}
+                        {item.sourceUrl && (
+                          <div className="pt-3">
+                            <a
+                              href={item.sourceUrl}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="inline-flex items-center gap-2.5 text-[15px] font-bold text-[#061E14] bg-gradient-to-r from-[#AFE552] to-[#02B779] px-7 py-3.5 rounded-full hover:opacity-90 transition-transform hover:scale-105 shadow-[0_0_20px_rgba(2,183,121,0.3)]"
+                            >
+                              Читать на {item.source} <ExternalLink size={16} />
+                            </a>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
                 </div>
-              </div>
-            </div>
+              );
+            })}
           </div>
         </div>
-      )}
+
+        {/* ─── RIGHT: 3D Globe ─────────────────────────────────── */}
+        <div className="lg:w-[55%] flex flex-col items-center justify-center relative min-h-[400px] p-4 overflow-hidden">
+
+          {/* Floating location badge */}
+          <div className="absolute top-5 left-5 z-10">
+            {expandedItem?.location ? (
+              <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-black/60 border border-[#02B779]/60 shadow-[0_0_20px_rgba(2,183,121,0.3)] backdrop-blur-xl">
+                <span className="w-2.5 h-2.5 rounded-full bg-[#AFE552] animate-pulse" />
+                <span className="text-sm font-mono font-bold text-white">
+                  📍 {expandedItem.location.name}, {expandedItem.location.country}
+                </span>
+              </div>
+            ) : (
+              <span className="text-[11px] font-mono uppercase tracking-widest text-[#AFE552]/70 bg-[#AFE552]/5 px-3 py-1.5 rounded-full border border-[#AFE552]/20">
+                Гео-навигация
+              </span>
+            )}
+          </div>
+
+          <Globe
+            className="w-full max-w-[500px] aspect-square"
+            focusLocation={globeTarget}
+            markerConfig={globeMarkers}
+          />
+
+          <p className="absolute bottom-4 text-center text-xs text-[#A1BB94]">
+            Глобус вращается к месту событий · Можно тянуть мышкой
+          </p>
+        </div>
+      </div>
     </div>
   );
 }

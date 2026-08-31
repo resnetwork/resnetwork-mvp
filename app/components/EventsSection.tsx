@@ -50,112 +50,112 @@ export default function EventsSection() {
   }, []);
 
   return (
-    <div className="relative w-full" ref={ref}>
-      {/* Сетка карточек событий */}
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-        {pageItems.map((event, i) => {
-          const cardStyle = {
-            opacity: visible ? 1 : 0,
-            transform: visible ? "translateY(0)" : "translateY(24px)",
-            transition: `opacity 0.5s ease ${i * 0.08}s, transform 0.5s ease ${i * 0.08}s`,
-          };
+    <div className="relative w-full overflow-hidden" ref={ref}>
+      <div className="flex items-center justify-between mb-8">
+        <div className="flex gap-2">
+          <button
+            onClick={() => {
+              const el = document.getElementById('events-scroll-container');
+              if (el) el.scrollBy({ left: -300, behavior: 'smooth' });
+            }}
+            className="w-10 h-10 rounded-full flex items-center justify-center border border-res-accent/30 bg-res-panel text-res-accent-light hover:text-[#061e14] hover:bg-res-accent hover:border-res-accent transition-all cursor-pointer"
+          >
+            <ChevronLeft size={20} />
+          </button>
+          <button
+            onClick={() => {
+              const el = document.getElementById('events-scroll-container');
+              if (el) el.scrollBy({ left: 300, behavior: 'smooth' });
+            }}
+            className="w-10 h-10 rounded-full flex items-center justify-center border border-res-accent/30 bg-res-panel text-res-accent-light hover:text-[#061e14] hover:bg-res-accent hover:border-res-accent transition-all cursor-pointer"
+          >
+            <ChevronRight size={20} />
+          </button>
+        </div>
+      </div>
+
+      {/* Горизонтальный скролл */}
+      <div 
+        id="events-scroll-container"
+        className="flex gap-4 md:gap-6 overflow-x-auto pb-8 snap-x snap-mandatory no-scrollbar"
+        style={{ scrollBehavior: 'smooth' }}
+      >
+        {dbEvents.map((event, i) => {
+          // Parse date for visual display
+          let month = "---";
+          let day = "--";
+          const dateObj = new Date(event.date);
+          if (!isNaN(dateObj.getTime())) {
+            month = dateObj.toLocaleDateString('ru-RU', { month: 'long' }).replace('.', '').toUpperCase();
+            day = dateObj.getDate().toString().padStart(2, '0');
+          } else {
+            // "20-22 мая 2026"
+            const parts = event.date.split(" ");
+            if (parts.length >= 2) {
+              day = parts[0];
+              const monthRaw = parts[1].toLowerCase().replace(',', '');
+              const MONTH_MAP: Record<string, string> = {
+                "янв": "ЯНВАРЬ", "января": "ЯНВАРЬ",
+                "фев": "ФЕВРАЛЬ", "февраля": "ФЕВРАЛЬ",
+                "мар": "МАРТ", "марта": "МАРТ",
+                "апр": "АПРЕЛЬ", "апреля": "АПРЕЛЬ",
+                "май": "МАЙ", "мая": "МАЙ",
+                "июн": "ИЮНЬ", "июня": "ИЮНЬ",
+                "июл": "ИЮЛЬ", "июля": "ИЮЛЬ",
+                "авг": "АВГУСТ", "августа": "АВГУСТ",
+                "сен": "СЕНТЯБРЬ", "сентября": "СЕНТЯБРЬ",
+                "окт": "ОКТЯБРЬ", "октября": "ОКТЯБРЬ",
+                "ноя": "НОЯБРЬ", "ноября": "НОЯБРЬ",
+                "дек": "ДЕКАБРЬ", "декабря": "ДЕКАБРЬ",
+              };
+              month = MONTH_MAP[monthRaw] || monthRaw.toUpperCase();
+            } else {
+              day = event.date.substring(0, 2);
+              month = "СЕЙЧАС";
+            }
+          }
 
           return (
             <a
-              key={event.slug}
+              key={event.slug + i}
               href={`/events/${event.slug}`}
               target="_blank"
               rel="noreferrer"
-              className="group relative overflow-hidden rounded-3xl border border-emerald-500/25 bg-gradient-to-b from-[#063325]/75 to-[#041a13]/90 backdrop-blur-xl transition-all duration-500 hover:-translate-y-1.5 hover:border-emerald-400/50 hover:shadow-[0_20px_50px_rgba(0,0,0,0.65)] flex flex-col justify-between"
-              style={cardStyle}
+              className="snap-start shrink-0 group relative overflow-hidden rounded-3xl border border-[#A1BB94]/20 bg-[#14281E] transition-all duration-300 hover:-translate-y-2 hover:border-[#02B779] hover:shadow-[0_15px_40px_rgba(2,183,121,0.25)] flex flex-col w-[270px] md:w-[320px] h-[450px]"
             >
-              {/* Верхняя часть с изображением и бейджами */}
-              <div>
-                <div className="relative overflow-hidden h-52">
-                  <img
-                    src={event.image}
-                    alt={event.title}
-                    className="h-52 w-full object-cover transition-transform duration-700 group-hover:scale-105"
-                    onError={(e) => {
-                      e.currentTarget.style.opacity = "0";
-                    }}
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#041a13] via-black/20 to-transparent" />
-
-                  {/* Бейдж категории */}
-                  <span className="absolute top-4 left-4 px-3.5 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-wider bg-black/70 border border-emerald-400/30 text-emerald-300 backdrop-blur-md">
-                    {event.category}
-                  </span>
-                </div>
-
-                <div className="p-7">
-                  <h3 className="text-xl md:text-2xl font-bold text-[#f2ede2] leading-snug group-hover:text-emerald-300 transition-colors">
-                    {event.title}
-                  </h3>
-                  <p className="mt-3 text-sm leading-relaxed text-[#9fb7a8] line-clamp-2 font-normal">
-                    {event.summary}
-                  </p>
-                </div>
+              {/* Верхняя половина с картинкой */}
+              <div className="relative h-1/2 overflow-hidden w-full">
+                <img
+                  src={event.image}
+                  alt={event.title}
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-85 group-hover:opacity-100"
+                  onError={(e) => {
+                    e.currentTarget.style.opacity = "0";
+                  }}
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#14281E] via-transparent to-transparent" />
               </div>
 
-              {/* Нижняя часть с датой, локацией и ссылкой */}
-              <div className="px-7 pb-7 pt-2">
-                <div className="space-y-2 text-xs md:text-sm font-medium text-emerald-200/80 mb-6">
-                  <p className="flex items-center gap-2">
-                    <CalendarDays size={15} className="text-emerald-400 shrink-0" />
-                    <span>{event.date}</span>
-                  </p>
-                  <p className="flex items-center gap-2">
-                    <MapPin size={15} className="text-emerald-400 shrink-0" />
-                    <span className="truncate">{event.location}</span>
-                  </p>
+              {/* Нижняя половина с инфой */}
+              <div className="p-6 flex flex-col flex-1">
+                <div className="mb-3 font-black tracking-widest text-lg md:text-xl flex flex-col leading-none">
+                  <span className="text-xs uppercase font-mono text-[#A1BB94]">{month}</span>
+                  <span className="text-3xl text-[#E0EAB8] mt-0.5">{day}</span>
                 </div>
-
-                <div className="pt-4 border-t border-emerald-500/15 flex items-center justify-between text-xs font-bold uppercase tracking-wider text-emerald-400 group-hover:text-emerald-300 transition-colors">
-                  <span>Открыть событие</span>
-                  <div className="w-8 h-8 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center group-hover:bg-emerald-500 group-hover:text-black transition-all">
-                    <ArrowUpRight size={14} className="transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-                  </div>
-                </div>
+                
+                <h3 className="text-lg md:text-xl font-bold text-white leading-tight mb-2 group-hover:text-[#E0EAB8] transition-colors line-clamp-3">
+                  {event.title}
+                </h3>
+                
+                <p className="mt-auto flex items-center gap-2 text-xs font-medium text-[#A1BB94]">
+                  <MapPin size={14} className="text-[#02B779]" />
+                  <span className="truncate">{event.location}</span>
+                </p>
               </div>
             </a>
           );
         })}
       </div>
-
-      {/* Пагинация */}
-      {totalPages > 1 && (
-        <div className="flex items-center justify-center gap-6 mt-12">
-          <button
-            onClick={goPrev}
-            aria-label="Предыдущие события"
-            className="w-11 h-11 rounded-full flex items-center justify-center border border-emerald-500/30 bg-emerald-950/40 text-emerald-200 hover:text-white hover:bg-emerald-900 hover:border-emerald-400 transition-all hover:scale-105 cursor-pointer"
-          >
-            <ChevronLeft size={18} />
-          </button>
-          <div className="flex gap-2">
-            {Array.from({ length: totalPages }).map((_, i) => (
-              <button
-                key={i}
-                onClick={() => setPage(i)}
-                className="rounded-full transition-all cursor-pointer"
-                style={
-                  page === i
-                    ? { width: "24px", height: "8px", backgroundColor: "#22c55e" }
-                    : { width: "8px", height: "8px", backgroundColor: "rgba(34, 197, 94, 0.25)" }
-                }
-              />
-            ))}
-          </div>
-          <button
-            onClick={goNext}
-            aria-label="Следующие события"
-            className="w-11 h-11 rounded-full flex items-center justify-center border border-emerald-500/30 bg-emerald-950/40 text-emerald-200 hover:text-white hover:bg-emerald-900 hover:border-emerald-400 transition-all hover:scale-105 cursor-pointer"
-          >
-            <ChevronRight size={18} />
-          </button>
-        </div>
-      )}
     </div>
   );
 }

@@ -45,6 +45,73 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
+
+  /* Официальная палитра RES Network из брендбука (Палитры #1 - #5) */
+  --color-res-malachite: #2E8656; /* Малахитовый (Палитра #1) */
+  --color-res-sapphire-teal: #02493F; /* Тёмный сапфировый/антрацит (Палитра #1) */
+  --color-res-pine: #41754F; /* Еловый/кедровый (Палитра #1) */
+  --color-res-sage: #A1BB94; /* Патиновый шалфей (Палитра #1 & #3) */
+  --color-res-pearl: #E0EAB8; /* Соломенный жемчуг/лён (Палитра #1 & #5) */
+  --color-res-emerald: #008A53; /* Изумрудный (Палитра #3) */
+  --color-res-mint: #02B779; /* Мятно-изумрудный (Палитра #3) */
+  --color-res-lime: #AFE552; /* Свежий лайм (Палитра #5) */
+  --color-res-charcoal: #0C0C0C; /* Графит (Палитра #5) */
+
+  /* Основные рабочие токены */
+  --color-res-bg: #0A110D; /* Deep Obsidian Charcoal */
+  --color-res-panel: #111D16; /* Deep Malachite Panel */
+  --color-res-accent: #02B779; /* Основной зеленый акцент */
+  --color-res-accent-light: #E0EAB8; /* Жемчужно-соломенный светлый акцент */
+  --color-res-text: #EDF7EE;
+  --color-res-text-muted: #A1BB94;
+}
+
+.glass-panel {
+  background: rgba(17, 29, 22, 0.65);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(161, 187, 148, 0.2);
+  box-shadow: 0 10px 35px 0 rgba(0, 0, 0, 0.4);
+}
+
+.glass-panel-teal {
+  background: rgba(2, 73, 63, 0.4);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(161, 187, 148, 0.25);
+  box-shadow: 0 10px 35px 0 rgba(0, 0, 0, 0.4);
+}
+
+.glass-panel-charcoal {
+  background: rgba(12, 12, 12, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(175, 229, 82, 0.25);
+  box-shadow: 0 10px 35px 0 rgba(0, 0, 0, 0.5);
+}
+
+.glass-panel {
+  background: rgba(6, 30, 20, 0.55);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(161, 187, 148, 0.2);
+  box-shadow: 0 10px 35px 0 rgba(0, 0, 0, 0.4);
+}
+
+.glass-panel-teal {
+  background: rgba(2, 73, 63, 0.35);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(161, 187, 148, 0.25);
+  box-shadow: 0 10px 35px 0 rgba(0, 0, 0, 0.4);
+}
+
+.glass-panel-charcoal {
+  background: rgba(12, 12, 12, 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(175, 229, 82, 0.25);
+  box-shadow: 0 10px 35px 0 rgba(0, 0, 0, 0.5);
 }
 
 body {

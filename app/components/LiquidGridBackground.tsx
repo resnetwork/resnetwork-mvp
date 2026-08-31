@@ -80,9 +80,9 @@ export default function LiquidGridBackground({ className = "" }: LiquidGridProps
 
       // Фон с глубоким градиентом
       const bgGrad = ctx.createLinearGradient(0, 0, 0, height);
-      bgGrad.addColorStop(0, "#081712");
-      bgGrad.addColorStop(0.6, "#051f16");
-      bgGrad.addColorStop(1, "#081712");
+      bgGrad.addColorStop(0, "#061e14");
+      bgGrad.addColorStop(0.6, "#04140d");
+      bgGrad.addColorStop(1, "#061e14");
       ctx.fillStyle = bgGrad;
       ctx.fillRect(0, 0, width, height);
 
@@ -95,8 +95,8 @@ export default function LiquidGridBackground({ className = "" }: LiquidGridProps
         height * 0.45,
         Math.max(width, height) * 0.6
       );
-      radGrad.addColorStop(0, "rgba(22, 163, 74, 0.12)");
-      radGrad.addColorStop(0.5, "rgba(6, 78, 59, 0.06)");
+      radGrad.addColorStop(0, "rgba(2, 183, 121, 0.12)"); // #02b779
+      radGrad.addColorStop(0.5, "rgba(10, 46, 29, 0.06)"); // #0a2e1d
       radGrad.addColorStop(1, "transparent");
       ctx.fillStyle = radGrad;
       ctx.fillRect(0, 0, width, height);
@@ -157,7 +157,7 @@ export default function LiquidGridBackground({ className = "" }: LiquidGridProps
             ctx.quadraticCurveTo(prev.x, prev.y, cx, cy);
           }
         }
-        ctx.strokeStyle = "rgba(34, 197, 94, 0.09)";
+        ctx.strokeStyle = "rgba(2, 183, 121, 0.09)"; // #02b779
         ctx.lineWidth = 1.0;
         ctx.stroke();
       }
@@ -176,7 +176,7 @@ export default function LiquidGridBackground({ className = "" }: LiquidGridProps
             ctx.quadraticCurveTo(prev.x, prev.y, cx, cy);
           }
         }
-        ctx.strokeStyle = "rgba(34, 197, 94, 0.09)";
+        ctx.strokeStyle = "rgba(2, 183, 121, 0.09)";
         ctx.lineWidth = 1.0;
         ctx.stroke();
       }
@@ -191,13 +191,13 @@ export default function LiquidGridBackground({ className = "" }: LiquidGridProps
           ctx.arc(pt.x, pt.y, hasMouse ? 2.8 : 1.4, 0, Math.PI * 2);
 
           if (hasMouse) {
-            ctx.fillStyle = `rgba(74, 222, 128, ${0.4 + pt.intensity * 0.6})`;
-            ctx.shadowColor = "#4ade80";
+            ctx.fillStyle = `rgba(175, 229, 82, ${0.4 + pt.intensity * 0.6})`; // #afe552
+            ctx.shadowColor = "#afe552";
             ctx.shadowBlur = 8;
             ctx.fill();
             ctx.shadowBlur = 0;
           } else {
-            ctx.fillStyle = "rgba(34, 197, 94, 0.22)";
+            ctx.fillStyle = "rgba(2, 183, 121, 0.22)";
             ctx.fill();
           }
         }
@@ -227,7 +227,7 @@ export default function LiquidGridBackground({ className = "" }: LiquidGridProps
       <div
         className="absolute bottom-0 inset-x-0 h-36 pointer-events-none"
         style={{
-          background: "linear-gradient(to bottom, transparent 0%, #081712 100%)",
+          background: "linear-gradient(to bottom, transparent 0%, #061e14 100%)",
         }}
       />
     </div>
