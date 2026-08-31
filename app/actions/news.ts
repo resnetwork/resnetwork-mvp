@@ -212,9 +212,9 @@ export async function getRSSNews(): Promise<NewsItem[]> {
     dedupCa.sort((a, b) => b.pubDate - a.pubDate);
     dedupWorld.sort((a, b) => b.pubDate - a.pubDate);
 
-    // Take up to 50 from each
-    const finalCa = dedupCa.slice(0, 50);
-    const finalWorld = dedupWorld.slice(0, 50);
+    // Take up to 25 from each
+    const finalCa = dedupCa.slice(0, 25);
+    const finalWorld = dedupWorld.slice(0, 25);
 
     // Merge and sort
     const combined = [...finalCa, ...finalWorld].sort((a, b) => b.pubDate - a.pubDate);

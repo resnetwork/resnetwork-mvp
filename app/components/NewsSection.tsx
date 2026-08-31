@@ -218,8 +218,8 @@ export default function NewsSection() {
                 </span>
               </div>
             ) : (
-              <span className="text-[11px] font-mono uppercase tracking-widest text-[#AFE552]/70 bg-[#AFE552]/5 px-3 py-1.5 rounded-full border border-[#AFE552]/20">
-                Гео-навигация
+              <span className="text-[10px] sm:text-xs font-mono uppercase tracking-widest text-[#AFE552] mt-2 sm:mt-0 px-3 py-1 rounded-full bg-[#AFE552]/10 border border-[#AFE552]/20 shadow-[0_0_15px_rgba(175,229,82,0.15)]">
+                Live News Feed · 50 материалов (25 ЦА / 25 Мир)
               </span>
             )}
           </div>
@@ -228,6 +228,9 @@ export default function NewsSection() {
             className="w-full max-w-[500px] aspect-square"
             focusLocation={globeTarget}
             markerConfig={globeMarkers}
+            dots={{ color: "#ffffff", size: 5, density: 4, allDots: false }}
+            detail={8}
+            showOutline={false}
           />
 
           <p className="absolute bottom-4 text-center text-xs text-[#A1BB94]">

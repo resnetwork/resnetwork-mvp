@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getRSSNews } from "@/app/actions/news";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 1800; // Cache for 30 minutes (ISR)
 
 export async function GET() {
   try {
