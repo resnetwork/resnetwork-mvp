@@ -7,10 +7,8 @@ import AboutSection from "./components/AboutSection";
 import PartnersMarquee from "./components/PartnersMarquee";
 import NewsSection from "./components/NewsSection";
 import BlueprintRadial from "./components/BlueprintRadial";
-import ResNetworkVoices from "./components/ResNetworkVoices";
+import TimelineSection from "./components/TimelineSection";
 import FocusRevealHeading from "./components/FocusRevealHeading";
-import StatsBar from "./components/StatsBar";
-import PlatformCallToAction from "./components/PlatformCallToAction";
 
 const NAV_ITEMS = [
   { label: "О нас", href: "#about" },
@@ -75,30 +73,32 @@ export default function Home() {
         <section className="relative z-20 flex-1 min-h-0 flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-14 px-6 md:px-12 py-1 md:py-2">
           {/* Левая часть: текст */}
           <div className="flex-1 flex flex-col items-start text-left max-w-xl lg:max-w-2xl xl:max-w-3xl">
-            <h1 className="text-4xl sm:text-5xl lg:text-[3.6rem] xl:text-[4.3rem] font-bold leading-[1.06] tracking-tight text-white mb-4">
-              Региональная <span className="italic font-light text-res-accent">платформа</span>
-              <br />
-              для новых возможностей
+            <h1 className="text-4xl sm:text-5xl lg:text-[3.2rem] xl:text-[3.8rem] font-bold leading-[1.06] tracking-tight text-white mb-6">
+              Центральная Азия строит зелёную экономику. <span className="text-res-accent">RES Network</span> соединяет тех, кто её строит.
             </h1>
 
-            <p className="max-w-xl text-base md:text-lg leading-relaxed font-normal text-res-text-muted mb-7">
-              Соединяем бизнес, инвесторов, государства и международные организации. Создаём совместные проекты, которые двигают развитие региона вперёд.
+            <p className="max-w-xl text-base md:text-lg leading-relaxed font-normal text-res-text-muted mb-8">
+              Круглогодичная международная платформа: правительства, бизнес, инвесторы, банки развития и наука восьми стран — вокруг энергоперехода, климата и зелёных инвестиций.
             </p>
 
             <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
-              <a
-                href="#events"
-                className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-3.5 rounded-full font-bold text-sm md:text-base border border-res-accent/50 hover:shadow-[0_0_30px_rgba(2,183,121,0.4)] transition-all duration-300 shadow-lg bg-res-accent text-[#061E14] hover:bg-res-accent-light"
-              >
-                Смотреть мероприятия <ArrowUpRight size={18} />
-              </a>
               <button
                 onClick={() => setIsModalOpen(true)}
+                className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-3.5 rounded-full font-bold text-sm md:text-base border border-res-accent/50 hover:shadow-[0_0_30px_rgba(2,183,121,0.4)] transition-all duration-300 shadow-lg bg-res-accent text-[#061E14] hover:bg-res-accent-light"
+              >
+                Присоединиться к RES Network <ArrowUpRight size={18} />
+              </button>
+              <a
+                href="#events"
                 className="w-full sm:w-auto px-8 py-3.5 rounded-full font-semibold text-sm md:text-base border border-[#A1BB94]/30 hover:border-res-accent hover:bg-white/5 hover:shadow-[0_0_20px_rgba(2,183,121,0.3)] transition-all duration-300 cursor-pointer backdrop-blur-sm text-res-text glass-panel"
               >
-                Связаться с нами
-              </button>
+                Смотреть мероприятия
+              </a>
             </div>
+            
+            <p className="mt-5 text-xs text-res-text-muted/60 tracking-wider">
+              Powered by RES+ EXPO · Астана, Казахстан · EST. 2026
+            </p>
           </div>
 
           {/* Правая часть: Бесшовная атмосферная фото-витрина RES EXPO 2027 (Без рамок, встроена в фон) */}
@@ -116,37 +116,37 @@ export default function Home() {
 
             {/* Контент прямо поверх фоновой картинки */}
             <div className="relative z-10 flex flex-col items-start pl-0 lg:pl-6 pb-2">
-              <div className="flex items-center gap-2.5 mb-3">
-                <span className="px-3.5 py-1.5 bg-black/50 border border-white/20 rounded-full text-[#E0EAB8] font-mono font-bold text-[11px] md:text-xs uppercase tracking-widest backdrop-blur-md">
-                  20 – 22 Мая 2027
-                </span>
-                <span className="px-3.5 py-1.5 bg-res-accent/20 border border-res-accent/40 rounded-full text-res-accent font-bold text-[11px] md:text-xs uppercase tracking-wider backdrop-blur-md">
-                  Астана · EXPO
+              <span className="mb-2 text-xs font-bold uppercase tracking-widest text-[#E0EAB8] bg-black/40 px-3 py-1 rounded-full border border-white/10">
+                ФЛАГМАНСКОЕ СОБЫТИЕ ЭКОСИСТЕМЫ
+              </span>
+
+              <h2 className="text-3xl sm:text-4xl md:text-5xl xl:text-6xl font-black text-white mb-2 tracking-tight leading-tight">
+                RES+ EXPO <span className="text-res-accent">2027</span>
+              </h2>
+              
+              <div className="flex items-center gap-2.5 mb-4">
+                <span className="px-3 py-1 bg-res-accent/20 border border-res-accent/40 rounded-full text-res-accent font-bold text-xs uppercase tracking-wider backdrop-blur-md">
+                  5–7 мая 2027 · МВЦ EXPO, Астана
                 </span>
               </div>
 
-              <h2 className="text-3xl sm:text-4xl md:text-5xl xl:text-6xl font-black text-white mb-2 tracking-tight leading-tight">
-                RES EXPO <span className="text-res-accent">2027</span>
-              </h2>
-
-              <p className="text-res-text-muted text-sm md:text-base mb-5 leading-relaxed max-w-lg">
-                Крупнейшая международная выставка-форум возобновляемой энергетики и чистых технологий в Центральной Азии.
+              <p className="text-res-text-muted text-sm md:text-base mb-4 leading-relaxed max-w-lg">
+                Платформа работает круглый год. RES+ EXPO — момент, когда экосистема встречается лично: подписываются соглашения, запускаются проекты, находятся инвесторы.
+              </p>
+              
+              <p className="text-[#A1BB94] text-xs font-medium mb-6 uppercase tracking-wider">
+                1000+ международных участников <span className="mx-2 text-res-accent/50">•</span> Выставка + конференция + B2B-мэтчинг
               </p>
 
-              <a 
-                href="#events" 
-                className="inline-flex items-center gap-2.5 px-7 py-3 bg-res-accent hover:bg-res-accent-light text-[#061E14] rounded-full font-bold text-sm md:text-base transition-all duration-300 shadow-[0_0_30px_rgba(2,183,121,0.45)] hover:scale-105"
+              <button 
+                onClick={() => setIsModalOpen(true)}
+                className="inline-flex items-center gap-2.5 px-7 py-3 bg-white hover:bg-[#E0EAB8] text-black rounded-full font-bold text-sm md:text-base transition-all duration-300 shadow-[0_0_30px_rgba(255,255,255,0.2)] hover:scale-105"
               >
-                Узнать подробнее <ArrowUpRight size={17} />
-              </a>
+                Забронировать участие <ArrowUpRight size={17} />
+              </button>
             </div>
           </div>
         </section>
-
-        {/* StatsBar внизу Hero */}
-        <div className="relative z-20 w-full shrink-0">
-          <StatsBar />
-        </div>
       </div>
 
       {/* ===== БЛОК 2: НАПРАВЛЕНИЯ (Палитра #1: Сапфировый тил #02493F & Малахит #2E8656) ===== */}
@@ -154,10 +154,11 @@ export default function Home() {
         <BlueprintRadial />
       </section>
 
-      <PlatformCallToAction />
+      {/* ===== БЛОК 4: ИСТОРИЯ (Палитра #5: Графит) ===== */}
+      <TimelineSection />
 
-      {/* ===== БЛОК 4: МЕРОПРИЯТИЯ (Палитра #1: Еловый/Кедровый #41754F & Жемчуг #E0EAB8) ===== */}
-      <section id="events" className="px-6 md:px-12 py-20 md:py-28 bg-gradient-to-b from-[#0C0C0C] via-[#112318] to-[#081811]">
+      {/* ===== БЛОК 5: МЕРОПРИЯТИЯ (Палитра #1: Еловый/Кедровый #41754F & Жемчуг #E0EAB8) ===== */}
+      <section id="events" className="px-6 md:px-12 py-20 md:py-28 bg-gradient-to-b from-[#080C0A] via-[#112318] to-[#081811]">
         <div className="mb-10">
           <FocusRevealHeading
             tokens={[
@@ -172,13 +173,8 @@ export default function Home() {
       </section>
 
       {/* ===== БЛОК 5: НОВОСТИ + 3D ГЛОБУС (Палитра #1: Тёмный сапфировый тил #02493F) ===== */}
-      <section id="news" className="relative px-6 md:px-12 py-20 md:py-28 bg-gradient-to-b from-[#081811] via-[#023B33] to-[#0A1610]">
+      <section id="news" className="relative px-6 md:px-12 py-20 md:py-28 bg-gradient-to-b from-[#081811] via-[#023B33] to-[#080C0A]">
         <NewsSection />
-      </section>
-
-      {/* ===== БЛОК 6: VOICES (Палитра #5: Лесной мох #3D703A и патина #A1BB94) ===== */}
-      <section className="px-6 md:px-12 py-20 md:py-24 bg-gradient-to-b from-[#0A1610] via-[#122218] to-[#080C0A]">
-        <ResNetworkVoices />
       </section>
 
       {/* ===== БЛОК 7: ПАРТНЁРЫ (Палитра #5: Графит #0C0C0C) ===== */}
@@ -196,17 +192,39 @@ export default function Home() {
         <PartnersMarquee />
       </section>
 
+      {/* Финальный CTA */}
+      <section className="px-6 md:px-12 py-20 bg-[#080C0A] border-t border-[#A1BB94]/10 flex flex-col items-center text-center">
+        <h2 className="text-3xl md:text-5xl font-black text-white mb-4 tracking-tight">Экосистема формируется сейчас</h2>
+        <p className="text-res-text-muted text-base md:text-lg max-w-2xl mb-8">
+          RES Network объединяет государства, бизнес, инвесторов, науку и международные организации вокруг зелёной экономики Центральной Азии. Станьте одним из первых участников.
+        </p>
+        <button 
+          onClick={() => setIsModalOpen(true)}
+          className="px-8 py-4 rounded-full font-bold text-sm md:text-base bg-gradient-to-r from-res-accent to-res-accent-light text-[#061e14] shadow-[0_0_25px_rgba(2,183,121,0.4)] hover:scale-105 transition-all duration-300"
+        >
+          Присоединиться к RES Network
+        </button>
+      </section>
+
       {/* Фирменный футер */}
       <footer className="px-8 md:px-16 py-12 border-t border-[#A1BB94]/20 text-res-text flex flex-col md:flex-row items-center justify-between gap-6 text-xs bg-[#050806]">
-        <div className="flex items-center gap-3">
+        <div className="flex flex-col md:flex-row items-center gap-3">
           <img src="/logo1.png.png" alt="RES Network" className="h-9 w-auto object-contain" />
-          <span className="text-res-text-muted">© 2026 RES Network. Региональная экосистема Центральной Азии.</span>
+          <span className="text-res-text-muted mt-3 md:mt-0">© 2026 RES Network · Региональная экосистема Центральной Азии</span>
         </div>
-        <div className="flex items-center gap-8 font-semibold text-[#E0EAB8]">
+        
+        <div className="flex flex-col md:flex-row items-center gap-4 md:gap-8 font-semibold text-[#E0EAB8]">
           <a href="#about" className="hover:text-white transition-colors">О нас</a>
+          <a href="#directions" className="hover:text-white transition-colors">Направления</a>
           <a href="#events" className="hover:text-white transition-colors">Мероприятия</a>
           <a href="#news" className="hover:text-white transition-colors">Новости</a>
           <a href="/res365" className="hover:text-white transition-colors">RES Platform</a>
+        </div>
+        
+        <div className="flex items-center gap-4 text-res-text-muted">
+          <span>BusinessFirst LLP</span>
+          <span>Астана, Казахстан</span>
+          <a href="mailto:office@businessfirst.kz" className="hover:text-white">office@businessfirst.kz</a>
         </div>
       </footer>
 
