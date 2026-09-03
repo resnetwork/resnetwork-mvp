@@ -16,7 +16,8 @@ export default async function AdminPanel({ searchParams }: { searchParams: Promi
 
   // --- Вкладка Компании ---
   const allCompanies = currentTab === "companies" ? await prisma.company.findMany({
-    orderBy: { createdAt: "desc" }
+    orderBy: { createdAt: "desc" },
+    include: { users: true }
   }) : [];
 
   // --- Вкладка Ивенты ---
@@ -85,19 +86,36 @@ export default async function AdminPanel({ searchParams }: { searchParams: Promi
               ) : (
                 <div className="grid grid-cols-1 gap-4">
                   {allCompanies.map(company => (
-                    <div key={company.id} className="flex flex-col md:flex-row md:items-center justify-between p-5 rounded-2xl border border-emerald-500/30 bg-[#06241a] gap-4">
-                      <div>
-                        <h3 className="font-bold text-lg text-white">{company.name}</h3>
-                        <div className="text-xs text-emerald-400/80 font-mono mt-1">
-                          БИН: {company.bin} · Создана: {new Date(company.createdAt).toLocaleDateString()}
+                    <div key={company.id} className="flex flex-col p-5 rounded-2xl border border-emerald-500/30 bg-[#06241a]">
+                      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+                        <div>
+                          <h3 className="font-bold text-lg text-white">{company.name}</h3>
+                          <div className="text-xs text-emerald-400/80 font-mono mt-1">
+                            БИН: {company.bin} · Создана: {new Date(company.createdAt).toLocaleDateString()}
+                          </div>
+                        </div>
+                        
+                        <div className="flex items-center gap-3">
+                          <span className={`px-3 py-1 rounded-full text-xs font-bold ${company.status === 'APPROVED' ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30'}`}>
+                            {company.status === 'APPROVED' ? 'Одобрена' : 'На рассмотрении'}
+                          </span>
                         </div>
                       </div>
-                      
-                      <div className="flex items-center gap-3">
-                        <span className={`px-3 py-1 rounded-full text-xs font-bold ${company.status === 'APPROVED' ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30'}`}>
-                          {company.status === 'APPROVED' ? 'Одобрена' : 'На рассмотрении'}
-                        </span>
-                      </div>
+
+                      {/* Блок доступов */}
+                      {company.users.length > 0 && (
+                        <div className="px-4 py-2.5 bg-black/20 rounded-xl border border-emerald-500/10">
+                          <div className="space-y-1">
+                            {company.users.map(u => (
+                              <div key={u.id} className="text-xs font-mono text-emerald-200/90 flex flex-wrap gap-2">
+                                <span>Логин: <span className="text-white font-bold">{u.email || '-'}</span></span>
+                                <span className="hidden md:inline">|</span>
+                                <span>Пароль: <span className="text-white font-bold">admin</span></span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>

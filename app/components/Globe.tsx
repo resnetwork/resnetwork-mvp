@@ -815,7 +815,7 @@ export default function Globe({
         let lastMouseY = 0;
         let animationFrameId: number | null = null;
         const lerpFactor =
-            smoothingN === 0 ? 1 : mapLinear(smoothingN, 0, 1, 0.4, 0.03);
+            smoothingN === 0 ? 1 : mapLinear(smoothingN, 0, 1, 0.2, 0.015);
         const velocityDecay = mapLinear(smoothingN, 0, 1, 0.7, 0.96);
 
         const globeGroup = new Group();
@@ -834,7 +834,7 @@ export default function Globe({
 
         const animate = () => {
             let needsRender = false;
-            const threshold = 0.01;
+            const threshold = 0.005; // Сделаем порог меньше, чтобы анимация не обрывалась резко
             
             // Apply Focus Location if it changed
             if (focusRef.current !== lastAppliedFocus) {
@@ -894,8 +894,11 @@ export default function Globe({
                 rotationSpeed !== 0 ||
                 isDragging
             ) {
-                rotation.x += dx * lerpFactor;
-                rotation.y += dy * lerpFactor;
+                // Если мы тащим глобус мышкой, отзывчивость должна быть выше,
+                // иначе глобус будет "плыть" очень медленно за курсором
+                const currentLerp = isDragging ? Math.max(lerpFactor, 0.15) : lerpFactor;
+                rotation.x += dx * currentLerp;
+                rotation.y += dy * currentLerp;
                 rotation.y = Math.max(
                     -Math.PI / 2,
                     Math.min(Math.PI / 2, rotation.y)
@@ -1003,7 +1006,6 @@ export default function Globe({
     }, [
         speed,
         smoothing,
-        dots,
         fill,
         fillColor,
         allDots,

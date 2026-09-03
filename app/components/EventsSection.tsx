@@ -13,6 +13,9 @@ export default function EventsSection() {
   const [dbEvents, setDbEvents] = useState<any[]>([]);
 
   useEffect(() => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
     import("@/app/actions/events").then(({ getPublicEvents }) => {
       getPublicEvents().then(events => {
         // Map DB events to match the UI structure
@@ -21,13 +24,26 @@ export default function EventsSection() {
           title: e.title,
           summary: e.description || "Без описания",
           date: new Date(e.date).toLocaleDateString(),
+          isoDate: new Date(e.date).toISOString(),
           location: e.location || "Онлайн",
           image: e.imageUrl || "https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=2070&auto=format&fit=crop",
           category: e.creatorCompany?.name || "Событие"
         }));
         
-        // Combine DB events with hardcoded events for now (to not leave the page empty)
-        setDbEvents([...mapped, ...EVENTS]);
+        // Фильтруем события: только БУДУЩИЕ с привязкой к сегодняшней дате (>= today)
+        const upcomingEvents = [...mapped, ...EVENTS].filter(ev => {
+          if (ev.isoDate) {
+            return new Date(ev.isoDate) >= today;
+          }
+          const d = new Date(ev.date);
+          return isNaN(d.getTime()) || d >= today;
+        }).sort((a, b) => {
+          const timeA = new Date(a.isoDate || a.date).getTime() || 0;
+          const timeB = new Date(b.isoDate || b.date).getTime() || 0;
+          return timeA - timeB;
+        });
+
+        setDbEvents(upcomingEvents);
       });
     });
   }, []);

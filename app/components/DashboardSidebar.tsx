@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Ticket, Bell, LogOut, ArrowLeft, CalendarDays, PlusCircle, ChevronLeft, ChevronRight, ShieldCheck } from "lucide-react";
+import { Ticket, LogOut, ArrowLeft, CalendarDays, PlusCircle, ChevronLeft, ChevronRight, ShieldCheck, Handshake, Users, User } from "lucide-react";
 
 export default function DashboardSidebar({ user }: { user: any }) {
   const [isOpen, setIsOpen] = useState(true);
@@ -26,19 +26,19 @@ export default function DashboardSidebar({ user }: { user: any }) {
 
       <div>
         {/* Профиль */}
-        <div className={`p-6 border-b border-emerald-900/30 flex items-center gap-3 ${!isOpen && 'justify-center px-2'}`}>
+        <Link href="/res365/dashboard/profile" className={`p-6 border-b border-emerald-900/30 flex items-center gap-3 hover:bg-emerald-900/20 transition-colors cursor-pointer ${!isOpen && 'justify-center px-2'}`}>
           <div className="w-10 h-10 shrink-0 rounded-xl bg-gradient-to-br from-emerald-500/30 to-emerald-700/10 border border-emerald-500/30 flex items-center justify-center font-bold text-emerald-300">
             {user.name ? user.name.slice(0, 2).toUpperCase() : user.email?.slice(0, 2).toUpperCase()}
           </div>
           {isOpen && (
             <div className="overflow-hidden">
-              <div className="text-sm font-bold truncate text-white">{user.name || user.email?.split('@')[0]}</div>
-              <div className="text-[10px] text-emerald-400/60 truncate font-mono">
+              <div className="text-sm font-bold truncate text-white hover:text-emerald-300 transition-colors">{user.name || user.email?.split('@')[0]}</div>
+              <div className="text-[10px] text-emerald-400/60 truncate font-mono mt-0.5">
                 {user.company ? user.company.name : "Гость"}
               </div>
             </div>
           )}
-        </div>
+        </Link>
 
         {/* Инструменты платформы */}
         <div className="px-4 py-4 mt-2">
@@ -49,6 +49,14 @@ export default function DashboardSidebar({ user }: { user: any }) {
           )}
           
           <nav className="space-y-2">
+            <Link 
+              href="/res365/dashboard/profile" 
+              className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-bold transition-all ${isActive('/res365/dashboard/profile') ? 'bg-emerald-900/40 text-emerald-300 border border-emerald-500/20' : 'text-emerald-200/70 hover:text-white hover:bg-emerald-500/10 border border-transparent'} ${!isOpen && 'justify-center'}`}
+            >
+              <User size={18} className={isActive('/res365/dashboard/profile') ? "text-emerald-400" : ""} />
+              {isOpen && <span>Мой профиль</span>}
+            </Link>
+
             <Link 
               href="/res365/dashboard" 
               className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-bold transition-all ${isActive('/res365/dashboard') ? 'bg-emerald-900/40 text-emerald-300 border border-emerald-500/20' : 'text-emerald-200/70 hover:text-white hover:bg-emerald-500/10 border border-transparent'} ${!isOpen && 'justify-center'}`}
@@ -66,14 +74,19 @@ export default function DashboardSidebar({ user }: { user: any }) {
             </Link>
 
             <Link 
-              href="#" 
-              className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-bold transition-all text-emerald-200/70 hover:text-white hover:bg-emerald-500/10 border border-transparent ${!isOpen && 'justify-center'}`}
+              href="/res365/dashboard/b2b" 
+              className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-bold transition-all ${isActive('/res365/dashboard/b2b') ? 'bg-emerald-900/40 text-emerald-300 border border-emerald-500/20' : 'text-emerald-200/70 hover:text-white hover:bg-emerald-500/10 border border-transparent'} ${!isOpen && 'justify-center'}`}
             >
-              <div className="relative">
-                <Bell size={18} />
-                <span className="absolute -top-1 -right-1 w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
-              </div>
-              {isOpen && <span>Уведомления</span>}
+              <Handshake size={18} className={isActive('/res365/dashboard/b2b') ? "text-emerald-400" : ""} />
+              {isOpen && <span>B2B встречи</span>}
+            </Link>
+
+            <Link 
+              href="/res365/dashboard/community" 
+              className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-bold transition-all ${isActive('/res365/dashboard/community') ? 'bg-emerald-900/40 text-emerald-300 border border-emerald-500/20' : 'text-emerald-200/70 hover:text-white hover:bg-emerald-500/10 border border-transparent'} ${!isOpen && 'justify-center'}`}
+            >
+              <Users size={18} className={isActive('/res365/dashboard/community') ? "text-emerald-400" : ""} />
+              {isOpen && <span>Сообщество</span>}
             </Link>
             
             {(user.role === "COMPANY_ADMIN" || user.role === "SYSTEM_ADMIN") && (

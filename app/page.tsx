@@ -9,10 +9,11 @@ import NewsSection from "./components/NewsSection";
 import BlueprintRadial from "./components/BlueprintRadial";
 import TimelineSection from "./components/TimelineSection";
 import FocusRevealHeading from "./components/FocusRevealHeading";
+import PlatformCallToAction from "./components/PlatformCallToAction";
 
 const NAV_ITEMS = [
-  { label: "О нас", href: "#about" },
   { label: "Направления", href: "#directions" },
+  { label: "История", href: "#history" },
   { label: "Мероприятия", href: "#events" },
   { label: "Новости", href: "#news" },
 ];
@@ -54,6 +55,12 @@ export default function Home() {
           </nav>
 
           <div className="flex items-center gap-3">
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="hidden sm:inline-flex items-center justify-center px-5 py-2 rounded-full font-semibold text-xs md:text-sm border border-res-accent/30 text-res-text hover:text-white hover:border-res-accent hover:bg-res-panel/60 transition-all duration-300 cursor-pointer"
+            >
+              Связаться с нами
+            </button>
             <a
               href="/res365"
               className="px-6 py-2.5 rounded-full font-bold text-xs md:text-sm bg-gradient-to-r from-res-accent to-res-accent-light text-[#020b14] border border-res-accent-light/50 hover:shadow-[0_0_25px_rgba(0,240,255,0.4)] hover:scale-105 transition-all duration-300"
@@ -70,11 +77,14 @@ export default function Home() {
         </header>
 
         {/* Hero content — Расширенная гармоничная компоновка без пустот и рамок */}
-        <section className="relative z-20 flex-1 min-h-0 flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-14 px-6 md:px-12 py-1 md:py-2">
+        <section className="relative z-20 flex-1 min-h-0 flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-14 px-6 md:px-12 py-2 md:py-4">
           {/* Левая часть: текст */}
-          <div className="flex-1 flex flex-col items-start text-left max-w-xl lg:max-w-2xl xl:max-w-3xl">
-            <h1 className="text-4xl sm:text-5xl lg:text-[3.2rem] xl:text-[3.8rem] font-bold leading-[1.06] tracking-tight text-white mb-6">
-              Центральная Азия строит зелёную экономику. <span className="text-res-accent">RES Network</span> соединяет тех, кто её строит.
+          <div className="flex-1 w-full lg:max-w-xl xl:max-w-2xl flex flex-col items-start text-left">
+            <h1 className="text-3xl sm:text-4xl lg:text-[2.65rem] xl:text-[3.15rem] font-black leading-[1.16] tracking-tight text-white mb-6 [text-wrap:balance]">
+              <span>Центральная Азия строит зелёную экономику.</span>{" "}
+              <span className="block mt-2 text-transparent bg-clip-text bg-gradient-to-r from-res-accent via-[#5be7a9] to-[#AFE552]">
+                RES Network соединяет тех, кто её строит.
+              </span>
             </h1>
 
             <p className="max-w-xl text-base md:text-lg leading-relaxed font-normal text-res-text-muted mb-8">
@@ -82,18 +92,18 @@ export default function Home() {
             </p>
 
             <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
+              <a
+                href="/res365"
+                className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-3.5 rounded-full font-bold text-sm md:text-base border border-res-accent/50 hover:shadow-[0_0_30px_rgba(2,183,121,0.4)] transition-all duration-300 shadow-lg bg-res-accent text-[#061E14] hover:bg-res-accent-light cursor-pointer"
+              >
+                Присоединиться к RES Platform <ArrowUpRight size={18} />
+              </a>
               <button
                 onClick={() => setIsModalOpen(true)}
-                className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-3.5 rounded-full font-bold text-sm md:text-base border border-res-accent/50 hover:shadow-[0_0_30px_rgba(2,183,121,0.4)] transition-all duration-300 shadow-lg bg-res-accent text-[#061E14] hover:bg-res-accent-light"
-              >
-                Присоединиться к RES Network <ArrowUpRight size={18} />
-              </button>
-              <a
-                href="#events"
                 className="w-full sm:w-auto px-8 py-3.5 rounded-full font-semibold text-sm md:text-base border border-[#A1BB94]/30 hover:border-res-accent hover:bg-white/5 hover:shadow-[0_0_20px_rgba(2,183,121,0.3)] transition-all duration-300 cursor-pointer backdrop-blur-sm text-res-text glass-panel"
               >
-                Смотреть мероприятия
-              </a>
+                Связаться с нами
+              </button>
             </div>
             
             <p className="mt-5 text-xs text-res-text-muted/60 tracking-wider">
@@ -101,49 +111,49 @@ export default function Home() {
             </p>
           </div>
 
-          {/* Правая часть: Бесшовная атмосферная фото-витрина RES EXPO 2027 (Без рамок, встроена в фон) */}
-          <div className="flex-1 w-full max-w-lg lg:max-w-xl xl:max-w-2xl relative flex flex-col justify-end min-h-[300px] sm:min-h-[340px] md:min-h-[380px] lg:min-h-[410px] group">
-            {/* Фотография EXPO 2027, плавно растворяющаяся в общий фон без рамок */}
-            <div className="absolute inset-0 overflow-hidden pointer-events-none [mask-image:radial-gradient(ellipse_at_center,black_50%,transparent_90%)] md:[mask-image:radial-gradient(ellipse_at_65%_50%,black_55%,transparent_90%)]">
+          {/* Правая часть: Бесшовная фото-витрина RES+ EXPO 2027 с ярким фоном и нижним позиционированием */}
+          <div className="flex-1 w-full max-w-lg lg:max-w-xl xl:max-w-2xl relative flex flex-col justify-end min-h-[340px] sm:min-h-[380px] md:min-h-[420px] lg:min-h-[460px] group">
+            {/* Яркая фотография EXPO 2027 без затемнения в коробку */}
+            <div className="absolute inset-0 overflow-hidden pointer-events-none [mask-image:radial-gradient(ellipse_at_center,black_60%,transparent_95%)] md:[mask-image:radial-gradient(ellipse_at_65%_50%,black_65%,transparent_95%)]">
               <img 
                 src="/expo-card.jpg" 
-                alt="RES EXPO 2027" 
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-[2s] ease-out opacity-80" 
+                alt="RES+ EXPO 2027" 
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-[2.5s] ease-out opacity-85" 
               />
-              <div className="absolute inset-0 bg-gradient-to-r from-[#020617] via-[#020617]/35 to-transparent" />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#020617] via-transparent to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-r from-res-bg via-res-bg/30 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-res-bg/90 via-res-bg/20 to-transparent" />
             </div>
 
-            {/* Контент прямо поверх фоновой картинки */}
+            {/* Контент карточки, прижатый к низу как раньше */}
             <div className="relative z-10 flex flex-col items-start pl-0 lg:pl-6 pb-2">
-              <span className="mb-2 text-xs font-bold uppercase tracking-widest text-[#E0EAB8] bg-black/40 px-3 py-1 rounded-full border border-white/10">
+              <span className="mb-2.5 text-xs font-bold uppercase tracking-widest text-[#E0EAB8] bg-black/60 px-3.5 py-1.5 rounded-full border border-white/20 backdrop-blur-md">
                 ФЛАГМАНСКОЕ СОБЫТИЕ ЭКОСИСТЕМЫ
               </span>
 
-              <h2 className="text-3xl sm:text-4xl md:text-5xl xl:text-6xl font-black text-white mb-2 tracking-tight leading-tight">
+              <h2 className="text-3xl sm:text-4xl md:text-5xl xl:text-6xl font-black text-white mb-2 tracking-tight leading-tight drop-shadow-md">
                 RES+ EXPO <span className="text-res-accent">2027</span>
               </h2>
               
-              <div className="flex items-center gap-2.5 mb-4">
-                <span className="px-3 py-1 bg-res-accent/20 border border-res-accent/40 rounded-full text-res-accent font-bold text-xs uppercase tracking-wider backdrop-blur-md">
+              <div className="flex items-center gap-2.5 mb-3">
+                <span className="px-3.5 py-1.5 bg-res-accent/20 border border-res-accent/40 rounded-full text-res-accent font-bold text-xs uppercase tracking-wider backdrop-blur-md">
                   5–7 мая 2027 · МВЦ EXPO, Астана
                 </span>
               </div>
 
-              <p className="text-res-text-muted text-sm md:text-base mb-4 leading-relaxed max-w-lg">
+              <p className="text-res-text-muted text-sm md:text-base mb-4 leading-relaxed max-w-lg drop-shadow">
                 Платформа работает круглый год. RES+ EXPO — момент, когда экосистема встречается лично: подписываются соглашения, запускаются проекты, находятся инвесторы.
               </p>
               
-              <p className="text-[#A1BB94] text-xs font-medium mb-6 uppercase tracking-wider">
+              <p className="text-[#A1BB94] text-xs font-medium mb-6 uppercase tracking-wider drop-shadow-sm">
                 1000+ международных участников <span className="mx-2 text-res-accent/50">•</span> Выставка + конференция + B2B-мэтчинг
               </p>
 
-              <button 
-                onClick={() => setIsModalOpen(true)}
-                className="inline-flex items-center gap-2.5 px-7 py-3 bg-white hover:bg-[#E0EAB8] text-black rounded-full font-bold text-sm md:text-base transition-all duration-300 shadow-[0_0_30px_rgba(255,255,255,0.2)] hover:scale-105"
+              <a 
+                href="#events"
+                className="inline-flex items-center gap-2.5 px-8 py-3.5 bg-white hover:bg-[#E0EAB8] text-black rounded-full font-bold text-sm md:text-base transition-all duration-300 shadow-[0_0_30px_rgba(255,255,255,0.25)] hover:scale-105 cursor-pointer"
               >
-                Забронировать участие <ArrowUpRight size={17} />
-              </button>
+                Перейти к событию <ArrowUpRight size={18} />
+              </a>
             </div>
           </div>
         </section>
@@ -153,6 +163,9 @@ export default function Home() {
       <section id="directions" className="relative z-20 py-16 md:py-24 bg-gradient-to-b from-[#080C0A] via-[#02493F] to-[#0C0C0C]">
         <BlueprintRadial />
       </section>
+
+      {/* ===== БЛОК 3: RES PLATFORM (Интерактивная витрина модулей) ===== */}
+      <PlatformCallToAction />
 
       {/* ===== БЛОК 4: ИСТОРИЯ (Палитра #5: Графит) ===== */}
       <TimelineSection />
@@ -214,8 +227,8 @@ export default function Home() {
         </div>
         
         <div className="flex flex-col md:flex-row items-center gap-4 md:gap-8 font-semibold text-[#E0EAB8]">
-          <a href="#about" className="hover:text-white transition-colors">О нас</a>
           <a href="#directions" className="hover:text-white transition-colors">Направления</a>
+          <a href="#history" className="hover:text-white transition-colors">История</a>
           <a href="#events" className="hover:text-white transition-colors">Мероприятия</a>
           <a href="#news" className="hover:text-white transition-colors">Новости</a>
           <a href="/res365" className="hover:text-white transition-colors">RES Platform</a>

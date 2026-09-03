@@ -1,20 +1,52 @@
 import { auth } from "@/auth";
 import { prisma } from "@/app/lib/prisma";
 import EventCarousel from "@/app/components/EventCarousel";
+import { EVENTS } from "@/app/data/events";
 
 export default async function DashboardPage() {
   const session = await auth();
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
   
-  // Получаем все публичные ивенты или ивенты клуба
-  const events = await prisma.event.findMany({
-    orderBy: { date: 'asc' },
-    include: {
-      creatorCompany: true,
-      tickets: {
-        where: { userId: session?.user?.id }
+  let events: any[] = [];
+  try {
+    // Получаем будущие ивенты с привязкой к текущей дате
+    events = await prisma.event.findMany({
+      where: {
+        date: { gte: today }
+      },
+      orderBy: { date: 'asc' },
+      include: {
+        creatorCompany: true,
+        tickets: {
+          where: { userId: session?.user?.id }
+        }
       }
-    }
-  });
+    });
+  } catch (error) {
+    console.error("Ошибка загрузки событий из БД в дашборде:", error);
+  }
+
+  // Если БД пуста или локально нет соединения, подтягиваем будущие события из данных платформы
+  if (!events || events.length === 0) {
+    events = EVENTS
+      .filter(e => {
+        if (e.isoDate) return new Date(e.isoDate) >= today;
+        const d = new Date(e.date);
+        return isNaN(d.getTime()) || d >= today;
+      })
+      .sort((a, b) => new Date(a.isoDate || a.date).getTime() - new Date(b.isoDate || b.date).getTime())
+      .map(e => ({
+        id: e.slug,
+        title: e.title,
+        description: e.summary,
+        date: new Date(e.isoDate || e.date),
+        location: e.location,
+        imageUrl: e.image,
+        creatorCompany: { name: e.category, logoUrl: null },
+        tickets: []
+      }));
+  }
 
   return (
     <div className="h-full flex flex-col">

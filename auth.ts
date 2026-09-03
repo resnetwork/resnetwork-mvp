@@ -38,13 +38,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             data: {
               email: credentials.email as string,
               name: (credentials.email as string).split('@')[0],
-              role: credentials.email === "admin@resnetwork.kz" ? "SYSTEM_ADMIN" : "EMPLOYEE"
+              role: credentials.email === "admin@resnetwork.org" ? "SYSTEM_ADMIN" : "EMPLOYEE"
             }
           });
         }
 
         // Гарантируем, что у админа есть привязанная компания, чтобы он мог создавать ивенты
-        if (user.email === "admin@resnetwork.kz" && !user.companyId) {
+        if (user.email === "admin@resnetwork.org" && !user.companyId) {
           let sysCompany = await prisma.company.findFirst({ where: { name: "RES Network (System)" }});
           if (!sysCompany) {
             sysCompany = await prisma.company.create({ 

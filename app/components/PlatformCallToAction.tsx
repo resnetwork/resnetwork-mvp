@@ -119,7 +119,7 @@ export default function PlatformCallToAction() {
   const currentModule = MODULES.find((m) => m.id === activeTab) || MODULES[0];
 
   return (
-    <section className="relative px-4 md:px-12 py-16 md:py-28 bg-[#0C0C0C] overflow-hidden text-white border-t border-b border-[#AFE552]/20">
+    <section id="platform" className="relative px-4 md:px-12 py-16 md:py-28 bg-[#0C0C0C] overflow-hidden text-white border-t border-b border-[#AFE552]/20">
       
       {/* Мягкие атмосферные фоновые ореолы */}
       <div className="absolute top-0 right-1/4 w-[600px] h-[600px] bg-[#AFE552]/10 rounded-full blur-[140px] pointer-events-none" />

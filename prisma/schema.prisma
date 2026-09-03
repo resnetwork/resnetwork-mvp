@@ -62,6 +62,13 @@ model Company {
   bin         String   @unique // БИН компании
   description String?
   logoUrl     String?  @map("logo_url")
+  
+  country     String?
+  address     String?
+  phone       String?
+  email       String?
+  website     String?
+
   status      String   @default("PENDING") // PENDING, APPROVED, REJECTED
   
   createdAt   DateTime @default(now()) @map("created_at")
