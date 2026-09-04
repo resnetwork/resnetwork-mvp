@@ -8,7 +8,7 @@ export default function ProfilePage() {
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
   
   // В будущем тип аккаунта будет приходить из базы данных (выбирается при регистрации)
-  let accountType: "COMPANY" | "INDIVIDUAL" | "STARTUP" = "STARTUP"; // Временно поставим STARTUP для проверки
+  const accountType = "STARTUP" as string; // Временно поставим STARTUP для проверки
 
   const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
