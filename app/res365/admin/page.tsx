@@ -16,6 +16,21 @@ export default async function AdminPanel({ searchParams }: { searchParams: Promi
 
   // --- Вкладка Компании ---
   const allCompanies = currentTab === "companies" ? await prisma.company.findMany({
+    where: { category: "COMPANY" },
+    orderBy: { createdAt: "desc" },
+    include: { users: true }
+  }) : [];
+
+  // --- Вкладка Стартапы ---
+  const startups = currentTab === "startups" ? await prisma.company.findMany({
+    where: { category: "STARTUP" },
+    orderBy: { createdAt: "desc" },
+    include: { users: true }
+  }) : [];
+
+  // --- Вкладка Физ. лица ---
+  const individuals = currentTab === "individuals" ? await prisma.company.findMany({
+    where: { category: "INDIVIDUAL" },
     orderBy: { createdAt: "desc" },
     include: { users: true }
   }) : [];
@@ -88,18 +103,7 @@ export default async function AdminPanel({ searchParams }: { searchParams: Promi
 
         {/* Контент вкладок */}
         
-        {/* === Вкладка СТАРТАПЫ / ФИЗ ЛИЦА (Заглушки) === */}
-        {(currentTab === "startups" || currentTab === "individuals") && (
-          <div className="animate-in fade-in duration-300">
-            <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
-              {currentTab === "startups" ? "Стартапы" : "Физ. лица"} (В разработке)
-            </h2>
-            <div className="p-8 rounded-2xl border border-emerald-500/20 bg-emerald-950/20 text-center text-emerald-400/60 font-mono text-sm">
-              Раздел скоро появится
-            </div>
-          </div>
-        )}
-        
+
         {/* === Вкладка КОМПАНИИ === */}
         {currentTab === "companies" && (
           <div className="animate-in fade-in duration-300">
@@ -137,6 +141,108 @@ export default async function AdminPanel({ searchParams }: { searchParams: Promi
                         <div className="px-4 py-2.5 bg-black/20 rounded-xl border border-emerald-500/10">
                           <div className="space-y-1">
                             {company.users.map(u => (
+                              <div key={u.id} className="text-xs font-mono text-emerald-200/90 flex flex-wrap gap-2">
+                                <span>Логин: <span className="text-white font-bold">{u.email || '-'}</span></span>
+                                <span className="hidden md:inline">|</span>
+                                <span>Пароль: <span className="text-white font-bold">admin</span></span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </section>
+          </div>
+        )}
+
+        {/* === Вкладка СТАРТАПЫ === */}
+        {currentTab === "startups" && (
+          <div className="animate-in fade-in duration-300">
+            <section className="mb-12">
+              <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
+                <Building className="text-emerald-400 w-5 h-5" />
+                Зарегистрированные стартапы ({startups.length})
+              </h2>
+
+              {startups.length === 0 ? (
+                <div className="p-8 rounded-2xl border border-emerald-500/20 bg-emerald-950/20 text-center text-emerald-400/60 font-mono text-sm">
+                  Нет стартапов
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 gap-4">
+                  {startups.map(startup => (
+                    <div key={startup.id} className="flex flex-col p-5 rounded-2xl border border-emerald-500/30 bg-[#06241a]">
+                      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+                        <div>
+                          <h3 className="font-bold text-lg text-white">{startup.name}</h3>
+                          <div className="text-xs text-emerald-400/80 font-mono mt-1">
+                            БИН: {startup.bin} · Создана: {new Date(startup.createdAt).toLocaleDateString()}
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <span className={`px-3 py-1 rounded-full text-xs font-bold ${startup.status === 'APPROVED' ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30'}`}>
+                            {startup.status === 'APPROVED' ? 'Одобрена' : 'На рассмотрении'}
+                          </span>
+                        </div>
+                      </div>
+                      {startup.users.length > 0 && (
+                        <div className="px-4 py-2.5 bg-black/20 rounded-xl border border-emerald-500/10">
+                          <div className="space-y-1">
+                            {startup.users.map(u => (
+                              <div key={u.id} className="text-xs font-mono text-emerald-200/90 flex flex-wrap gap-2">
+                                <span>Логин: <span className="text-white font-bold">{u.email || '-'}</span></span>
+                                <span className="hidden md:inline">|</span>
+                                <span>Пароль: <span className="text-white font-bold">admin</span></span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </section>
+          </div>
+        )}
+
+        {/* === Вкладка ФИЗ. ЛИЦА === */}
+        {currentTab === "individuals" && (
+          <div className="animate-in fade-in duration-300">
+            <section className="mb-12">
+              <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
+                <Users className="text-emerald-400 w-5 h-5" />
+                Физ. лица ({individuals.length})
+              </h2>
+
+              {individuals.length === 0 ? (
+                <div className="p-8 rounded-2xl border border-emerald-500/20 bg-emerald-950/20 text-center text-emerald-400/60 font-mono text-sm">
+                  Нет физ. лиц
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 gap-4">
+                  {individuals.map(person => (
+                    <div key={person.id} className="flex flex-col p-5 rounded-2xl border border-emerald-500/30 bg-[#06241a]">
+                      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+                        <div>
+                          <h3 className="font-bold text-lg text-white">{person.name}</h3>
+                          <div className="text-xs text-emerald-400/80 font-mono mt-1">
+                            ID: {person.bin} · Создана: {new Date(person.createdAt).toLocaleDateString()}
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <span className={`px-3 py-1 rounded-full text-xs font-bold ${person.status === 'APPROVED' ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30'}`}>
+                            {person.status === 'APPROVED' ? 'Одобрена' : 'На рассмотрении'}
+                          </span>
+                        </div>
+                      </div>
+                      {person.users.length > 0 && (
+                        <div className="px-4 py-2.5 bg-black/20 rounded-xl border border-emerald-500/10">
+                          <div className="space-y-1">
+                            {person.users.map(u => (
                               <div key={u.id} className="text-xs font-mono text-emerald-200/90 flex flex-wrap gap-2">
                                 <span>Логин: <span className="text-white font-bold">{u.email || '-'}</span></span>
                                 <span className="hidden md:inline">|</span>
