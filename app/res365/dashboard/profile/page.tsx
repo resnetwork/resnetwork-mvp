@@ -1,14 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { UploadCloud, Save, Building2, AlignLeft, Phone, User as UserIcon } from "lucide-react";
+import { UploadCloud, Save, Building2, AlignLeft, Phone, User as UserIcon, Sparkles } from "lucide-react";
 
 export default function ProfilePage() {
   const [isSaving, setIsSaving] = useState(false);
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
   
   // В будущем тип аккаунта будет приходить из базы данных (выбирается при регистрации)
-  const accountType: "COMPANY" | "INDIVIDUAL" = "COMPANY";
+  const accountType: "COMPANY" | "INDIVIDUAL" | "STARTUP" = "STARTUP"; // Временно поставим STARTUP для проверки
 
   const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -48,6 +48,8 @@ export default function ProfilePage() {
             <label className="flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-emerald-300 mb-4">
               {accountType === "COMPANY" ? (
                 <><Building2 size={18} className="text-emerald-500" /> Логотип компании</>
+              ) : accountType === "STARTUP" ? (
+                <><Sparkles size={18} className="text-emerald-500" /> Логотип стартапа</>
               ) : (
                 <><UserIcon size={18} className="text-emerald-500" /> Фото профиля</>
               )}
@@ -73,7 +75,7 @@ export default function ProfilePage() {
                   className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium text-emerald-100 bg-emerald-500/10 border border-emerald-500/30 hover:bg-emerald-500/20 hover:border-emerald-400 transition-colors cursor-pointer"
                 >
                   <UploadCloud size={16} />
-                  {accountType === "COMPANY" ? "Загрузить логотип" : "Загрузить фото"}
+                  {accountType === "INDIVIDUAL" ? "Загрузить фото" : "Загрузить логотип"}
                 </label>
                 <p className="text-xs text-emerald-400/50 mt-2">
                   Рекомендуемый размер: 400x400px. Форматы: JPG, PNG, SVG.
@@ -86,12 +88,14 @@ export default function ProfilePage() {
           <div>
             <label className="flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-emerald-300 mb-4">
               <AlignLeft size={18} className="text-emerald-500" />
-              {accountType === "COMPANY" ? "Описание компании" : "Описание деятельности"}
+              {accountType === "COMPANY" ? "Описание компании" : accountType === "STARTUP" ? "Описание стартапа" : "Описание деятельности"}
             </label>
             <textarea
               rows={4}
               placeholder={accountType === "COMPANY" 
                 ? "Расскажите о вашей компании, проектах и технологиях..." 
+                : accountType === "STARTUP"
+                ? "Расскажите о вашем инновационном продукте, планах развития и запросах..."
                 : "Расскажите о вашей экспертизе, исследованиях или интересах..."}
               className="w-full p-4 rounded-2xl bg-emerald-950/40 border border-emerald-500/30 text-[#f2ede2] placeholder:text-emerald-500/40 focus:outline-none focus:border-emerald-400 focus:shadow-[0_0_20px_rgba(74,222,128,0.15)] transition-all resize-y"
             ></textarea>
@@ -111,7 +115,7 @@ export default function ProfilePage() {
               />
               <input
                 type="text"
-                placeholder="Сайт компании (например: www.company.kz)"
+                placeholder={accountType === "INDIVIDUAL" ? "Персональный сайт / Портфолио" : "Сайт"}
                 className="w-full px-4 py-3 rounded-2xl bg-emerald-950/40 border border-emerald-500/30 text-[#f2ede2] placeholder:text-emerald-500/40 focus:outline-none focus:border-emerald-400 focus:shadow-[0_0_20px_rgba(74,222,128,0.15)] transition-all"
               />
               <input

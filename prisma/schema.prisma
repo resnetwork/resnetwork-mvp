@@ -60,6 +60,7 @@ model Company {
   id          String   @id @default(cuid())
   name        String
   bin         String   @unique // БИН компании
+  category    String   @default("COMPANY") // COMPANY, STARTUP, INDIVIDUAL
   description String?
   logoUrl     String?  @map("logo_url")
   
@@ -152,4 +153,17 @@ model ContactRequest {
   updatedAt DateTime @updatedAt @map("updated_at")
 
   @@map("contact_requests")
+}
+
+model RegistrationRequest {
+  id        String   @id @default(cuid())
+  category  String   // STARTUP, COMPANY, INDIVIDUAL
+  name      String   // Название компании/стартапа или ФИО
+  email     String
+  status    String   @default("PENDING") // PENDING, APPROVED, REJECTED
+  
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("registration_requests")
 }

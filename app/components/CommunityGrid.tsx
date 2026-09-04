@@ -5,11 +5,35 @@ import { Building2, Building, X } from "lucide-react";
 
 export default function CommunityGrid({ companies }: { companies: any[] }) {
   const [selectedCompany, setSelectedCompany] = useState<any | null>(null);
+  const [activeTab, setActiveTab] = useState<"COMPANY" | "STARTUP" | "INDIVIDUAL">("COMPANY");
+
+  const filteredCompanies = companies.filter(c => c.category === activeTab);
 
   return (
     <>
+      <div className="flex overflow-x-auto gap-2 pb-6 mb-2 hide-scrollbar">
+        <button 
+          onClick={() => setActiveTab("COMPANY")}
+          className={`px-5 py-2.5 rounded-full text-sm font-bold whitespace-nowrap transition-all ${activeTab === 'COMPANY' ? 'bg-emerald-500 text-white shadow-[0_0_15px_rgba(16,185,129,0.3)]' : 'bg-emerald-950/40 text-emerald-300/70 border border-emerald-500/20 hover:text-emerald-300 hover:bg-emerald-900/40'}`}
+        >
+          Компании
+        </button>
+        <button 
+          onClick={() => setActiveTab("STARTUP")}
+          className={`px-5 py-2.5 rounded-full text-sm font-bold whitespace-nowrap transition-all ${activeTab === 'STARTUP' ? 'bg-emerald-500 text-white shadow-[0_0_15px_rgba(16,185,129,0.3)]' : 'bg-emerald-950/40 text-emerald-300/70 border border-emerald-500/20 hover:text-emerald-300 hover:bg-emerald-900/40'}`}
+        >
+          Стартапы
+        </button>
+        <button 
+          onClick={() => setActiveTab("INDIVIDUAL")}
+          className={`px-5 py-2.5 rounded-full text-sm font-bold whitespace-nowrap transition-all ${activeTab === 'INDIVIDUAL' ? 'bg-emerald-500 text-white shadow-[0_0_15px_rgba(16,185,129,0.3)]' : 'bg-emerald-950/40 text-emerald-300/70 border border-emerald-500/20 hover:text-emerald-300 hover:bg-emerald-900/40'}`}
+        >
+          Физ. лица
+        </button>
+      </div>
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {companies.map((company) => (
+        {filteredCompanies.map((company) => (
           <div 
             key={company.id}
             onClick={() => setSelectedCompany(company)}
@@ -39,13 +63,13 @@ export default function CommunityGrid({ companies }: { companies: any[] }) {
             <div className="pt-4 border-t border-emerald-500/20 flex flex-wrap gap-2 mt-auto">
               <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-950/50 border border-emerald-500/20 text-[10px] uppercase font-bold tracking-wider text-emerald-400">
                 <Building size={12} />
-                Компания
+                {company.category === "COMPANY" ? "Компания" : company.category === "STARTUP" ? "Стартап" : "Физ. лицо"}
               </span>
             </div>
           </div>
         ))}
 
-        {companies.length === 0 && (
+        {filteredCompanies.length === 0 && (
           <div className="col-span-full py-20 text-center">
             <Building2 size={48} className="mx-auto text-emerald-500/20 mb-4" />
             <h3 className="text-xl font-bold text-white mb-2">Каталог пока пуст</h3>

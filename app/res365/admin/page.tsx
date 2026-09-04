@@ -31,11 +31,22 @@ export default async function AdminPanel({ searchParams }: { searchParams: Promi
     orderBy: { createdAt: "desc" }
   }) : [];
 
-  const tabs = [
-    { id: "companies", label: "Компании", icon: <Building size={16} /> },
-    { id: "events", label: "События", icon: <CalendarDays size={16} /> },
-    { id: "requests", label: "Заявки с сайта", icon: <MessageSquare size={16} /> },
-  ];
+  // --- Вкладка Регистрации ---
+  const registrations = currentTab === "registrations" ? await prisma.registrationRequest.findMany({
+    orderBy: { createdAt: "desc" }
+  }) : [];
+
+
+
+  const NavTab = ({ id, label, icon }: { id: string, label: string, icon: React.ReactNode }) => (
+    <Link 
+      href={`?tab=${id}`}
+      className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-bold whitespace-nowrap transition-all ${currentTab === id ? 'bg-emerald-500 text-white shadow-[0_0_15px_rgba(16,185,129,0.3)]' : 'bg-emerald-950/40 text-emerald-300/70 border border-emerald-500/20 hover:text-emerald-300 hover:bg-emerald-900/40'}`}
+    >
+      {icon}
+      {label}
+    </Link>
+  );
 
   return (
     <main className="min-h-screen bg-[#081712] text-[#f2ede2] px-6 py-8 md:px-14 selection:bg-emerald-500 selection:text-white">
@@ -54,21 +65,40 @@ export default async function AdminPanel({ searchParams }: { searchParams: Promi
           </div>
         </header>
 
-        {/* Навигация по вкладкам */}
-        <div className="flex overflow-x-auto gap-2 pb-4 mb-6 hide-scrollbar">
-          {tabs.map(t => (
-            <Link 
-              key={t.id} 
-              href={`?tab=${t.id}`}
-              className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-bold whitespace-nowrap transition-all ${currentTab === t.id ? 'bg-emerald-500 text-white shadow-[0_0_15px_rgba(16,185,129,0.3)]' : 'bg-emerald-950/40 text-emerald-300/70 border border-emerald-500/20 hover:text-emerald-300 hover:bg-emerald-900/40'}`}
-            >
-              {t.icon}
-              {t.label}
-            </Link>
-          ))}
+        {/* Навигация по вкладкам (группировка в 3 уровня) */}
+        <div className="space-y-3 mb-8">
+          {/* Уровень 1: Участники */}
+          <div className="flex overflow-x-auto gap-2 hide-scrollbar">
+            <NavTab id="companies" label="Компании" icon={<Building size={16} />} />
+            <NavTab id="startups" label="Стартапы" icon={<Building size={16} />} />
+            <NavTab id="individuals" label="Физ. лица" icon={<Users size={16} />} />
+          </div>
+
+          {/* Уровень 2: Контент */}
+          <div className="flex overflow-x-auto gap-2 hide-scrollbar">
+            <NavTab id="events" label="События" icon={<CalendarDays size={16} />} />
+          </div>
+
+          {/* Уровень 3: Заявки */}
+          <div className="flex overflow-x-auto gap-2 pb-4 border-b border-emerald-500/20 hide-scrollbar">
+            <NavTab id="requests" label="Заявки по обратной связи" icon={<MessageSquare size={16} />} />
+            <NavTab id="registrations" label="Заявки на регистрацию" icon={<Users size={16} />} />
+          </div>
         </div>
 
         {/* Контент вкладок */}
+        
+        {/* === Вкладка СТАРТАПЫ / ФИЗ ЛИЦА (Заглушки) === */}
+        {(currentTab === "startups" || currentTab === "individuals") && (
+          <div className="animate-in fade-in duration-300">
+            <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
+              {currentTab === "startups" ? "Стартапы" : "Физ. лица"} (В разработке)
+            </h2>
+            <div className="p-8 rounded-2xl border border-emerald-500/20 bg-emerald-950/20 text-center text-emerald-400/60 font-mono text-sm">
+              Раздел скоро появится
+            </div>
+          </div>
+        )}
         
         {/* === Вкладка КОМПАНИИ === */}
         {currentTab === "companies" && (
@@ -232,6 +262,86 @@ export default async function AdminPanel({ searchParams }: { searchParams: Promi
               ))}
               
               {requests.length === 0 && (
+                <div className="p-8 rounded-2xl border border-emerald-500/20 bg-emerald-950/20 text-center text-emerald-400/60 font-mono text-sm">
+                  Заявок пока нет
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* === Вкладка РЕГИСТРАЦИИ НА ПЛАТФОРМУ === */}
+        {currentTab === "registrations" && (
+          <div className="animate-in fade-in duration-300">
+            <h2 className="text-lg font-bold mb-6">Заявки на регистрацию ({registrations.length})</h2>
+            
+            <div className="grid grid-cols-1 gap-4">
+              {registrations.map(reg => (
+                <div key={reg.id} className={`p-5 rounded-2xl border transition-colors ${reg.status === 'PENDING' ? 'border-emerald-500/50 bg-[#06241a] shadow-[0_0_15px_rgba(16,185,129,0.1)]' : 'border-emerald-500/10 bg-emerald-950/20 opacity-70'}`}>
+                  <div className="flex justify-between items-start mb-3">
+                    <div>
+                      <h3 className="font-bold text-lg text-white flex items-center gap-2">
+                        {reg.name}
+                        {reg.status === 'PENDING' && <span className="px-2 py-0.5 bg-yellow-500 text-black text-[10px] rounded-full uppercase tracking-wider font-bold">Ожидает</span>}
+                        {reg.status === 'APPROVED' && <span className="px-2 py-0.5 bg-emerald-500 text-black text-[10px] rounded-full uppercase tracking-wider font-bold">Одобрен</span>}
+                      </h3>
+                      <div className="text-xs text-emerald-400/80 font-mono mt-1">
+                        {new Date(reg.createdAt).toLocaleString()} · Категория: {
+                          reg.category === 'STARTUP' ? 'Стартап' :
+                          reg.category === 'COMPANY' ? 'Компания' : 'Физ. лицо'
+                        }
+                      </div>
+                    </div>
+                    {reg.status === 'PENDING' && (
+                      <form action={async () => {
+                        "use server";
+                        
+                        // 1. Обновляем статус заявки
+                        const approvedReg = await prisma.registrationRequest.update({
+                          where: { id: reg.id },
+                          data: { status: "APPROVED" }
+                        });
+
+                        // 2. Создаем компанию для любого участника (чтобы он был в сообществе)
+                        const newCompany = await prisma.company.create({
+                          data: {
+                            name: approvedReg.name,
+                            bin: `MOCK-${Date.now()}`, // Временный БИН для MVP
+                            status: "APPROVED",
+                            email: approvedReg.email,
+                            category: approvedReg.category // STARTUP, COMPANY, INDIVIDUAL
+                          }
+                        });
+
+                        // 3. Создаем пользователя
+                        await prisma.user.create({
+                          data: {
+                            name: approvedReg.name,
+                            email: approvedReg.email,
+                            role: approvedReg.category === "INDIVIDUAL" ? "EMPLOYEE" : "COMPANY_ADMIN",
+                            companyId: newCompany.id,
+                          }
+                        });
+
+                        revalidatePath("/res365/admin");
+                      }}>
+                        <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-500/20 border border-emerald-500/50 text-emerald-300 font-bold text-xs hover:bg-emerald-500 hover:text-white transition-colors">
+                          <Check size={14} /> Одобрить и Создать
+                        </button>
+                      </form>
+                    )}
+                  </div>
+                  
+                  <div className="flex items-center gap-4 text-sm bg-black/20 p-3 rounded-xl border border-emerald-500/10">
+                    <div>
+                      <span className="block text-[10px] text-emerald-500 uppercase tracking-wider mb-1">Email</span>
+                      <a href={`mailto:${reg.email}`} className="text-emerald-200 font-bold hover:underline">{reg.email}</a>
+                    </div>
+                  </div>
+                </div>
+              ))}
+              
+              {registrations.length === 0 && (
                 <div className="p-8 rounded-2xl border border-emerald-500/20 bg-emerald-950/20 text-center text-emerald-400/60 font-mono text-sm">
                   Заявок пока нет
                 </div>

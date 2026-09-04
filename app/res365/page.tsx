@@ -2,26 +2,54 @@
 
 import { useState } from "react";
 import { signIn } from "next-auth/react";
-import { ArrowLeft, Mail, Lock, Sparkles, Calendar, MapPin, ArrowUpRight } from "lucide-react";
+import { ArrowLeft, Mail, Lock, Sparkles, Calendar, MapPin, ArrowUpRight, CheckCircle2, Building, Building2, User } from "lucide-react";
 
 export default function Res365Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
+  const [category, setCategory] = useState(""); // STARTUP, COMPANY, INDIVIDUAL
   const [isLoading, setIsLoading] = useState(false);
+  
+  // Состояния: "login", "register_category", "register_details", "register_success"
+  const [mode, setMode] = useState<"login" | "register_category" | "register_details" | "register_success">("login");
 
   const handleEmailSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     
-    // Если введен пароль, используем временный тестовый вход
     if (password) {
       await signIn("credentials", { email, password, callbackUrl: "/res365/dashboard" });
     } else {
-      // Иначе шлем Magic Link
       await signIn("nodemailer", { email, callbackUrl: "/res365/dashboard" });
     }
     
     setIsLoading(false);
+  };
+
+  const handleRegisterSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    
+    try {
+      const res = await fetch("/api/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ category, name, email })
+      });
+      
+      const data = await res.json();
+      
+      if (data.success) {
+        setMode("register_success");
+      } else {
+        alert(data.error || "Ошибка при отправке заявки");
+      }
+    } catch (err) {
+      alert("Не удалось отправить заявку");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
 
@@ -53,62 +81,209 @@ export default function Res365Login() {
 
           <div className="text-center mb-5">
             <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-[#f2ede2]">
-              Вход в платформу
+              {mode === "login" && "Вход в платформу"}
+              {mode === "register_category" && "Кем вы являетесь?"}
+              {mode === "register_details" && "Заявка на регистрацию"}
+              {mode === "register_success" && "Заявка отправлена"}
             </h1>
           </div>
 
 
-          {/* Форма авторизации через Email */}
-          <form
-            onSubmit={handleEmailSignIn}
-            className="space-y-3.5"
-          >
-            <div>
-              <label className="block text-xs font-bold uppercase tracking-wider mb-1 text-emerald-300">
-                Email
-              </label>
-              <div className="relative">
-                <input
-                  required
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="name@company.com"
-                  className="w-full pl-10 pr-4 py-3 rounded-2xl bg-emerald-950/40 border border-emerald-500/30 text-[#f2ede2] placeholder:text-emerald-500/40 focus:outline-none focus:border-emerald-400 focus:shadow-[0_0_20px_rgba(74,222,128,0.25)] transition-all duration-300 text-sm"
-                />
-                <Mail size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-emerald-400/60" />
-              </div>
-            </div>
-
-            <div>
-              <div className="flex items-center justify-between mb-1">
-                <label className="block text-xs font-bold uppercase tracking-wider text-emerald-300">
-                  Пароль
+          {mode === "login" && (
+            <form onSubmit={handleEmailSignIn} className="space-y-3.5">
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider mb-1 text-emerald-300">
+                  Email
                 </label>
+                <div className="relative">
+                  <input
+                    required
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="name@company.com"
+                    className="w-full pl-10 pr-4 py-3 rounded-2xl bg-emerald-950/40 border border-emerald-500/30 text-[#f2ede2] placeholder:text-emerald-500/40 focus:outline-none focus:border-emerald-400 focus:shadow-[0_0_20px_rgba(74,222,128,0.25)] transition-all duration-300 text-sm"
+                  />
+                  <Mail size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-emerald-400/60" />
+                </div>
               </div>
-              <div className="relative">
-                <input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
-                  className="w-full pl-10 pr-4 py-3 rounded-2xl bg-emerald-950/40 border border-emerald-500/30 text-[#f2ede2] placeholder:text-emerald-500/40 focus:outline-none focus:border-emerald-400 focus:shadow-[0_0_20px_rgba(74,222,128,0.25)] transition-all duration-300 text-sm"
-                />
-                <Lock size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-emerald-400/60" />
+
+              <div>
+                <div className="flex items-center justify-between mb-1">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-emerald-300">
+                    Пароль
+                  </label>
+                </div>
+                <div className="relative">
+                  <input
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="••••••••"
+                    className="w-full pl-10 pr-4 py-3 rounded-2xl bg-emerald-950/40 border border-emerald-500/30 text-[#f2ede2] placeholder:text-emerald-500/40 focus:outline-none focus:border-emerald-400 focus:shadow-[0_0_20px_rgba(74,222,128,0.25)] transition-all duration-300 text-sm"
+                  />
+                  <Lock size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-emerald-400/60" />
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="w-full mt-2 py-3.5 rounded-full font-bold text-sm text-white bg-gradient-to-r from-emerald-600 to-emerald-500 border border-emerald-400/50 hover:border-emerald-300 hover:from-emerald-500 hover:to-emerald-400 hover:shadow-[0_0_30px_rgba(74,222,128,0.6)] hover:scale-[1.02] transition-all duration-300 shadow-xl shadow-emerald-950/80 cursor-pointer flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <span>{isLoading ? "Вход..." : "Войти"}</span>
+                <ArrowUpRight size={16} />
+              </button>
+              
+              <div className="text-center pt-2">
+                <button 
+                  type="button"
+                  onClick={() => {
+                    setMode("register_category");
+                    setEmail("");
+                    setPassword("");
+                  }}
+                  className="text-sm font-medium text-emerald-400/80 hover:text-emerald-300 transition-colors"
+                >
+                  Нет аккаунта? Зарегистрироваться
+                </button>
+              </div>
+            </form>
+          )}
+
+
+          {mode === "register_category" && (
+            <div className="space-y-4 animate-in fade-in duration-300">
+              <button
+                onClick={() => { setCategory("STARTUP"); setMode("register_details"); }}
+                className="w-full flex items-center justify-start gap-4 p-4 rounded-2xl bg-emerald-950/40 border border-emerald-500/30 hover:border-emerald-400 hover:bg-emerald-900/40 transition-all text-left group"
+              >
+                <div className="w-10 h-10 rounded-full bg-emerald-900/50 flex items-center justify-center text-emerald-400 group-hover:scale-110 transition-transform">
+                  <Sparkles size={20} />
+                </div>
+                <div>
+                  <h3 className="font-bold text-[#f2ede2]">Стартап</h3>
+                  <p className="text-xs text-emerald-500/60 mt-0.5">Разрабатываю инновационный продукт</p>
+                </div>
+              </button>
+
+              <button
+                onClick={() => { setCategory("COMPANY"); setMode("register_details"); }}
+                className="w-full flex items-center justify-start gap-4 p-4 rounded-2xl bg-emerald-950/40 border border-emerald-500/30 hover:border-emerald-400 hover:bg-emerald-900/40 transition-all text-left group"
+              >
+                <div className="w-10 h-10 rounded-full bg-emerald-900/50 flex items-center justify-center text-emerald-400 group-hover:scale-110 transition-transform">
+                  <Building2 size={20} />
+                </div>
+                <div>
+                  <h3 className="font-bold text-[#f2ede2]">Компания</h3>
+                  <p className="text-xs text-emerald-500/60 mt-0.5">Действующий бизнес в эко-сфере</p>
+                </div>
+              </button>
+
+              <button
+                onClick={() => { setCategory("INDIVIDUAL"); setMode("register_details"); }}
+                className="w-full flex items-center justify-start gap-4 p-4 rounded-2xl bg-emerald-950/40 border border-emerald-500/30 hover:border-emerald-400 hover:bg-emerald-900/40 transition-all text-left group"
+              >
+                <div className="w-10 h-10 rounded-full bg-emerald-900/50 flex items-center justify-center text-emerald-400 group-hover:scale-110 transition-transform">
+                  <User size={20} />
+                </div>
+                <div>
+                  <h3 className="font-bold text-[#f2ede2]">Физ. лицо</h3>
+                  <p className="text-xs text-emerald-500/60 mt-0.5">Эколог, эксперт или посетитель</p>
+                </div>
+              </button>
+
+              <div className="text-center pt-2">
+                <button 
+                  onClick={() => setMode("login")}
+                  className="text-sm font-medium text-emerald-400/80 hover:text-emerald-300 transition-colors"
+                >
+                  Вернуться ко входу
+                </button>
               </div>
             </div>
+          )}
 
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="w-full mt-2 py-3.5 rounded-full font-bold text-sm text-white bg-gradient-to-r from-emerald-600 to-emerald-500 border border-emerald-400/50 hover:border-emerald-300 hover:from-emerald-500 hover:to-emerald-400 hover:shadow-[0_0_30px_rgba(74,222,128,0.6)] hover:scale-[1.02] transition-all duration-300 shadow-xl shadow-emerald-950/80 cursor-pointer flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <span>{isLoading ? "Отправка..." : "Получить ссылку для входа"}</span>
-              <ArrowUpRight size={16} />
-            </button>
-          </form>
 
-          {/* Блок регистрации временно скрыт по требованию модерации (только по приглашениям) */}
+          {mode === "register_details" && (
+            <form onSubmit={handleRegisterSubmit} className="space-y-4 animate-in slide-in-from-right-4 duration-300">
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider mb-1 text-emerald-300">
+                  {category === "INDIVIDUAL" ? "Ваше ФИО" : "Название"}
+                </label>
+                <div className="relative">
+                  <input
+                    required
+                    type="text"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder={category === "INDIVIDUAL" ? "Иванов Иван" : 'ТОО "EcoTech"'}
+                    className="w-full pl-10 pr-4 py-3 rounded-2xl bg-emerald-950/40 border border-emerald-500/30 text-[#f2ede2] placeholder:text-emerald-500/40 focus:outline-none focus:border-emerald-400 transition-all text-sm"
+                  />
+                  {category === "INDIVIDUAL" ? (
+                    <User size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-emerald-400/60" />
+                  ) : (
+                    <Building size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-emerald-400/60" />
+                  )}
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider mb-1 text-emerald-300">
+                  Рабочий Email
+                </label>
+                <div className="relative">
+                  <input
+                    required
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="name@company.com"
+                    className="w-full pl-10 pr-4 py-3 rounded-2xl bg-emerald-950/40 border border-emerald-500/30 text-[#f2ede2] placeholder:text-emerald-500/40 focus:outline-none focus:border-emerald-400 transition-all text-sm"
+                  />
+                  <Mail size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-emerald-400/60" />
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="w-full mt-2 py-3.5 rounded-full font-bold text-sm text-white bg-gradient-to-r from-emerald-600 to-emerald-500 border border-emerald-400/50 hover:border-emerald-300 hover:from-emerald-500 hover:to-emerald-400 hover:scale-[1.02] transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+              >
+                <span>{isLoading ? "Отправка..." : "Подать заявку"}</span>
+              </button>
+
+              <div className="text-center pt-2">
+                <button 
+                  type="button"
+                  onClick={() => setMode("register_category")}
+                  className="text-sm font-medium text-emerald-400/80 hover:text-emerald-300 transition-colors"
+                >
+                  Назад к выбору категории
+                </button>
+              </div>
+            </form>
+          )}
+
+          {mode === "register_success" && (
+            <div className="flex flex-col items-center justify-center text-center space-y-4 py-4 animate-in zoom-in-95 duration-500">
+              <div className="w-16 h-16 bg-emerald-500/20 rounded-full flex items-center justify-center text-emerald-400 mb-2">
+                <CheckCircle2 size={32} />
+              </div>
+              <h3 className="text-lg font-bold text-[#f2ede2]">Заявка успешно отправлена!</h3>
+              <p className="text-sm text-emerald-100/70 leading-relaxed max-w-[260px]">
+                Вам поступит письмо с доступом к платформе после успешного прохождения модерации.
+              </p>
+              
+              <button
+                onClick={() => setMode("login")}
+                className="mt-6 px-6 py-2 rounded-full font-bold text-sm text-emerald-400 border border-emerald-500/30 hover:bg-emerald-900/30 transition-all"
+              >
+                Вернуться на главную
+              </button>
+            </div>
+          )}
+
 
           {/* Копирайт прямо по центру под формой */}
           <div className="text-center text-xs text-emerald-500/50 font-mono mt-6">
