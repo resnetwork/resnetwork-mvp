@@ -8,6 +8,7 @@ import PartnersMarquee from "./components/PartnersMarquee";
 import NewsSection from "./components/NewsSection";
 import BlueprintRadial from "./components/BlueprintRadial";
 import TimelineSection from "./components/TimelineSection";
+import { TypewriterEffectSmooth } from "./components/ui/typewriter-effect";
 import FocusRevealHeading from "./components/FocusRevealHeading";
 import PlatformCallToAction from "./components/PlatformCallToAction";
 
@@ -82,8 +83,19 @@ export default function Home() {
           <div className="flex-1 w-full lg:max-w-xl xl:max-w-2xl flex flex-col items-start text-left">
             <h1 className="text-3xl sm:text-4xl lg:text-[2.65rem] xl:text-[3.15rem] font-black leading-[1.16] tracking-tight text-white mb-6 [text-wrap:balance]">
               <span>Центральная Азия строит зелёную экономику.</span>{" "}
-              <span className="block mt-2 text-transparent bg-clip-text bg-gradient-to-r from-res-accent via-[#5be7a9] to-[#AFE552]">
-                RES Network соединяет тех, кто её строит.
+              <span className="block mt-2">
+                <TypewriterEffectSmooth 
+                  words={[
+                    { text: "RES", className: "text-transparent bg-clip-text bg-gradient-to-r from-res-accent to-[#5be7a9]" },
+                    { text: "Network", className: "text-transparent bg-clip-text bg-gradient-to-r from-[#5be7a9] to-[#5be7a9]" },
+                    { text: "соединяет", className: "text-transparent bg-clip-text bg-gradient-to-r from-[#5be7a9] to-[#80ce80]" },
+                    { text: "тех,", className: "text-transparent bg-clip-text bg-gradient-to-r from-[#80ce80] to-[#AFE552]" },
+                    { text: "кто", className: "text-transparent bg-clip-text bg-gradient-to-r from-[#AFE552] to-[#AFE552]" },
+                    { text: "её", className: "text-transparent bg-clip-text bg-gradient-to-r from-[#AFE552] to-[#AFE552]" },
+                    { text: "строит.", className: "text-transparent bg-clip-text bg-gradient-to-r from-[#AFE552] to-[#AFE552]" }
+                  ]}
+                  cursorClassName="h-6 sm:h-8 lg:h-10 xl:h-12 bg-[#AFE552]"
+                />
               </span>
             </h1>
 

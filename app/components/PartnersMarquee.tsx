@@ -1,27 +1,29 @@
-const GROUPS = [
-  {
-    title: "Они строят экосистему",
-    direction: "left",
-    speed: "40s",
-    logos: [
-      { src: "/logo-bf.png", name: "Business First", className: "h-9 sm:h-12 md:h-16" },
-      { src: "/logo-brettc.jpg", name: "B&R ETTC", className: "h-10 sm:h-14 md:h-20" },
-      { src: "/logo-caier.jpeg", name: "CAIER", className: "h-12 sm:h-16 md:h-24" },
-    ],
-  },
-  {
-    title: "Они формируют энергопереход",
-    direction: "right",
-    speed: "45s",
-    logos: [
-      { src: "/logo-igtic.png", name: "IGTIC", className: "h-10 sm:h-14 md:h-20" },
-      { src: "/logo-petrocouncil.png", name: "Petrocouncil", className: "h-8 sm:h-11 md:h-16" },
-      { src: "/logo-unesco.png", name: "UNESCO", className: "h-10 sm:h-14 md:h-20" },
-    ],
-  },
-];
+"use client";
+
+import { useEffect, useState } from "react";
+
+type PartnerLogo = { id: string, name: string, imageUrl: string, className: string };
+type PartnerCategory = { id: string, title: string, direction: string, speed: string, logos: PartnerLogo[] };
 
 export default function PartnersMarquee() {
+  const [categories, setCategories] = useState<PartnerCategory[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    fetch("/api/partners")
+      .then(res => res.json())
+      .then(data => {
+        setCategories(data);
+        setIsLoading(false);
+      })
+      .catch(err => {
+        console.error(err);
+        setIsLoading(false);
+      });
+  }, []);
+
+  if (isLoading || categories.length === 0) return null;
+
   return (
     <div className="w-full max-w-[1400px] mx-auto px-4 md:px-8">
       <style>{`
@@ -47,13 +49,13 @@ export default function PartnersMarquee() {
       
       <div className="bg-white rounded-[3rem] py-12 md:py-20 shadow-[0_30px_60px_rgba(0,184,124,0.1)] border border-res-accent/20 overflow-hidden">
         <div className="space-y-16 md:space-y-24">
-          {GROUPS.map((group, groupIdx) => {
+          {categories.map((group) => {
             // Дублируем массив логотипов 12 раз, чтобы строка была гарантированно шире любого экрана.
             // При анимации до -50% она пройдет ровно половину (6 блоков) и бесшовно зациклится.
             const repeatedLogos = Array.from({ length: 12 }).flatMap(() => group.logos);
             
             return (
-              <div key={groupIdx} className="relative flex flex-col group">
+              <div key={group.id} className="relative flex flex-col group">
                 <h3 className="mb-8 md:mb-14 text-center text-base md:text-xl font-black tracking-[0.25em] text-[#0a1f24] uppercase flex items-center justify-center gap-6 opacity-70 px-4">
                   <span className="h-[2px] bg-[#0a1f24]/20 w-12 md:w-32 rounded-full"></span>
                   {group.title}
@@ -68,11 +70,11 @@ export default function PartnersMarquee() {
                   >
                     {repeatedLogos.map((logo, idx) => (
                       <div
-                        key={`${logo.name}-${idx}`}
+                        key={`${logo.id}-${idx}`}
                         className="flex shrink-0 items-center justify-center transition-transform duration-500 hover:scale-110 hover:brightness-110 cursor-pointer"
                       >
                         <img
-                          src={logo.src}
+                          src={logo.imageUrl}
                           alt={logo.name}
                           className={`w-auto object-contain ${logo.className}`}
                         />

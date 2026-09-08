@@ -2,8 +2,9 @@ import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { prisma } from "@/app/lib/prisma";
 import { revalidatePath } from "next/cache";
-import { ShieldCheck, Check, X, Building, ArrowLeft, CalendarDays, Users, MessageSquare } from "lucide-react";
+import { ShieldCheck, Check, X, Building, ArrowLeft, CalendarDays, Users, MessageSquare, Image as ImageIcon, Plus } from "lucide-react";
 import Link from "next/link";
+import PartnerUploader from "./PartnerUploader";
 
 export default async function AdminPanel({ searchParams }: { searchParams: Promise<{ tab?: string }> }) {
   const session = await auth();
@@ -51,6 +52,62 @@ export default async function AdminPanel({ searchParams }: { searchParams: Promi
     orderBy: { createdAt: "desc" }
   }) : [];
 
+  // --- Вкладка Партнеры ---
+  const partnerCategories = currentTab === "partners" ? await prisma.partnerCategory.findMany({
+    orderBy: { order: "asc" },
+    include: {
+      logos: { orderBy: { createdAt: "asc" } }
+    }
+  }) : [];
+
+  // Серверная функция для добавления категории
+  async function addCategoryAction(formData: FormData) {
+    "use server";
+    const title = formData.get("title") as string;
+    const direction = formData.get("direction") as string || "left";
+    if (!title) return;
+    
+    // Определяем максимальный order
+    const lastCat = await prisma.partnerCategory.findFirst({
+      orderBy: { order: 'desc' }
+    });
+    const newOrder = lastCat ? lastCat.order + 1 : 0;
+
+    await prisma.partnerCategory.create({
+      data: { title, direction, order: newOrder }
+    });
+    revalidatePath("/res365/admin");
+  }
+
+  // Серверная функция для удаления категории
+  async function deleteCategoryAction(formData: FormData) {
+    "use server";
+    const id = formData.get("id") as string;
+    await prisma.partnerCategory.delete({ where: { id } });
+    revalidatePath("/res365/admin");
+  }
+
+  // Серверная функция для удаления логотипа
+  async function deleteLogoAction(formData: FormData) {
+    "use server";
+    const id = formData.get("id") as string;
+    await prisma.partnerLogo.delete({ where: { id } });
+    revalidatePath("/res365/admin");
+  }
+
+  // Серверная функция для загрузки логотипа
+  async function addLogoAction(categoryId: string, name: string, base64: string) {
+    "use server";
+    await prisma.partnerLogo.create({
+      data: {
+        name,
+        imageUrl: base64,
+        categoryId
+      }
+    });
+    revalidatePath("/res365/admin");
+  }
+
 
 
   const NavTab = ({ id, label, icon }: { id: string, label: string, icon: React.ReactNode }) => (
@@ -92,6 +149,7 @@ export default async function AdminPanel({ searchParams }: { searchParams: Promi
           {/* Уровень 2: Контент */}
           <div className="flex overflow-x-auto gap-2 hide-scrollbar">
             <NavTab id="events" label="События" icon={<CalendarDays size={16} />} />
+            <NavTab id="partners" label="Логотипы (Партнеры)" icon={<ImageIcon size={16} />} />
           </div>
 
           {/* Уровень 3: Заявки */}
@@ -450,6 +508,89 @@ export default async function AdminPanel({ searchParams }: { searchParams: Promi
               {registrations.length === 0 && (
                 <div className="p-8 rounded-2xl border border-emerald-500/20 bg-emerald-950/20 text-center text-emerald-400/60 font-mono text-sm">
                   Заявок пока нет
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+
+        {/* === Вкладка ПАРТНЕРЫ (Логотипы на главной) === */}
+        {currentTab === "partners" && (
+          <div className="animate-in fade-in duration-300">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-lg font-bold">Наши партнеры (Бегущие строки)</h2>
+            </div>
+            
+            {/* Форма создания новой категории */}
+            <div className="mb-8 p-5 rounded-2xl border border-emerald-500/30 bg-[#06241a]">
+              <h3 className="text-sm font-bold text-emerald-300 uppercase tracking-wider mb-4">Создать новое разделение</h3>
+              <form action={addCategoryAction} className="flex flex-col sm:flex-row gap-4 items-end">
+                <div className="flex-1 w-full">
+                  <label className="block text-xs text-emerald-500/70 mb-1">Название (например: Информационные партнеры)</label>
+                  <input required name="title" type="text" className="w-full px-4 py-2 rounded-xl bg-black/40 border border-emerald-500/30 text-white focus:border-emerald-400 outline-none" />
+                </div>
+                <div className="w-full sm:w-48">
+                  <label className="block text-xs text-emerald-500/70 mb-1">Направление</label>
+                  <select name="direction" className="w-full px-4 py-2.5 rounded-xl bg-black/40 border border-emerald-500/30 text-white focus:border-emerald-400 outline-none appearance-none">
+                    <option value="left">Влево ←</option>
+                    <option value="right">Вправо →</option>
+                  </select>
+                </div>
+                <button type="submit" className="px-5 py-2.5 bg-emerald-500 text-black font-bold text-sm rounded-xl hover:bg-emerald-400 whitespace-nowrap transition-colors h-[42px] flex items-center justify-center">
+                  <Plus size={16} className="mr-1" /> Добавить
+                </button>
+              </form>
+            </div>
+
+            <div className="grid grid-cols-1 gap-6">
+              {partnerCategories.map(category => (
+                <div key={category.id} className="p-6 rounded-2xl border border-emerald-500/20 bg-emerald-950/10">
+                  <div className="flex justify-between items-start mb-6 pb-4 border-b border-emerald-500/10">
+                    <div>
+                      <h3 className="font-black text-xl text-white tracking-widest uppercase">{category.title}</h3>
+                      <div className="text-xs text-emerald-400/60 font-mono mt-1">
+                        Анимация: {category.direction === 'left' ? 'Влево' : 'Вправо'} | Скорость: {category.speed}
+                      </div>
+                    </div>
+                    <form action={deleteCategoryAction}>
+                      <input type="hidden" name="id" value={category.id} />
+                      <button type="submit" className="text-red-400/70 hover:text-red-400 text-xs flex items-center gap-1 transition-colors">
+                        <X size={14} /> Удалить категорию
+                      </button>
+                    </form>
+                  </div>
+
+                  {/* Список загруженных логотипов */}
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mb-6">
+                    {category.logos.map(logo => (
+                      <div key={logo.id} className="group relative bg-black/30 rounded-xl p-4 flex flex-col items-center justify-center border border-emerald-500/10 hover:border-emerald-500/30 transition-colors">
+                        <img src={logo.imageUrl} alt={logo.name} className="h-12 w-auto object-contain mb-3" />
+                        <span className="text-[10px] text-emerald-400/50 uppercase truncate max-w-full" title={logo.name}>{logo.name}</span>
+                        
+                        <form action={deleteLogoAction} className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <input type="hidden" name="id" value={logo.id} />
+                          <button type="submit" className="p-1 bg-red-500/20 text-red-400 rounded-full hover:bg-red-500/40" title="Удалить логотип">
+                            <X size={12} />
+                          </button>
+                        </form>
+                      </div>
+                    ))}
+                    {category.logos.length === 0 && (
+                      <div className="col-span-full py-4 text-center text-emerald-500/40 text-xs">
+                        Пока нет логотипов в этой категории
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Компонент загрузки */}
+                  <PartnerUploader categoryId={category.id} addLogoAction={addLogoAction} />
+                </div>
+              ))}
+
+              {partnerCategories.length === 0 && (
+                <div className="text-center py-12 text-emerald-500/50 font-mono">
+                  Категорий партнеров пока нет. Создайте первую выше.
                 </div>
               )}
             </div>

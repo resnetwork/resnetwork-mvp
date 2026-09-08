@@ -167,3 +167,29 @@ model RegistrationRequest {
 
   @@map("registration_requests")
 }
+
+// Категория партнеров на главной странице (например, "ОНИ СТРОЯТ ЭКОСИСТЕМУ")
+model PartnerCategory {
+  id        String   @id @default(cuid())
+  title     String   // Название категории
+  direction String   @default("left") // "left" или "right"
+  speed     String   @default("40s") // скорость бегущей строки
+  order     Int      @default(0) // порядок сортировки
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  logos     PartnerLogo[]
+}
+
+// Логотип партнера
+model PartnerLogo {
+  id         String   @id @default(cuid())
+  name       String   // Название компании для alt-текста
+  imageUrl   String   // Base64 строка или обычный URL
+  className  String   @default("h-10 sm:h-14 md:h-20") // размеры Tailwind
+  categoryId String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  
+  category   PartnerCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+}

@@ -295,8 +295,8 @@ export default function Res365Login() {
       {/* Правая половина: Экологическая выставка RES EXPO 2027 с величественным эко-фото */}
       <div className="hidden md:flex md:w-1/2 relative overflow-hidden bg-gradient-to-br from-[#063325] to-[#02130e]">
         <img
-          src="https://images.unsplash.com/photo-1497435334941-8c899ee9e8e9?w=1600&q=85&auto=format&fit=crop"
-          alt="RES EXPO 2027 Green Energy Eco Exhibition"
+          src="/expo-card.jpg"
+          alt="RES+ EXPO 2027"
           className="w-full h-full object-cover scale-105 hover:scale-100 transition-transform duration-1000"
         />
 
@@ -311,26 +311,30 @@ export default function Res365Login() {
         <div className="absolute bottom-10 left-10 right-10 p-7 md:p-8 rounded-3xl border border-emerald-400/30 bg-[#06241a]/85 backdrop-blur-2xl shadow-2xl">
           <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-emerald-300 mb-2.5">
             <Sparkles size={16} className="text-emerald-400 animate-pulse" />
-            <span>Флагманская экологическая выставка</span>
+            <span>ФЛАГМАНСКОЕ СОБЫТИЕ ЭКОСИСТЕМЫ</span>
           </div>
 
           <h2 className="text-3xl md:text-4xl font-extrabold text-[#f2ede2] leading-tight tracking-tight mb-3">
-            RES EXPO <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 to-green-300">2027</span>
+            RES+ EXPO <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 to-green-300">2027</span>
           </h2>
 
           <p className="text-xs md:text-sm text-[#9fb7a8] leading-relaxed mb-4 font-normal">
-            Главный международный конгресс и выставка чистых технологий, климатических инвестиций и экологической трансформации Центральной Азии.
+            Платформа работает круглый год. RES+ EXPO — момент, когда экосистема встречается лично: подписываются соглашения, запускаются проекты, находятся инвесторы.
           </p>
 
           <div className="flex flex-wrap items-center gap-4 text-xs font-semibold text-emerald-200/90 pt-3 border-t border-emerald-500/20">
             <span className="flex items-center gap-2">
               <Calendar size={15} className="text-emerald-400" />
-              <span>20–22 мая 2027</span>
+              <span>5–7 мая 2027</span>
             </span>
             <span className="flex items-center gap-2">
               <MapPin size={15} className="text-emerald-400" />
-              <span>Астана, Казахстан · EXPO Congress Centre</span>
+              <span>МВЦ EXPO, Астана</span>
             </span>
+          </div>
+          
+          <div className="mt-3 text-[#A1BB94] text-[10px] md:text-xs font-medium uppercase tracking-wider">
+            1000+ международных участников <span className="mx-2 text-res-accent/50">•</span> Выставка + конференция + B2B-мэтчинг
           </div>
         </div>
       </div>
