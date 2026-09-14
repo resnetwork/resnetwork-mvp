@@ -209,3 +209,28 @@ export async function deleteAccount(companyId: string) {
   }
 }
 
+export async function getProfileInfo() {
+  try {
+    const session = await auth();
+    if (!session?.user?.id) return { success: false };
+
+    const user = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      include: { company: true }
+    });
+
+    if (!user) return { success: false };
+
+    return {
+      success: true,
+      accountType: user.company?.category || "INDIVIDUAL",
+      companyName: user.company?.name || user.name || "",
+      description: user.company?.description || "",
+      logoUrl: user.company?.logoUrl || user.image || ""
+    };
+  } catch (error) {
+    console.error("Ошибка при получении профиля:", error);
+    return { success: false };
+  }
+}
+

@@ -1,15 +1,23 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { UploadCloud, Save, Building2, AlignLeft, Phone, User as UserIcon, Sparkles, KeyRound } from "lucide-react";
-import { changePassword } from "@/app/lib/actions";
+import { changePassword, getProfileInfo } from "@/app/lib/actions";
 
 export default function ProfilePage() {
   const [isSaving, setIsSaving] = useState(false);
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
-  
-  // В будущем тип аккаунта будет приходить из базы данных (выбирается при регистрации)
-  const accountType = "STARTUP" as string; // Временно поставим STARTUP для проверки
+  const [accountType, setAccountType] = useState<string>("STARTUP");
+
+  useEffect(() => {
+    async function loadProfile() {
+      const info = await getProfileInfo();
+      if (info.success && info.accountType) {
+        setAccountType(info.accountType);
+      }
+    }
+    loadProfile();
+  }, []);
 
   const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
