@@ -226,11 +226,44 @@ export async function getProfileInfo() {
       accountType: user.company?.category || "INDIVIDUAL",
       companyName: user.company?.name || user.name || "",
       description: user.company?.description || "",
-      logoUrl: user.company?.logoUrl || user.image || ""
+      logoUrl: user.company?.logoUrl || user.image || "",
+      email: user.company?.email || "",
+      website: user.company?.website || "",
+      phone: user.company?.phone || "",
     };
   } catch (error) {
     console.error("Ошибка при получении профиля:", error);
     return { success: false };
+  }
+}
+
+export async function updateProfile(data: { description: string, email: string, website: string, phone: string, logoUrl?: string }) {
+  try {
+    const session = await auth();
+    if (!session?.user?.id) return { success: false, error: "Не авторизован" };
+
+    const user = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: { companyId: true }
+    });
+
+    if (!user?.companyId) return { success: false, error: "Компания не найдена" };
+
+    await prisma.company.update({
+      where: { id: user.companyId },
+      data: {
+        description: data.description,
+        email: data.email,
+        website: data.website,
+        phone: data.phone,
+        ...(data.logoUrl && { logoUrl: data.logoUrl }),
+      }
+    });
+
+    return { success: true };
+  } catch (error) {
+    console.error("Ошибка при сохранении профиля:", error);
+    return { success: false, error: "Ошибка сервера" };
   }
 }
 

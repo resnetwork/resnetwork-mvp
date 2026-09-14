@@ -31,7 +31,7 @@ export default async function AdminPanel({ searchParams }: { searchParams: Promi
     include: { users: true }
   }) : [];
 
-  // --- Вкладка Физ. лица ---
+  // --- Вкладка Эксперты ---
   const individuals = currentTab === "individuals" ? await prisma.company.findMany({
     where: { category: "INDIVIDUAL" },
     orderBy: { createdAt: "desc" },
@@ -145,7 +145,7 @@ export default async function AdminPanel({ searchParams }: { searchParams: Promi
           <div className="flex overflow-x-auto gap-2 hide-scrollbar">
             <NavTab id="companies" label="Компании" icon={<Building size={16} />} />
             <NavTab id="startups" label="Стартапы" icon={<Building size={16} />} />
-            <NavTab id="individuals" label="Физ. лица" icon={<Users size={16} />} />
+            <NavTab id="individuals" label="Эксперты" icon={<Users size={16} />} />
           </div>
 
           {/* Уровень 2: Контент */}
@@ -273,18 +273,18 @@ export default async function AdminPanel({ searchParams }: { searchParams: Promi
           </div>
         )}
 
-        {/* === Вкладка ФИЗ. ЛИЦА === */}
+        {/* === Вкладка ЭКСПЕРТЫ === */}
         {currentTab === "individuals" && (
           <div className="animate-in fade-in duration-300">
             <section className="mb-12">
               <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
                 <Users className="text-emerald-400 w-5 h-5" />
-                Физ. лица ({individuals.length})
+                Эксперты ({individuals.length})
               </h2>
 
               {individuals.length === 0 ? (
                 <div className="p-8 rounded-2xl border border-emerald-500/20 bg-emerald-950/20 text-center text-emerald-400/60 font-mono text-sm">
-                  Нет физ. лиц
+                  Нет экспертов
                 </div>
               ) : (
                 <div className="grid grid-cols-1 gap-4">
@@ -461,7 +461,7 @@ export default async function AdminPanel({ searchParams }: { searchParams: Promi
                       <div className="text-xs text-emerald-400/80 font-mono mt-1">
                         {new Date(reg.createdAt).toLocaleString()} · Категория: {
                           reg.category === 'STARTUP' ? 'Стартап' :
-                          reg.category === 'COMPANY' ? 'Компания' : 'Физ. лицо'
+                          reg.category === 'COMPANY' ? 'Компания' : 'Эксперт'
                         }
                       </div>
                     </div>

@@ -27,7 +27,7 @@ export async function POST(req: Request) {
       let categoryRu = category;
       if (category === "STARTUP") categoryRu = "Стартап";
       if (category === "COMPANY") categoryRu = "Компания";
-      if (category === "INDIVIDUAL") categoryRu = "Физ. лицо";
+      if (category === "INDIVIDUAL") categoryRu = "Эксперт";
 
       const text = `🚀 *Новая заявка на регистрацию (RES 365)*
       

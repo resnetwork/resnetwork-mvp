@@ -28,7 +28,7 @@ export default function CommunityGrid({ companies }: { companies: any[] }) {
           onClick={() => setActiveTab("INDIVIDUAL")}
           className={`px-5 py-2.5 rounded-full text-sm font-bold whitespace-nowrap transition-all ${activeTab === 'INDIVIDUAL' ? 'bg-emerald-500 text-white shadow-[0_0_15px_rgba(16,185,129,0.3)]' : 'bg-emerald-950/40 text-emerald-300/70 border border-emerald-500/20 hover:text-emerald-300 hover:bg-emerald-900/40'}`}
         >
-          Физ. лица
+          Эксперты
         </button>
       </div>
 
@@ -40,11 +40,11 @@ export default function CommunityGrid({ companies }: { companies: any[] }) {
             className="flex flex-col bg-[#06241a]/60 border border-emerald-500/20 rounded-3xl p-6 hover:bg-[#06241a] hover:border-emerald-500/40 hover:shadow-[0_0_30px_rgba(16,185,129,0.1)] transition-all group cursor-pointer"
           >
             <div className="flex items-center gap-4 mb-4">
-              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-emerald-900/40 border border-emerald-500/30 flex items-center justify-center shrink-0 overflow-hidden group-hover:scale-105 transition-transform">
+              <div className="w-16 h-16 rounded-2xl bg-white border border-emerald-500/30 flex items-center justify-center shrink-0 overflow-hidden group-hover:scale-105 transition-transform p-1.5 shadow-sm">
                 {company.logoUrl ? (
-                  <img src={company.logoUrl} alt={company.name} className="w-full h-full object-cover" />
+                  <img src={company.logoUrl} alt={company.name} className="w-full h-full object-contain" />
                 ) : (
-                  <Building2 size={24} className="text-emerald-500/60" />
+                  <Building2 size={24} className="text-emerald-600/70" />
                 )}
               </div>
               <div>
@@ -63,7 +63,7 @@ export default function CommunityGrid({ companies }: { companies: any[] }) {
             <div className="pt-4 border-t border-emerald-500/20 flex flex-wrap gap-2 mt-auto">
               <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-950/50 border border-emerald-500/20 text-[10px] uppercase font-bold tracking-wider text-emerald-400">
                 <Building size={12} />
-                {company.category === "COMPANY" ? "Компания" : company.category === "STARTUP" ? "Стартап" : "Физ. лицо"}
+                {company.category === "COMPANY" ? "Компания" : company.category === "STARTUP" ? "Стартап" : "Эксперт"}
               </span>
             </div>
           </div>

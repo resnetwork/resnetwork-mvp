@@ -2,18 +2,28 @@
 
 import { useState, useEffect } from "react";
 import { UploadCloud, Save, Building2, AlignLeft, Phone, User as UserIcon, Sparkles, KeyRound } from "lucide-react";
-import { changePassword, getProfileInfo } from "@/app/lib/actions";
+import { changePassword, getProfileInfo, updateProfile } from "@/app/lib/actions";
 
 export default function ProfilePage() {
   const [isSaving, setIsSaving] = useState(false);
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
   const [accountType, setAccountType] = useState<string>("STARTUP");
 
+  const [description, setDescription] = useState("");
+  const [email, setEmail] = useState("");
+  const [website, setWebsite] = useState("");
+  const [phone, setPhone] = useState("");
+
   useEffect(() => {
     async function loadProfile() {
       const info = await getProfileInfo();
       if (info.success && info.accountType) {
         setAccountType(info.accountType);
+        setDescription(info.description || "");
+        setEmail(info.email || "");
+        setWebsite(info.website || "");
+        setPhone(info.phone || "");
+        if (info.logoUrl) setLogoPreview(info.logoUrl);
       }
     }
     loadProfile();
@@ -33,14 +43,24 @@ export default function ProfilePage() {
   const [password, setPassword] = useState("");
   const [passwordMessage, setPasswordMessage] = useState("");
 
-  const handleSave = (e: React.FormEvent) => {
+  const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSaving(true);
-    // Имитация сохранения остальных данных
-    setTimeout(() => {
-      setIsSaving(false);
+    
+    const result = await updateProfile({
+      description,
+      email,
+      website,
+      phone,
+      logoUrl: logoPreview || undefined
+    });
+
+    setIsSaving(false);
+    if (result.success) {
       alert("Профиль успешно сохранен!");
-    }, 1000);
+    } else {
+      alert("Ошибка при сохранении: " + result.error);
+    }
   };
 
   const handlePasswordChange = async () => {
@@ -118,6 +138,8 @@ export default function ProfilePage() {
             </label>
             <textarea
               rows={4}
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
               placeholder={accountType === "COMPANY" 
                 ? "Расскажите о вашей компании, проектах и технологиях..." 
                 : accountType === "STARTUP"
@@ -136,16 +158,22 @@ export default function ProfilePage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <input
                 type="text"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 placeholder="Email для связи (например: hello@company.kz)"
                 className="w-full px-4 py-3 rounded-2xl bg-emerald-950/40 border border-emerald-500/30 text-[#f2ede2] placeholder:text-emerald-500/40 focus:outline-none focus:border-emerald-400 focus:shadow-[0_0_20px_rgba(74,222,128,0.15)] transition-all"
               />
               <input
                 type="text"
+                value={website}
+                onChange={(e) => setWebsite(e.target.value)}
                 placeholder={accountType === "INDIVIDUAL" ? "Персональный сайт / Портфолио" : "Сайт"}
                 className="w-full px-4 py-3 rounded-2xl bg-emerald-950/40 border border-emerald-500/30 text-[#f2ede2] placeholder:text-emerald-500/40 focus:outline-none focus:border-emerald-400 focus:shadow-[0_0_20px_rgba(74,222,128,0.15)] transition-all"
               />
               <input
                 type="text"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
                 placeholder="Телефон"
                 className="w-full px-4 py-3 rounded-2xl bg-emerald-950/40 border border-emerald-500/30 text-[#f2ede2] placeholder:text-emerald-500/40 focus:outline-none focus:border-emerald-400 focus:shadow-[0_0_20px_rgba(74,222,128,0.15)] transition-all md:col-span-2"
               />

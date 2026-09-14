@@ -188,7 +188,7 @@ export default function Res365Login() {
                   <User size={20} />
                 </div>
                 <div>
-                  <h3 className="font-bold text-[#f2ede2]">Физ. лицо</h3>
+                  <h3 className="font-bold text-[#f2ede2]">Эксперт</h3>
                   <p className="text-xs text-emerald-500/60 mt-0.5">Эколог, эксперт или посетитель</p>
                 </div>
               </button>
