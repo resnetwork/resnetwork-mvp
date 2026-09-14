@@ -333,9 +333,18 @@ export default function Res365Login() {
             </span>
           </div>
           
-          <div className="mt-3 text-[#A1BB94] text-[10px] md:text-xs font-medium uppercase tracking-wider">
+          <div className="mt-3 text-[#A1BB94] text-[10px] md:text-xs font-medium uppercase tracking-wider mb-6">
             1000+ международных участников <span className="mx-2 text-res-accent/50">•</span> Выставка + конференция + B2B-мэтчинг
           </div>
+
+          <a 
+            href="https://www.res2027expo.kz/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2.5 px-6 py-2.5 bg-white hover:bg-[#E0EAB8] text-black rounded-full font-bold text-xs md:text-sm transition-all duration-300 shadow-[0_0_20px_rgba(255,255,255,0.15)] hover:scale-105 cursor-pointer"
+          >
+            Перейти к событию <ArrowUpRight size={16} />
+          </a>
         </div>
       </div>
     </main>

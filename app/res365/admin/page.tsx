@@ -5,6 +5,8 @@ import { revalidatePath } from "next/cache";
 import { ShieldCheck, Check, X, Building, ArrowLeft, CalendarDays, Users, MessageSquare, Image as ImageIcon, Plus } from "lucide-react";
 import Link from "next/link";
 import PartnerUploader from "./PartnerUploader";
+import DeleteAccountButton from "@/app/components/DeleteAccountButton";
+import { sendApprovalEmail } from "@/app/lib/email";
 
 export default async function AdminPanel({ searchParams }: { searchParams: Promise<{ tab?: string }> }) {
   const session = await auth();
@@ -191,6 +193,8 @@ export default async function AdminPanel({ searchParams }: { searchParams: Promi
                           <span className={`px-3 py-1 rounded-full text-xs font-bold ${company.status === 'APPROVED' ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30'}`}>
                             {company.status === 'APPROVED' ? 'Одобрена' : 'На рассмотрении'}
                           </span>
+                          
+                          <DeleteAccountButton id={company.id} confirmText="Вы уверены, что хотите удалить эту компанию?" />
                         </div>
                       </div>
 
@@ -202,7 +206,7 @@ export default async function AdminPanel({ searchParams }: { searchParams: Promi
                               <div key={u.id} className="text-xs font-mono text-emerald-200/90 flex flex-wrap gap-2">
                                 <span>Логин: <span className="text-white font-bold">{u.email || '-'}</span></span>
                                 <span className="hidden md:inline">|</span>
-                                <span>Пароль: <span className="text-white font-bold">admin</span></span>
+                                <span>Пароль: <span className="text-white font-bold">{u.password || 'admin'}</span></span>
                               </div>
                             ))}
                           </div>
@@ -244,6 +248,8 @@ export default async function AdminPanel({ searchParams }: { searchParams: Promi
                           <span className={`px-3 py-1 rounded-full text-xs font-bold ${startup.status === 'APPROVED' ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30'}`}>
                             {startup.status === 'APPROVED' ? 'Одобрена' : 'На рассмотрении'}
                           </span>
+                          
+                          <DeleteAccountButton id={startup.id} confirmText="Вы уверены, что хотите удалить этот стартап?" />
                         </div>
                       </div>
                       {startup.users.length > 0 && (
@@ -253,7 +259,7 @@ export default async function AdminPanel({ searchParams }: { searchParams: Promi
                               <div key={u.id} className="text-xs font-mono text-emerald-200/90 flex flex-wrap gap-2">
                                 <span>Логин: <span className="text-white font-bold">{u.email || '-'}</span></span>
                                 <span className="hidden md:inline">|</span>
-                                <span>Пароль: <span className="text-white font-bold">admin</span></span>
+                                <span>Пароль: <span className="text-white font-bold">{u.password || 'admin'}</span></span>
                               </div>
                             ))}
                           </div>
@@ -295,6 +301,8 @@ export default async function AdminPanel({ searchParams }: { searchParams: Promi
                           <span className={`px-3 py-1 rounded-full text-xs font-bold ${person.status === 'APPROVED' ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30'}`}>
                             {person.status === 'APPROVED' ? 'Одобрена' : 'На рассмотрении'}
                           </span>
+                          
+                          <DeleteAccountButton id={person.id} confirmText="Вы уверены, что хотите удалить этого пользователя?" />
                         </div>
                       </div>
                       {person.users.length > 0 && (
@@ -304,7 +312,7 @@ export default async function AdminPanel({ searchParams }: { searchParams: Promi
                               <div key={u.id} className="text-xs font-mono text-emerald-200/90 flex flex-wrap gap-2">
                                 <span>Логин: <span className="text-white font-bold">{u.email || '-'}</span></span>
                                 <span className="hidden md:inline">|</span>
-                                <span>Пароль: <span className="text-white font-bold">admin</span></span>
+                                <span>Пароль: <span className="text-white font-bold">{u.password || 'admin'}</span></span>
                               </div>
                             ))}
                           </div>
@@ -448,6 +456,7 @@ export default async function AdminPanel({ searchParams }: { searchParams: Promi
                         {reg.name}
                         {reg.status === 'PENDING' && <span className="px-2 py-0.5 bg-yellow-500 text-black text-[10px] rounded-full uppercase tracking-wider font-bold">Ожидает</span>}
                         {reg.status === 'APPROVED' && <span className="px-2 py-0.5 bg-emerald-500 text-black text-[10px] rounded-full uppercase tracking-wider font-bold">Одобрен</span>}
+                        {reg.status === 'REJECTED' && <span className="px-2 py-0.5 bg-red-500 text-white text-[10px] rounded-full uppercase tracking-wider font-bold">Отклонен</span>}
                       </h3>
                       <div className="text-xs text-emerald-400/80 font-mono mt-1">
                         {new Date(reg.createdAt).toLocaleString()} · Категория: {
@@ -457,42 +466,66 @@ export default async function AdminPanel({ searchParams }: { searchParams: Promi
                       </div>
                     </div>
                     {reg.status === 'PENDING' && (
-                      <form action={async () => {
-                        "use server";
-                        
-                        // 1. Обновляем статус заявки
-                        const approvedReg = await prisma.registrationRequest.update({
-                          where: { id: reg.id },
-                          data: { status: "APPROVED" }
-                        });
+                      <div className="flex items-center gap-2 mt-3 md:mt-0">
+                        <form action={async () => {
+                          "use server";
+                          
+                          // 1. Обновляем статус заявки
+                          const approvedReg = await prisma.registrationRequest.update({
+                            where: { id: reg.id },
+                            data: { status: "APPROVED" }
+                          });
 
-                        // 2. Создаем компанию для любого участника (чтобы он был в сообществе)
-                        const newCompany = await prisma.company.create({
-                          data: {
-                            name: approvedReg.name,
-                            bin: `MOCK-${Date.now()}`, // Временный БИН для MVP
-                            status: "APPROVED",
-                            email: approvedReg.email,
-                            category: approvedReg.category // STARTUP, COMPANY, INDIVIDUAL
+                          // 2. Создаем компанию для любого участника (чтобы он был в сообществе)
+                          const newCompany = await prisma.company.create({
+                            data: {
+                              name: approvedReg.name,
+                              bin: `MOCK-${Date.now()}`, // Временный БИН для MVP
+                              status: "APPROVED",
+                              email: approvedReg.email,
+                              category: approvedReg.category // STARTUP, COMPANY, INDIVIDUAL
+                            }
+                          });
+
+                          // 3. Генерируем случайный пароль (MVP: 8 символов)
+                          const randomPassword = "res-" + Math.random().toString(36).slice(-6);
+
+                          // 4. Создаем пользователя
+                          await prisma.user.create({
+                            data: {
+                              name: approvedReg.name,
+                              email: approvedReg.email,
+                              password: randomPassword,
+                              role: approvedReg.category === "INDIVIDUAL" ? "EMPLOYEE" : "COMPANY_ADMIN",
+                              companyId: newCompany.id,
+                            }
+                          });
+
+                          // 5. Отправляем email через Resend
+                          if (approvedReg.email) {
+                            await sendApprovalEmail(approvedReg.email, approvedReg.name, randomPassword);
                           }
-                        });
 
-                        // 3. Создаем пользователя
-                        await prisma.user.create({
-                          data: {
-                            name: approvedReg.name,
-                            email: approvedReg.email,
-                            role: approvedReg.category === "INDIVIDUAL" ? "EMPLOYEE" : "COMPANY_ADMIN",
-                            companyId: newCompany.id,
-                          }
-                        });
+                          revalidatePath("/res365/admin");
+                        }}>
+                          <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-500/20 border border-emerald-500/50 text-emerald-300 font-bold text-xs hover:bg-emerald-500 hover:text-white transition-colors whitespace-nowrap">
+                            <Check size={14} /> Одобрить и Создать
+                          </button>
+                        </form>
 
-                        revalidatePath("/res365/admin");
-                      }}>
-                        <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-500/20 border border-emerald-500/50 text-emerald-300 font-bold text-xs hover:bg-emerald-500 hover:text-white transition-colors">
-                          <Check size={14} /> Одобрить и Создать
-                        </button>
-                      </form>
+                        <form action={async () => {
+                          "use server";
+                          await prisma.registrationRequest.update({
+                            where: { id: reg.id },
+                            data: { status: "REJECTED" }
+                          });
+                          revalidatePath("/res365/admin");
+                        }}>
+                          <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-red-500/10 border border-red-500/30 text-red-400 font-bold text-xs hover:bg-red-500 hover:text-white transition-colors whitespace-nowrap">
+                            <X size={14} /> Отклонить
+                          </button>
+                        </form>
+                      </div>
                     )}
                   </div>
                   

@@ -19,13 +19,13 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
       slug: dbEvent.id,
       title: dbEvent.title,
       summary: dbEvent.description || "Без описания",
-      date: new Date(dbEvent.date).toLocaleDateString(),
+      date: new Intl.DateTimeFormat("ru-RU", { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(dbEvent.date)),
       location: dbEvent.location || "Онлайн",
       image: dbEvent.imageUrl || "https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=2070&auto=format&fit=crop",
       category: dbEvent.creatorCompany?.name || "Событие",
       details: [],
       contact: [],
-      source: null
+      source: dbEvent.sourceUrl || null
     };
   } else {
     event = EVENTS.find((item) => item.slug === slug);

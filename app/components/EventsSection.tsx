@@ -100,12 +100,17 @@ export default function EventsSection() {
           // Parse date for visual display
           let month = "---";
           let day = "--";
-          const dateObj = new Date(event.date);
-          if (!isNaN(dateObj.getTime())) {
+          
+          // Используем isoDate для правильного парсинга, если он есть, иначе пробуем оригинальную дату
+          const dateStrToParse = event.isoDate || event.date;
+          
+          if (typeof dateStrToParse === 'string' && dateStrToParse.includes('T')) {
+            // Это ISO строка из БД (от нашего маппера)
+            const dateObj = new Date(dateStrToParse);
             month = dateObj.toLocaleDateString('ru-RU', { month: 'long' }).replace('.', '').toUpperCase();
             day = dateObj.getDate().toString().padStart(2, '0');
           } else {
-            // "20-22 мая 2026"
+            // Это хардкод-строка из MOCK данных (например, "20-22 мая 2026")
             const parts = event.date.split(" ");
             if (parts.length >= 2) {
               day = parts[0];

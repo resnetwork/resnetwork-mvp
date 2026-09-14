@@ -24,14 +24,22 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       },
       async authorize(credentials) {
         if (!credentials?.email) return null;
-        
-        // Для MVP пропускаем любой email, если пароль admin (для тестов)
-        if (credentials.password !== "admin") return null;
-
         // Ищем или создаем юзера в базе для связи с билетами
         let user = await prisma.user.findUnique({
           where: { email: credentials.email as string }
         });
+
+        // Проверяем пароль. 
+        // Разрешаем вход, если пароль совпадает с БД, ИЛИ если это тестовый "admin" (оставляем для обратной совместимости старых аккаунтов).
+        if (user) {
+          if (credentials.password !== "admin" && user.password !== credentials.password) {
+            return null; // Неверный пароль
+          }
+        } else {
+          // Если юзера нет в базе (например, самый первый запуск или старые тестовые данные)
+          // Разрешаем вход только с тестовым паролем "admin"
+          if (credentials.password !== "admin") return null;
+        }
 
         if (!user) {
           user = await prisma.user.create({

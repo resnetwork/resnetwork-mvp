@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { UploadCloud, Save, Building2, AlignLeft, Phone, User as UserIcon, Sparkles } from "lucide-react";
+import { UploadCloud, Save, Building2, AlignLeft, Phone, User as UserIcon, Sparkles, KeyRound } from "lucide-react";
+import { changePassword } from "@/app/lib/actions";
 
 export default function ProfilePage() {
   const [isSaving, setIsSaving] = useState(false);
@@ -21,14 +22,31 @@ export default function ProfilePage() {
     }
   };
 
+  const [password, setPassword] = useState("");
+  const [passwordMessage, setPasswordMessage] = useState("");
+
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
     setIsSaving(true);
-    // Имитация сохранения
+    // Имитация сохранения остальных данных
     setTimeout(() => {
       setIsSaving(false);
       alert("Профиль успешно сохранен!");
     }, 1000);
+  };
+
+  const handlePasswordChange = async () => {
+    if (password.length < 6) {
+      setPasswordMessage("Минимум 6 символов");
+      return;
+    }
+    const result = await changePassword(password);
+    if (result.success) {
+      setPasswordMessage("Пароль успешно изменен!");
+      setPassword("");
+    } else {
+      setPasswordMessage(result.error || "Ошибка при смене");
+    }
   };
 
   return (
@@ -143,6 +161,41 @@ export default function ProfilePage() {
             </button>
           </div>
         </form>
+      </div>
+
+      <div className="mt-8 bg-[#06241a]/40 border border-emerald-500/20 rounded-3xl p-8 backdrop-blur-md shadow-2xl">
+        <h2 className="flex items-center gap-2 text-lg font-bold text-white mb-6">
+          <KeyRound className="text-emerald-500 w-5 h-5" />
+          Безопасность
+        </h2>
+        
+        <div className="space-y-4 max-w-sm">
+          <div>
+            <label className="block text-xs font-bold text-emerald-500 uppercase tracking-wider mb-2">Новый пароль</label>
+            <input 
+              type="password" 
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="••••••••" 
+              className="w-full bg-black/40 border border-emerald-900/50 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-emerald-500 transition-colors"
+            />
+          </div>
+          
+          <button 
+            type="button"
+            onClick={handlePasswordChange}
+            disabled={!password}
+            className="w-full py-3 rounded-xl font-bold text-sm text-black bg-emerald-500 hover:bg-emerald-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            Сменить пароль
+          </button>
+          
+          {passwordMessage && (
+            <p className={`text-xs mt-2 font-bold ${passwordMessage.includes('успешно') ? 'text-emerald-400' : 'text-red-400'}`}>
+              {passwordMessage}
+            </p>
+          )}
+        </div>
       </div>
     </div>
   );

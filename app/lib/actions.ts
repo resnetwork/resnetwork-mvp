@@ -92,6 +92,7 @@ export async function createEvent(formData: FormData, userId: string, companyId:
     const description = formData.get("description") as string;
     const dateStr = formData.get("date") as string;
     const location = formData.get("location") as string;
+    const sourceUrl = formData.get("sourceUrl") as string;
     const imageFile = formData.get("imageFile") as File | null;
     const isPublic = formData.get("isPublic") === "on";
 
@@ -113,6 +114,7 @@ export async function createEvent(formData: FormData, userId: string, companyId:
         date: new Date(dateStr),
         location,
         imageUrl,
+        sourceUrl,
         isPublic,
         creatorCompanyId: companyId,
       }
@@ -125,3 +127,85 @@ export async function createEvent(formData: FormData, userId: string, companyId:
     return { success: false, error: "Не удалось создать событие" };
   }
 }
+
+import { auth } from "@/auth";
+
+export async function changePassword(newPassword: string) {
+  try {
+    const session = await auth();
+    const userId = session?.user?.id;
+    
+    if (!userId) {
+      return { success: false, error: "Не авторизован" };
+    }
+
+    if (!newPassword || newPassword.length < 6) {
+      return { success: false, error: "Пароль должен содержать минимум 6 символов" };
+    }
+
+    const updatedUser = await prisma.user.update({
+      where: { id: userId },
+      data: { password: newPassword }
+    });
+
+    if (updatedUser.email) {
+      const { sendPasswordChangeEmail } = await import('@/app/lib/email');
+      await sendPasswordChangeEmail(updatedUser.email, newPassword);
+    }
+
+    return { success: true };
+  } catch (error) {
+    console.error("Ошибка при смене пароля:", error);
+    return { success: false, error: "Не удалось сменить пароль" };
+  }
+}
+
+export async function deleteAccount(companyId: string) {
+  try {
+    const session = await auth();
+    // Простейшая проверка админа
+    if (!session?.user?.id) {
+      return { success: false, error: "Не авторизован" };
+    }
+
+    // Находим всех пользователей компании
+    const users = await prisma.user.findMany({ where: { companyId } });
+    const userIds = users.map(u => u.id);
+
+    // Находим все события, созданные этой компанией
+    const events = await prisma.event.findMany({ where: { creatorCompanyId: companyId } });
+    const eventIds = events.map(e => e.id);
+
+    // Удаляем все билеты, связанные с этими событиями ИЛИ с этими пользователями
+    await prisma.ticket.deleteMany({
+      where: {
+        OR: [
+          { eventId: { in: eventIds } },
+          { userId: { in: userIds } }
+        ]
+      }
+    });
+
+    // Удаляем все события этой компании (если они есть)
+    await prisma.event.deleteMany({
+      where: { creatorCompanyId: companyId }
+    });
+
+    // Удаляем всех пользователей этой компании
+    await prisma.user.deleteMany({
+      where: { companyId }
+    });
+
+    // Удаляем саму компанию
+    await prisma.company.delete({
+      where: { id: companyId }
+    });
+
+    revalidatePath("/res365/admin");
+    return { success: true };
+  } catch (error) {
+    console.error("Ошибка при удалении аккаунта:", error);
+    return { success: false, error: "Не удалось удалить аккаунт" };
+  }
+}
+

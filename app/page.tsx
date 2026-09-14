@@ -161,7 +161,9 @@ export default function Home() {
               </p>
 
               <a 
-                href="#events"
+                href="https://www.res2027expo.kz/"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="inline-flex items-center gap-2.5 px-8 py-3.5 bg-white hover:bg-[#E0EAB8] text-black rounded-full font-bold text-sm md:text-base transition-all duration-300 shadow-[0_0_30px_rgba(255,255,255,0.25)] hover:scale-105 cursor-pointer"
               >
                 Перейти к событию <ArrowUpRight size={18} />
@@ -217,39 +219,39 @@ export default function Home() {
         <PartnersMarquee />
       </section>
 
-      {/* Финальный CTA */}
-      <section className="px-6 md:px-12 py-20 bg-[#080C0A] border-t border-[#A1BB94]/10 flex flex-col items-center text-center">
-        <h2 className="text-3xl md:text-5xl font-black text-white mb-4 tracking-tight">Экосистема формируется сейчас</h2>
-        <p className="text-res-text-muted text-base md:text-lg max-w-2xl mb-8">
-          RES Network объединяет государства, бизнес, инвесторов, науку и международные организации вокруг зелёной экономики Центральной Азии. Станьте одним из первых участников.
-        </p>
-        <button 
-          onClick={() => setIsModalOpen(true)}
-          className="px-8 py-4 rounded-full font-bold text-sm md:text-base bg-gradient-to-r from-res-accent to-res-accent-light text-[#061e14] shadow-[0_0_25px_rgba(2,183,121,0.4)] hover:scale-105 transition-all duration-300"
-        >
-          Присоединиться к RES Network
-        </button>
-      </section>
 
       {/* Фирменный футер */}
-      <footer className="px-8 md:px-16 py-12 border-t border-[#A1BB94]/20 text-res-text flex flex-col md:flex-row items-center justify-between gap-6 text-xs bg-[#050806]">
-        <div className="flex flex-col md:flex-row items-center gap-3">
-          <img src="/logo1.png.png" alt="RES Network" className="h-9 w-auto object-contain" />
-          <span className="text-res-text-muted mt-3 md:mt-0">© 2026 RES Network · Региональная экосистема Центральной Азии</span>
+      <footer className="px-6 md:px-12 py-16 border-t border-[#A1BB94]/10 bg-[#040605]">
+        <div className="max-w-7xl mx-auto flex flex-col lg:flex-row justify-between items-center lg:items-end gap-10">
+          <div className="flex flex-col items-center lg:items-start gap-4">
+            <img src="/logo1.png.png" alt="RES Network" className="h-10 w-auto opacity-90" />
+            <p className="text-res-text-muted text-xs text-center lg:text-left max-w-sm">
+              Объединяем государства, бизнес, инвесторов и науку вокруг зелёной экономики Центральной Азии.
+            </p>
+          </div>
+          
+          <div className="flex flex-col items-center lg:items-end gap-6">
+            <div className="flex flex-wrap justify-center gap-6 font-medium text-sm text-[#E0EAB8]">
+              <a href="#directions" className="hover:text-white transition-colors">Направления</a>
+              <a href="#history" className="hover:text-white transition-colors">История</a>
+              <a href="#events" className="hover:text-white transition-colors">Мероприятия</a>
+              <a href="#news" className="hover:text-white transition-colors">Новости</a>
+              <a href="/res365" className="text-res-accent hover:text-white transition-colors font-bold">RES Platform</a>
+            </div>
+            
+            <div className="flex flex-wrap justify-center lg:justify-end gap-4 text-xs text-res-text-muted/60">
+              <span>BusinessFirst LLP</span>
+              <span className="hidden sm:inline">•</span>
+              <span>Астана, Казахстан</span>
+              <span className="hidden sm:inline">•</span>
+              <a href="mailto:office@businessfirst.kz" className="hover:text-white transition-colors">office@businessfirst.kz</a>
+            </div>
+          </div>
         </div>
         
-        <div className="flex flex-col md:flex-row items-center gap-4 md:gap-8 font-semibold text-[#E0EAB8]">
-          <a href="#directions" className="hover:text-white transition-colors">Направления</a>
-          <a href="#history" className="hover:text-white transition-colors">История</a>
-          <a href="#events" className="hover:text-white transition-colors">Мероприятия</a>
-          <a href="#news" className="hover:text-white transition-colors">Новости</a>
-          <a href="/res365" className="hover:text-white transition-colors">RES Platform</a>
-        </div>
-        
-        <div className="flex items-center gap-4 text-res-text-muted">
-          <span>BusinessFirst LLP</span>
-          <span>Астана, Казахстан</span>
-          <a href="mailto:office@businessfirst.kz" className="hover:text-white">office@businessfirst.kz</a>
+        <div className="max-w-7xl mx-auto mt-12 pt-6 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-4 text-[10px] text-res-text-muted/40 uppercase tracking-widest">
+          <span>© 2026 RES Network</span>
+          <span>Региональная экосистема Центральной Азии</span>
         </div>
       </footer>
 

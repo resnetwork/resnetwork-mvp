@@ -87,6 +87,17 @@ export default async function CreateEventPage() {
           />
         </div>
 
+        <div>
+          <label className="block text-xs font-bold text-emerald-500 uppercase tracking-wider mb-2">Ссылка на первоисточник</label>
+          <input 
+            type="url" 
+            name="sourceUrl" 
+            required 
+            placeholder="https://..." 
+            className="w-full bg-black/40 border border-emerald-900/50 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-emerald-500 transition-colors placeholder:text-white/20"
+          />
+        </div>
+
         <div className="flex items-center gap-3 p-4 bg-emerald-950/20 border border-emerald-900/30 rounded-xl">
           <input 
             type="checkbox" 
