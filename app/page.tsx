@@ -26,7 +26,7 @@ export default function Home() {
   return (
     <main className="min-h-screen overflow-x-hidden bg-res-bg">
       {/* ===== БЛОК 1: HERO (100vh) ===== */}
-      <div className="relative w-full h-screen flex flex-col overflow-hidden">
+      <div className="relative w-full min-h-[100dvh] flex flex-col overflow-hidden">
         {/* Фоновое изображение */}
         <div className="absolute inset-0 z-0 bg-res-bg">
           <img 
@@ -124,7 +124,7 @@ export default function Home() {
           </div>
 
           {/* Правая часть: Бесшовная фото-витрина RES+ EXPO 2027 с ярким фоном и нижним позиционированием */}
-          <div className="flex-1 w-full max-w-lg lg:max-w-xl xl:max-w-2xl relative flex flex-col justify-end min-h-[340px] sm:min-h-[380px] md:min-h-[420px] lg:min-h-[460px] group">
+          <div className="flex-1 w-full max-w-lg lg:max-w-xl xl:max-w-2xl relative flex flex-col justify-end min-h-[300px] sm:min-h-[380px] md:min-h-[420px] lg:min-h-[460px] group mt-8 lg:mt-0">
             {/* Яркая фотография EXPO 2027 без затемнения в коробку */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none [mask-image:radial-gradient(ellipse_at_center,black_60%,transparent_95%)] md:[mask-image:radial-gradient(ellipse_at_65%_50%,black_65%,transparent_95%)]">
               <img 
@@ -200,12 +200,12 @@ export default function Home() {
       </section>
 
       {/* ===== БЛОК 5: НОВОСТИ + 3D ГЛОБУС (Палитра #1: Тёмный сапфировый тил #02493F) ===== */}
-      <section id="news" className="relative px-6 md:px-12 py-20 md:py-28 bg-gradient-to-b from-[#081811] via-[#023B33] to-[#080C0A]">
+      <section id="news" className="relative px-6 md:px-12 py-12 md:py-28 bg-gradient-to-b from-[#081811] via-[#023B33] to-[#080C0A]">
         <NewsSection />
       </section>
 
       {/* ===== БЛОК 7: ПАРТНЁРЫ (Палитра #5: Графит #0C0C0C) ===== */}
-      <section className="px-6 md:px-12 py-20 md:py-28 bg-[#080C0A]">
+      <section className="px-6 md:px-12 py-12 md:py-28 bg-[#080C0A]">
         <div className="text-center mb-16">
           <FocusRevealHeading
             tokens={[

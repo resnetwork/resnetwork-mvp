@@ -93,7 +93,7 @@ export default function NewsSection() {
           </div>
 
           {/* Scrollable accordion list — bigger cards, max ~5 visible */}
-          <div className="flex-1 overflow-y-auto hide-scrollbar px-6 pb-8 space-y-3">
+          <div className="flex-1 overflow-y-auto hide-scrollbar px-6 pb-8 space-y-3 max-h-[400px] lg:max-h-none">
             {filtered.length === 0 && (
               <p className="text-center py-16 text-res-text-muted text-sm">Ничего не найдено</p>
             )}

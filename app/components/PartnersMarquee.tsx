@@ -47,8 +47,8 @@ export default function PartnersMarquee() {
         }
       `}</style>
       
-      <div className="bg-white rounded-[3rem] py-12 md:py-20 shadow-[0_30px_60px_rgba(0,184,124,0.1)] border border-res-accent/20 overflow-hidden">
-        <div className="space-y-16 md:space-y-24">
+      <div className="bg-white rounded-3xl md:rounded-[3rem] py-8 md:py-20 shadow-[0_30px_60px_rgba(0,184,124,0.1)] border border-res-accent/20 overflow-hidden">
+        <div className="space-y-12 md:space-y-24">
           {categories.map((group) => {
             // Дублируем массив логотипов 12 раз, чтобы строка была гарантированно шире любого экрана.
             // При анимации до -50% она пройдет ровно половину (6 блоков) и бесшовно зациклится.
@@ -56,16 +56,16 @@ export default function PartnersMarquee() {
             
             return (
               <div key={group.id} className="relative flex flex-col group">
-                <h3 className="mb-8 md:mb-14 text-center text-base md:text-xl font-black tracking-[0.25em] text-[#0a1f24] uppercase flex items-center justify-center gap-6 opacity-70 px-4">
-                  <span className="h-[2px] bg-[#0a1f24]/20 w-12 md:w-32 rounded-full"></span>
+                <h3 className="mb-6 md:mb-14 text-center text-[10px] sm:text-xs md:text-xl font-black tracking-widest md:tracking-[0.25em] text-[#0a1f24] uppercase flex items-center justify-center gap-3 md:gap-6 opacity-70 px-4">
+                  <span className="h-[2px] bg-[#0a1f24]/20 w-6 sm:w-12 md:w-32 rounded-full"></span>
                   {group.title}
-                  <span className="h-[2px] bg-[#0a1f24]/20 w-12 md:w-32 rounded-full"></span>
+                  <span className="h-[2px] bg-[#0a1f24]/20 w-6 sm:w-12 md:w-32 rounded-full"></span>
                 </h3>
 
                 {/* Контейнер маскирующий края (опционально можно добавить градиенты) */}
                 <div className="relative w-full overflow-hidden flex [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
                   <div 
-                    className={`flex w-max gap-16 md:gap-32 items-center px-8 ${group.direction === "left" ? "animate-marquee-left" : "animate-marquee-right"}`}
+                    className={`flex w-max gap-8 md:gap-32 items-center px-4 md:px-8 ${group.direction === "left" ? "animate-marquee-left" : "animate-marquee-right"}`}
                     style={{ "--duration": group.speed } as React.CSSProperties}
                   >
                     {repeatedLogos.map((logo, idx) => (
