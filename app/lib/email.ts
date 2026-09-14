@@ -5,7 +5,7 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 export async function sendApprovalEmail(toEmail: string, name: string, password: string = 'admin') {
   try {
     const { data, error } = await resend.emails.send({
-      from: 'RES 365 <onboarding@resend.dev>',
+      from: 'RES Network <hello@resnetwork.org>',
       to: [toEmail],
       subject: 'Доступ к платформе RES 365 открыт!',
       html: `
@@ -64,7 +64,7 @@ export async function sendApprovalEmail(toEmail: string, name: string, password:
 export async function sendPasswordChangeEmail(toEmail: string, newPassword: string) {
   try {
     const { data, error } = await resend.emails.send({
-      from: 'RES 365 <onboarding@resend.dev>',
+      from: 'RES Network <hello@resnetwork.org>',
       to: [toEmail],
       subject: 'Ваш пароль был изменен',
       html: `
