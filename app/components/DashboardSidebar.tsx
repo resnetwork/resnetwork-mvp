@@ -44,7 +44,7 @@ export default function DashboardSidebar({ user }: { user: any }) {
         <div className="px-4 py-4 mt-2">
           {isOpen && (
             <div className="text-[10px] font-bold text-emerald-500/50 uppercase tracking-wider px-3 mb-3">
-              Меню RES 365
+              Меню RES Network
             </div>
           )}
           

@@ -85,11 +85,11 @@ export default function CommunityGrid({ companies }: { companies: any[] }) {
           <div className="relative bg-[#081712] border border-emerald-500/30 rounded-3xl w-full max-w-3xl max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
             <div className="flex items-center justify-between p-6 border-b border-emerald-500/20">
               <div className="flex items-center gap-4">
-                <div className="w-14 h-14 sm:w-20 sm:h-20 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-emerald-900/40 border border-emerald-500/30 flex items-center justify-center shrink-0 overflow-hidden">
+                <div className="w-14 h-14 sm:w-20 sm:h-20 rounded-2xl bg-white border border-emerald-500/30 flex items-center justify-center shrink-0 overflow-hidden p-1.5 shadow-sm">
                   {selectedCompany.logoUrl ? (
-                    <img src={selectedCompany.logoUrl} alt={selectedCompany.name} className="w-full h-full object-cover" />
+                    <img src={selectedCompany.logoUrl} alt={selectedCompany.name} className="w-full h-full object-contain" />
                   ) : (
-                    <Building2 size={32} className="text-emerald-500/60" />
+                    <Building2 size={32} className="text-emerald-600/70" />
                   )}
                 </div>
                 <h2 className="text-xl sm:text-2xl font-bold text-white">{selectedCompany.name}</h2>

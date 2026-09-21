@@ -91,13 +91,17 @@ export async function createEvent(formData: FormData, userId: string, companyId:
     const title = formData.get("title") as string;
     const description = formData.get("description") as string;
     const dateStr = formData.get("date") as string;
-    const location = formData.get("location") as string;
+    const endDateStr = formData.get("endDate") as string;
+    const locationCity = formData.get("locationCity") as string;
+    const locationStreet = formData.get("locationStreet") as string;
+    const locationVenue = formData.get("locationVenue") as string;
+    const twoGisUrl = formData.get("twoGisUrl") as string;
     const sourceUrl = formData.get("sourceUrl") as string;
     const imageFile = formData.get("imageFile") as File | null;
     const isPublic = formData.get("isPublic") === "on";
 
-    if (!title || !dateStr) {
-      return { success: false, error: "Название и дата обязательны" };
+    if (!title || !dateStr || !locationCity) {
+      return { success: false, error: "Название, дата и город обязательны" };
     }
 
     let imageUrl = null;
@@ -112,7 +116,12 @@ export async function createEvent(formData: FormData, userId: string, companyId:
         title,
         description,
         date: new Date(dateStr),
-        location,
+        endDate: endDateStr ? new Date(endDateStr) : null,
+        locationCity,
+        locationStreet,
+        locationVenue,
+        twoGisUrl,
+        location: [locationCity, locationStreet, locationVenue].filter(Boolean).join(', '), // Для обратной совместимости
         imageUrl,
         sourceUrl,
         isPublic,
@@ -237,7 +246,7 @@ export async function getProfileInfo() {
   }
 }
 
-export async function updateProfile(data: { description: string, email: string, website: string, phone: string, logoUrl?: string }) {
+export async function updateProfile(data: { companyName?: string, description: string, email: string, website: string, phone: string, logoUrl?: string }) {
   try {
     const session = await auth();
     if (!session?.user?.id) return { success: false, error: "Не авторизован" };
@@ -252,6 +261,7 @@ export async function updateProfile(data: { description: string, email: string, 
     await prisma.company.update({
       where: { id: user.companyId },
       data: {
+        ...(data.companyName && { name: data.companyName }),
         description: data.description,
         email: data.email,
         website: data.website,

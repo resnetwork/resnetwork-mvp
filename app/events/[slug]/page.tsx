@@ -1,7 +1,9 @@
 import { notFound } from "next/navigation";
-import { ArrowLeft, CalendarDays, MapPin, Sparkles, ArrowUpRight, CheckCircle2 } from "lucide-react";
+import { ArrowLeft, CalendarDays, MapPin, Sparkles, ArrowUpRight, CheckCircle2, QrCode } from "lucide-react";
 import { EVENTS } from "../../data/events";
 import { prisma } from "@/app/lib/prisma";
+import { formatEventDateRange } from "@/app/utils/dateFormatter";
+import QRCode from "qrcode.react";
 
 export default async function EventPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -19,13 +21,14 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
       slug: dbEvent.id,
       title: dbEvent.title,
       summary: dbEvent.description || "Без описания",
-      date: new Intl.DateTimeFormat("ru-RU", { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(dbEvent.date)),
-      location: dbEvent.location || "Онлайн",
+      date: formatEventDateRange(new Date(dbEvent.date), dbEvent.endDate ? new Date(dbEvent.endDate) : null),
+      location: [dbEvent.locationCity, dbEvent.locationStreet, dbEvent.locationVenue].filter(Boolean).join(", ") || dbEvent.location || "Онлайн",
       image: dbEvent.imageUrl || "https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=2070&auto=format&fit=crop",
       category: dbEvent.creatorCompany?.name || "Событие",
       details: [],
       contact: [],
-      source: dbEvent.sourceUrl || null
+      source: dbEvent.sourceUrl || null,
+      twoGisUrl: dbEvent.twoGisUrl || null
     };
   } else {
     event = EVENTS.find((item) => item.slug === slug);
@@ -79,7 +82,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
                   <CalendarDays size={20} />
                 </div>
                 <div>
-                  <span className="text-[11px] uppercase tracking-wider text-emerald-400/80 font-bold block">Дата & Время</span>
+                  <span className="text-[11px] uppercase tracking-wider text-emerald-400/80 font-bold block">Дата</span>
                   <span className="text-sm md:text-base font-semibold text-[#f2ede2]">{event.date}</span>
                 </div>
               </div>
@@ -94,6 +97,27 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
                 </div>
               </div>
             </div>
+
+            {/* QR Код 2GIS */}
+            {event.twoGisUrl && (
+              <div className="mt-8 p-6 rounded-2xl border border-emerald-500/25 bg-emerald-950/40 backdrop-blur-md flex flex-col md:flex-row items-center gap-6">
+                <div className="p-4 bg-white rounded-xl">
+                  <QRCode value={event.twoGisUrl} size={120} />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-emerald-300 mb-2 flex items-center gap-2">
+                    <QrCode size={20} />
+                    Маршрут в 2GIS
+                  </h3>
+                  <p className="text-emerald-100/70 text-sm mb-4">
+                    Отсканируйте этот QR-код, чтобы открыть локацию в приложении 2GIS и проложить маршрут до мероприятия.
+                  </p>
+                  <a href={event.twoGisUrl} target="_blank" rel="noopener noreferrer" className="text-xs font-bold uppercase tracking-wider text-black bg-emerald-500 px-4 py-2 rounded-lg hover:bg-emerald-400 transition-colors inline-block">
+                    Или откройте ссылку
+                  </a>
+                </div>
+              </div>
+            )}
 
             {/* Описание */}
             <div className="mt-10">

@@ -8,6 +8,7 @@ export default function ProfilePage() {
   const [isSaving, setIsSaving] = useState(false);
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
   const [accountType, setAccountType] = useState<string>("STARTUP");
+  const [companyName, setCompanyName] = useState("");
 
   const [description, setDescription] = useState("");
   const [email, setEmail] = useState("");
@@ -19,6 +20,7 @@ export default function ProfilePage() {
       const info = await getProfileInfo();
       if (info.success && info.accountType) {
         setAccountType(info.accountType);
+        setCompanyName(info.companyName || "");
         setDescription(info.description || "");
         setEmail(info.email || "");
         setWebsite(info.website || "");
@@ -48,6 +50,7 @@ export default function ProfilePage() {
     setIsSaving(true);
     
     const result = await updateProfile({
+      companyName,
       description,
       email,
       website,
@@ -128,6 +131,21 @@ export default function ProfilePage() {
                 </p>
               </div>
             </div>
+          </div>
+
+          {/* Название */}
+          <div>
+            <label className="flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-emerald-300 mb-4">
+              <Building2 size={18} className="text-emerald-500" />
+              {accountType === "COMPANY" ? "Название компании" : accountType === "STARTUP" ? "Название стартапа" : "Имя / Название"}
+            </label>
+            <input
+              type="text"
+              value={companyName}
+              onChange={(e) => setCompanyName(e.target.value)}
+              placeholder="Введите название"
+              className="w-full px-4 py-3 rounded-2xl bg-emerald-950/40 border border-emerald-500/30 text-[#f2ede2] placeholder:text-emerald-500/40 focus:outline-none focus:border-emerald-400 focus:shadow-[0_0_20px_rgba(74,222,128,0.15)] transition-all"
+            />
           </div>
 
           {/* Описание */}

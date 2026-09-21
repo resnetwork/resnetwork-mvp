@@ -110,9 +110,14 @@ model Event {
   title            String
   description      String?
   date             DateTime
-  location         String?
-  imageUrl         String?  @map("image_url")
-  sourceUrl        String?  @map("source_url")
+  endDate          DateTime? @map("end_date")
+  location         String? // Оставляем для совместимости
+  locationCity     String?   @map("location_city")
+  locationStreet   String?   @map("location_street")
+  locationVenue    String?   @map("location_venue")
+  twoGisUrl        String?   @map("two_gis_url")
+  imageUrl         String?   @map("image_url")
+  sourceUrl        String?   @map("source_url")
   isPublic         Boolean  @default(false) @map("is_public")
   
   creatorCompanyId String   @map("creator_company_id")

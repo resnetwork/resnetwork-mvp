@@ -7,10 +7,10 @@ export async function sendApprovalEmail(toEmail: string, name: string, password:
     const { data, error } = await resend.emails.send({
       from: 'RES Network <hello@resnetwork.org>',
       to: [toEmail],
-      subject: 'Доступ к платформе RES 365 открыт!',
+      subject: 'Доступ к платформе RES Network открыт!',
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #04110a; color: #ffffff; padding: 30px; border-radius: 12px; border: 1px solid #10b981;">
-          <h1 style="color: #10b981; text-align: center;">Добро пожаловать в RES 365!</h1>
+          <h1 style="color: #10b981; text-align: center;">Добро пожаловать в RES Network!</h1>
           
           <p style="font-size: 16px; line-height: 1.5; color: #d1d5db;">
             Здравствуйте, <strong>${name}</strong>!
@@ -35,7 +35,7 @@ export async function sendApprovalEmail(toEmail: string, name: string, password:
           </p>
           
           <div style="text-align: center;">
-            <a href="${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/res365" style="display: inline-block; padding: 12px 24px; background-color: #10b981; color: #000000; text-decoration: none; font-weight: bold; border-radius: 6px; font-size: 16px;">
+            <a href="${process.env.NEXTAUTH_URL || 'https://resnetwork.org'}/res365" style="display: inline-block; padding: 12px 24px; background-color: #10b981; color: #000000; text-decoration: none; font-weight: bold; border-radius: 6px; font-size: 16px;">
               Войти на платформу
             </a>
           </div>
@@ -69,7 +69,7 @@ export async function sendPasswordChangeEmail(toEmail: string, newPassword: stri
       subject: 'Ваш пароль был изменен',
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #04110a; color: #ffffff; padding: 30px; border-radius: 12px; border: 1px solid #10b981;">
-          <h1 style="color: #10b981; text-align: center;">RES 365 - Смена пароля</h1>
+          <h1 style="color: #10b981; text-align: center;">RES Network - Смена пароля</h1>
           
           <p style="font-size: 16px; line-height: 1.5; color: #d1d5db;">
             Здравствуйте!
@@ -94,7 +94,7 @@ export async function sendPasswordChangeEmail(toEmail: string, newPassword: stri
           </p>
           
           <div style="text-align: center;">
-            <a href="${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/res365" style="display: inline-block; padding: 12px 24px; background-color: #10b981; color: #000000; text-decoration: none; font-weight: bold; border-radius: 6px; font-size: 16px;">
+            <a href="${process.env.NEXTAUTH_URL || 'https://resnetwork.org'}/res365" style="display: inline-block; padding: 12px 24px; background-color: #10b981; color: #000000; text-decoration: none; font-weight: bold; border-radius: 6px; font-size: 16px;">
               Войти на платформу
             </a>
           </div>

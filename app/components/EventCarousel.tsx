@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { ArrowUpRight, Calendar, MapPin } from "lucide-react";
 import { registerForEvent } from "@/app/lib/actions";
+import { formatEventDateRange } from "@/app/utils/dateFormatter";
 
 export default function EventCarousel({ initialEvents, userId }: { initialEvents: any[], userId?: string }) {
   const [events, setEvents] = useState(initialEvents);
@@ -90,11 +91,7 @@ export default function EventCarousel({ initialEvents, userId }: { initialEvents
                   <div className="flex items-center gap-2 md:gap-3">
                     <Calendar size={16} className="text-emerald-400 shrink-0" />
                     <span>
-                      {new Intl.DateTimeFormat('ru-RU', {
-                        day: 'numeric',
-                        month: 'long',
-                        year: 'numeric'
-                      }).format(new Date(event.date))}
+                      {formatEventDateRange(new Date(event.date), event.endDate ? new Date(event.endDate) : null)}
                     </span>
                   </div>
                   <div className="flex items-center gap-2 md:gap-3">

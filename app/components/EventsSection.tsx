@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { CalendarDays, MapPin, ChevronLeft, ChevronRight, ArrowUpRight } from "lucide-react";
 import { EVENTS } from "../data/events";
+import { formatEventDateRange } from "@/app/utils/dateFormatter";
 
 const PAGE_SIZE = 4;
 
@@ -23,8 +24,9 @@ export default function EventsSection() {
           slug: e.id,
           title: e.title,
           summary: e.description || "Без описания",
-          date: new Date(e.date).toLocaleDateString(),
+          date: formatEventDateRange(new Date(e.date), e.endDate ? new Date(e.endDate) : null),
           isoDate: new Date(e.date).toISOString(),
+          endDate: e.endDate ? new Date(e.endDate).toISOString() : null,
           location: e.location || "Онлайн",
           image: e.imageUrl || "https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=2070&auto=format&fit=crop",
           category: e.creatorCompany?.name || "Событие"
@@ -97,43 +99,11 @@ export default function EventsSection() {
         style={{ scrollBehavior: 'smooth' }}
       >
         {dbEvents.map((event, i) => {
-          // Parse date for visual display
-          let month = "---";
-          let day = "--";
+          let dateDisplay = event.date; // default to whatever was mapped
           
-          // Используем isoDate для правильного парсинга, если он есть, иначе пробуем оригинальную дату
-          const dateStrToParse = event.isoDate || event.date;
-          
-          if (typeof dateStrToParse === 'string' && dateStrToParse.includes('T')) {
-            // Это ISO строка из БД (от нашего маппера)
-            const dateObj = new Date(dateStrToParse);
-            month = dateObj.toLocaleDateString('ru-RU', { month: 'long' }).replace('.', '').toUpperCase();
-            day = dateObj.getDate().toString().padStart(2, '0');
-          } else {
-            // Это хардкод-строка из MOCK данных (например, "20-22 мая 2026")
-            const parts = event.date.split(" ");
-            if (parts.length >= 2) {
-              day = parts[0];
-              const monthRaw = parts[1].toLowerCase().replace(',', '');
-              const MONTH_MAP: Record<string, string> = {
-                "янв": "ЯНВАРЬ", "января": "ЯНВАРЬ",
-                "фев": "ФЕВРАЛЬ", "февраля": "ФЕВРАЛЬ",
-                "мар": "МАРТ", "марта": "МАРТ",
-                "апр": "АПРЕЛЬ", "апреля": "АПРЕЛЬ",
-                "май": "МАЙ", "мая": "МАЙ",
-                "июн": "ИЮНЬ", "июня": "ИЮНЬ",
-                "июл": "ИЮЛЬ", "июля": "ИЮЛЬ",
-                "авг": "АВГУСТ", "августа": "АВГУСТ",
-                "сен": "СЕНТЯБРЬ", "сентября": "СЕНТЯБРЬ",
-                "окт": "ОКТЯБРЬ", "октября": "ОКТЯБРЬ",
-                "ноя": "НОЯБРЬ", "ноября": "НОЯБРЬ",
-                "дек": "ДЕКАБРЬ", "декабря": "ДЕКАБРЬ",
-              };
-              month = MONTH_MAP[monthRaw] || monthRaw.toUpperCase();
-            } else {
-              day = event.date.substring(0, 2);
-              month = "СЕЙЧАС";
-            }
+          // Для MOCK данных оставляем хардкод, для БД используем нашу функцию
+          if (event.isoDate) {
+            dateDisplay = formatEventDateRange(new Date(event.isoDate), event.endDate ? new Date(event.endDate) : null);
           }
 
           return (
@@ -159,9 +129,8 @@ export default function EventsSection() {
 
               {/* Нижняя половина с инфой */}
               <div className="p-6 flex flex-col flex-1">
-                <div className="mb-3 font-black tracking-widest text-lg md:text-xl flex flex-col leading-none">
-                  <span className="text-xs uppercase font-mono text-[#A1BB94]">{month}</span>
-                  <span className="text-3xl text-[#E0EAB8] mt-0.5">{day}</span>
+                <div className="mb-3 font-black tracking-widest text-sm md:text-base flex flex-col leading-none text-[#E0EAB8]">
+                  {dateDisplay}
                 </div>
                 
                 <h3 className="text-lg md:text-xl font-bold text-white leading-tight mb-2 group-hover:text-[#E0EAB8] transition-colors line-clamp-3">

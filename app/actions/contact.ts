@@ -30,7 +30,7 @@ export async function submitContactRequest(formData: FormData) {
     const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
 
     if (TELEGRAM_BOT_TOKEN && TELEGRAM_CHAT_ID) {
-      const text = `🔔 *Новая заявка с сайта RES 365*
+      const text = `🔔 *Новая заявка с сайта RES Network*
       
 👤 *Имя:* ${name}
 📧 *Email:* ${email}
