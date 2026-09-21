@@ -3,7 +3,7 @@ import { ArrowLeft, CalendarDays, MapPin, Sparkles, ArrowUpRight, CheckCircle2, 
 import { EVENTS } from "../../data/events";
 import { prisma } from "@/app/lib/prisma";
 import { formatEventDateRange } from "@/app/utils/dateFormatter";
-import QRCode from "qrcode.react";
+import { QRCodeSVG } from "qrcode.react";
 
 export default async function EventPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -102,7 +102,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
             {event.twoGisUrl && (
               <div className="mt-8 p-6 rounded-2xl border border-emerald-500/25 bg-emerald-950/40 backdrop-blur-md flex flex-col md:flex-row items-center gap-6">
                 <div className="p-4 bg-white rounded-xl">
-                  <QRCode value={event.twoGisUrl} size={120} />
+                  <QRCodeSVG value={event.twoGisUrl} size={120} />
                 </div>
                 <div>
                   <h3 className="text-lg font-bold text-emerald-300 mb-2 flex items-center gap-2">
