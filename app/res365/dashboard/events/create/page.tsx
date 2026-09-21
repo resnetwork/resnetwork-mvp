@@ -118,7 +118,7 @@ export default async function CreateEventPage() {
         </div>
 
         <div>
-          <label className="block text-xs font-bold text-emerald-500 uppercase tracking-wider mb-2">Обложка</label>
+          <label className="block text-xs font-bold text-emerald-500 uppercase tracking-wider mb-2">Обложка <span className="text-emerald-500/50 normal-case tracking-normal">(до 10 МБ)</span></label>
           <input 
             type="file" 
             name="imageFile" 
@@ -139,18 +139,22 @@ export default async function CreateEventPage() {
           </div>
         )}
 
-        <div className="flex items-center gap-3 p-4 bg-emerald-950/20 border border-emerald-900/30 rounded-xl">
-          <input 
-            type="checkbox" 
-            name="isPublic" 
-            id="isPublic"
-            className="w-5 h-5 accent-emerald-500 bg-black border-emerald-900 rounded focus:ring-emerald-500 focus:ring-offset-black"
-          />
-          <div>
-            <label htmlFor="isPublic" className="font-bold text-white cursor-pointer">Открытое событие</label>
-            <p className="text-xs text-emerald-400/60 mt-0.5">Событие будет доступно всем резидентам платформы</p>
+        {user.role === "SYSTEM_ADMIN" ? (
+          <input type="hidden" name="isPublic" value="on" />
+        ) : (
+          <div className="flex items-center gap-3 p-4 bg-emerald-950/20 border border-emerald-900/30 rounded-xl">
+            <input 
+              type="checkbox" 
+              name="isPublic" 
+              id="isPublic"
+              className="w-5 h-5 accent-emerald-500 bg-black border-emerald-900 rounded focus:ring-emerald-500 focus:ring-offset-black"
+            />
+            <div>
+              <label htmlFor="isPublic" className="font-bold text-white cursor-pointer">Открытое событие</label>
+              <p className="text-xs text-emerald-400/60 mt-0.5">Событие будет доступно всем резидентам платформы</p>
+            </div>
           </div>
-        </div>
+        )}
 
         <div className="pt-4 mt-8 border-t border-emerald-900/30">
           <button type="submit" className="w-full py-4 rounded-xl font-black text-sm uppercase tracking-widest bg-emerald-500 hover:bg-emerald-400 text-black transition-all shadow-[0_0_20px_rgba(16,185,129,0.2)]">

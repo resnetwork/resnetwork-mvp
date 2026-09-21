@@ -13,7 +13,10 @@ export default async function DashboardPage() {
     // Получаем будущие ивенты с привязкой к текущей дате
     events = await prisma.event.findMany({
       where: {
-        date: { gte: today }
+        date: { gte: today },
+        creatorCompany: {
+          name: { not: "RES Network (System)" }
+        }
       },
       orderBy: { date: 'asc' },
       include: {
@@ -28,24 +31,9 @@ export default async function DashboardPage() {
   }
 
   // Если БД пуста или локально нет соединения, подтягиваем будущие события из данных платформы
-  if (!events || events.length === 0) {
-    events = EVENTS
-      .filter(e => {
-        if (e.isoDate) return new Date(e.isoDate) >= today;
-        const d = new Date(e.date);
-        return isNaN(d.getTime()) || d >= today;
-      })
-      .sort((a, b) => new Date(a.isoDate || a.date).getTime() - new Date(b.isoDate || b.date).getTime())
-      .map(e => ({
-        id: e.slug,
-        title: e.title,
-        description: e.summary,
-        date: new Date(e.isoDate || e.date),
-        location: e.location,
-        imageUrl: e.image,
-        creatorCompany: { name: e.category, logoUrl: null },
-        tickets: []
-      }));
+  // (Закомментировано, чтобы публичные события не попадали в приватный дашборд)
+  if (!events) {
+    events = [];
   }
 
   return (
