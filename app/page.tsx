@@ -186,7 +186,7 @@ export default function Home() {
 
       {/* ===== БЛОК 5: МЕРОПРИЯТИЯ (Палитра #1: Еловый/Кедровый #41754F & Жемчуг #E0EAB8) ===== */}
       <section id="events" className="px-6 md:px-12 py-20 md:py-28 bg-gradient-to-b from-[#080C0A] via-[#112318] to-[#081811]">
-        <div className="mb-10">
+        <div className="mb-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
           <FocusRevealHeading
             tokens={[
               { text: "Ближайшие", isAccent: false },
@@ -195,6 +195,12 @@ export default function Home() {
             className="text-3xl md:text-5xl font-bold tracking-tight text-white"
             align="left"
           />
+          <a 
+            href="/events"
+            className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full font-bold text-sm bg-res-panel border border-res-accent/30 text-res-accent hover:bg-res-accent hover:text-[#061e14] transition-all cursor-pointer shadow-[0_0_15px_rgba(74,222,128,0.1)] hover:shadow-[0_0_20px_rgba(74,222,128,0.3)] w-fit"
+          >
+            Смотреть все мероприятия <ArrowUpRight size={16} />
+          </a>
         </div>
         <EventsSection />
       </section>

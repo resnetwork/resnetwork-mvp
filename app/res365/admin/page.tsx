@@ -6,6 +6,7 @@ import { ShieldCheck, Check, X, Building, ArrowLeft, CalendarDays, Users, Messag
 import Link from "next/link";
 import PartnerUploader from "./PartnerUploader";
 import DeleteAccountButton from "@/app/components/DeleteAccountButton";
+import AdminLoginButton from "@/app/components/AdminLoginButton";
 import { sendApprovalEmail } from "@/app/lib/email";
 
 export default async function AdminPanel({ searchParams }: { searchParams: Promise<{ tab?: string }> }) {
@@ -203,10 +204,11 @@ export default async function AdminPanel({ searchParams }: { searchParams: Promi
                         <div className="px-4 py-2.5 bg-black/20 rounded-xl border border-emerald-500/10">
                           <div className="space-y-1">
                             {company.users.map(u => (
-                              <div key={u.id} className="text-xs font-mono text-emerald-200/90 flex flex-wrap gap-2">
+                              <div key={u.id} className="text-xs font-mono text-emerald-200/90 flex flex-wrap items-center gap-2">
                                 <span>Логин: <span className="text-white font-bold">{u.email || '-'}</span></span>
                                 <span className="hidden md:inline">|</span>
                                 <span>Пароль: <span className="text-white font-bold">{u.password || 'admin'}</span></span>
+                                {u.email && u.password && <AdminLoginButton email={u.email} password={u.password} />}
                               </div>
                             ))}
                           </div>
@@ -256,10 +258,11 @@ export default async function AdminPanel({ searchParams }: { searchParams: Promi
                         <div className="px-4 py-2.5 bg-black/20 rounded-xl border border-emerald-500/10">
                           <div className="space-y-1">
                             {startup.users.map(u => (
-                              <div key={u.id} className="text-xs font-mono text-emerald-200/90 flex flex-wrap gap-2">
+                              <div key={u.id} className="text-xs font-mono text-emerald-200/90 flex flex-wrap items-center gap-2">
                                 <span>Логин: <span className="text-white font-bold">{u.email || '-'}</span></span>
                                 <span className="hidden md:inline">|</span>
                                 <span>Пароль: <span className="text-white font-bold">{u.password || 'admin'}</span></span>
+                                {u.email && u.password && <AdminLoginButton email={u.email} password={u.password} />}
                               </div>
                             ))}
                           </div>
@@ -309,10 +312,11 @@ export default async function AdminPanel({ searchParams }: { searchParams: Promi
                         <div className="px-4 py-2.5 bg-black/20 rounded-xl border border-emerald-500/10">
                           <div className="space-y-1">
                             {person.users.map(u => (
-                              <div key={u.id} className="text-xs font-mono text-emerald-200/90 flex flex-wrap gap-2">
+                              <div key={u.id} className="text-xs font-mono text-emerald-200/90 flex flex-wrap items-center gap-2">
                                 <span>Логин: <span className="text-white font-bold">{u.email || '-'}</span></span>
                                 <span className="hidden md:inline">|</span>
                                 <span>Пароль: <span className="text-white font-bold">{u.password || 'admin'}</span></span>
+                                {u.email && u.password && <AdminLoginButton email={u.email} password={u.password} />}
                               </div>
                             ))}
                           </div>

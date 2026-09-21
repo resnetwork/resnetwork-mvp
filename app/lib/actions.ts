@@ -234,6 +234,7 @@ export async function getProfileInfo() {
       success: true,
       accountType: user.company?.category || "INDIVIDUAL",
       companyName: user.company?.name || user.name || "",
+      userName: user.name || "",
       description: user.company?.description || "",
       logoUrl: user.company?.logoUrl || user.image || "",
       email: user.company?.email || "",
@@ -246,7 +247,7 @@ export async function getProfileInfo() {
   }
 }
 
-export async function updateProfile(data: { companyName?: string, description: string, email: string, website: string, phone: string, logoUrl?: string }) {
+export async function updateProfile(data: { companyName?: string, userName?: string, description: string, email: string, website: string, phone: string, logoUrl?: string }) {
   try {
     const session = await auth();
     if (!session?.user?.id) return { success: false, error: "Не авторизован" };
@@ -270,6 +271,13 @@ export async function updateProfile(data: { companyName?: string, description: s
       }
     });
 
+    if (data.userName) {
+      await prisma.user.update({
+        where: { id: session.user.id },
+        data: { name: data.userName }
+      });
+    }
+
     return { success: true };
   } catch (error) {
     console.error("Ошибка при сохранении профиля:", error);
@@ -277,3 +285,85 @@ export async function updateProfile(data: { companyName?: string, description: s
   }
 }
 
+export async function deleteEvent(eventId: string, companyId: string) {
+  try {
+    const event = await prisma.event.findUnique({ where: { id: eventId } });
+    if (!event || event.creatorCompanyId !== companyId) {
+      return { success: false, error: "Нет доступа" };
+    }
+
+    // Удаляем все билеты, связанные с этим событием
+    await prisma.ticket.deleteMany({
+      where: { eventId }
+    });
+
+    // Удаляем само событие
+    await prisma.event.delete({
+      where: { id: eventId }
+    });
+
+    revalidatePath("/res365/dashboard/events/my");
+    revalidatePath("/res365/dashboard");
+    return { success: true };
+  } catch (error) {
+    console.error("Ошибка при удалении события:", error);
+    return { success: false, error: "Не удалось удалить событие" };
+  }
+}
+
+export async function updateEvent(eventId: string, formData: FormData, companyId: string) {
+  try {
+    const event = await prisma.event.findUnique({ where: { id: eventId } });
+    if (!event || event.creatorCompanyId !== companyId) {
+      return { success: false, error: "Нет доступа" };
+    }
+
+    const title = formData.get("title") as string;
+    const description = formData.get("description") as string;
+    const dateStr = formData.get("date") as string;
+    const endDateStr = formData.get("endDate") as string;
+    const locationCity = formData.get("locationCity") as string;
+    const locationStreet = formData.get("locationStreet") as string;
+    const locationVenue = formData.get("locationVenue") as string;
+    const twoGisUrl = formData.get("twoGisUrl") as string;
+    const sourceUrl = formData.get("sourceUrl") as string;
+    const imageFile = formData.get("imageFile") as File | null;
+    const isPublic = formData.get("isPublic") === "on";
+
+    if (!title || !dateStr || !locationCity) {
+      return { success: false, error: "Название, дата и город обязательны" };
+    }
+
+    let imageUrl = event.imageUrl;
+    if (imageFile && imageFile.size > 0) {
+      const buffer = await imageFile.arrayBuffer();
+      const base64 = Buffer.from(buffer).toString('base64');
+      imageUrl = `data:${imageFile.type};base64,${base64}`;
+    }
+
+    await prisma.event.update({
+      where: { id: eventId },
+      data: {
+        title,
+        description,
+        date: new Date(dateStr),
+        endDate: endDateStr ? new Date(endDateStr) : null,
+        locationCity,
+        locationStreet,
+        locationVenue,
+        twoGisUrl,
+        location: [locationCity, locationStreet, locationVenue].filter(Boolean).join(', '),
+        imageUrl,
+        sourceUrl,
+        isPublic,
+      }
+    });
+
+    revalidatePath("/res365/dashboard/events/my");
+    revalidatePath("/res365/dashboard");
+    return { success: true };
+  } catch (error) {
+    console.error("Ошибка при обновлении события:", error);
+    return { success: false, error: "Не удалось обновить событие" };
+  }
+}

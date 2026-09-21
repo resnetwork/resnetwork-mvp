@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { CalendarDays, MapPin, ChevronLeft, ChevronRight, ArrowUpRight } from "lucide-react";
+import { CalendarDays, MapPin, ChevronLeft, ChevronRight, ArrowUpRight, X, Calendar, Ticket } from "lucide-react";
 import { EVENTS } from "../data/events";
 import { formatEventDateRange } from "@/app/utils/dateFormatter";
+import { useRouter } from "next/navigation";
 
 const PAGE_SIZE = 4;
 
@@ -12,6 +13,8 @@ export default function EventsSection() {
   const [visible, setVisible] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const [dbEvents, setDbEvents] = useState<any[]>([]);
+  const [modalEvent, setModalEvent] = useState<any | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     const today = new Date();
@@ -29,7 +32,10 @@ export default function EventsSection() {
           endDate: e.endDate ? new Date(e.endDate).toISOString() : null,
           location: e.location || "Онлайн",
           image: e.imageUrl || "https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=2070&auto=format&fit=crop",
-          category: e.creatorCompany?.name || "Событие"
+          category: e.creatorCompany?.name || "Событие",
+          isPublic: e.isPublic,
+          isDbEvent: true,
+          sourceUrl: e.sourceUrl
         }));
         
         // Фильтруем события: только БУДУЩИЕ с привязкой к сегодняшней дате (>= today)
@@ -69,7 +75,7 @@ export default function EventsSection() {
 
   return (
     <div className="relative w-full overflow-hidden" ref={ref}>
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex items-center justify-end mb-8">
         <div className="flex gap-2">
           <button
             onClick={() => {
@@ -107,12 +113,10 @@ export default function EventsSection() {
           }
 
           return (
-            <a
+            <div
               key={event.slug + i}
-              href={`/events/${event.slug}`}
-              target="_blank"
-              rel="noreferrer"
-              className="snap-start shrink-0 group relative overflow-hidden rounded-3xl border border-[#A1BB94]/20 bg-[#14281E] transition-all duration-300 hover:-translate-y-2 hover:border-[#02B779] hover:shadow-[0_15px_40px_rgba(2,183,121,0.25)] flex flex-col w-[270px] md:w-[320px] h-[450px]"
+              onClick={() => setModalEvent(event)}
+              className="snap-start shrink-0 group relative overflow-hidden rounded-3xl border border-[#A1BB94]/20 bg-[#14281E] transition-all duration-300 hover:-translate-y-2 hover:border-[#02B779] hover:shadow-[0_15px_40px_rgba(2,183,121,0.25)] flex flex-col w-[270px] md:w-[320px] h-[450px] cursor-pointer"
             >
               {/* Верхняя половина с картинкой */}
               <div className="relative h-1/2 overflow-hidden w-full">
@@ -142,10 +146,103 @@ export default function EventsSection() {
                   <span className="truncate">{event.location}</span>
                 </p>
               </div>
-            </a>
+            </div>
           );
         })}
       </div>
+
+      {/* Модальное окно */}
+      {modalEvent && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-md animate-in fade-in duration-200 text-left">
+          <div 
+            className="absolute inset-0 cursor-default" 
+            onClick={() => setModalEvent(null)}
+          />
+          
+          <div className="relative w-full max-w-4xl max-h-[90vh] bg-[#06241a] rounded-3xl border border-emerald-500/30 shadow-[0_0_50px_rgba(16,185,129,0.15)] flex flex-col overflow-hidden animate-in zoom-in-95 duration-300">
+            <div className="absolute top-4 right-4 z-10">
+              <button 
+                onClick={() => setModalEvent(null)}
+                className="w-10 h-10 rounded-full bg-black/40 hover:bg-emerald-500/20 border border-white/10 hover:border-emerald-500/50 flex items-center justify-center text-white/70 hover:text-white transition-all backdrop-blur-sm cursor-pointer"
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            <div className="overflow-y-auto custom-scrollbar flex-1 flex flex-col md:flex-row">
+              {/* Левая колонка */}
+              <div className="w-full md:w-2/5 h-64 md:h-auto shrink-0 relative">
+                {modalEvent.image ? (
+                  <img src={modalEvent.image} alt={modalEvent.title} className="w-full h-full object-cover" />
+                ) : (
+                  <div className="w-full h-full bg-gradient-to-br from-emerald-900/60 to-emerald-950/80 flex items-center justify-center border-r border-emerald-500/20">
+                    <Calendar size={64} className="text-emerald-500/20" />
+                  </div>
+                )}
+                <div className="absolute inset-0 bg-gradient-to-t md:bg-gradient-to-r from-[#06241a] via-[#06241a]/40 to-transparent" />
+              </div>
+
+              {/* Правая колонка */}
+              <div className="w-full md:w-3/5 p-6 md:p-10 flex flex-col min-h-max">
+                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider text-emerald-300 bg-emerald-950/50 border border-emerald-500/30 w-fit mb-4">
+                  {modalEvent.isDbEvent ? (modalEvent.isPublic ? "Открытое событие" : "Закрытый клуб") : modalEvent.category}
+                </div>
+                
+                <h2 className="text-3xl md:text-4xl font-bold text-white leading-tight mb-6">
+                  {modalEvent.title}
+                </h2>
+
+                <div className="flex flex-col gap-4 mb-8">
+                  <div className="flex items-start gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-400 shrink-0">
+                      <Calendar size={20} />
+                    </div>
+                    <div>
+                      <span className="text-[11px] uppercase tracking-wider text-emerald-500/80 font-bold block">Дата</span>
+                      <span className="text-base font-semibold text-[#f2ede2]">
+                        {modalEvent.isoDate 
+                          ? formatEventDateRange(new Date(modalEvent.isoDate), modalEvent.endDate ? new Date(modalEvent.endDate) : null) 
+                          : modalEvent.date}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-400 shrink-0">
+                      <MapPin size={20} />
+                    </div>
+                    <div>
+                      <span className="text-[11px] uppercase tracking-wider text-emerald-500/80 font-bold block">Локация</span>
+                      <span className="text-base font-semibold text-[#f2ede2]">{modalEvent.location || "Онлайн"}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="prose prose-invert prose-emerald max-w-none mb-8 text-emerald-100/80 text-sm leading-relaxed" dangerouslySetInnerHTML={{ __html: modalEvent.summary }} />
+                
+                {modalEvent.details && (
+                  <ul className="list-disc pl-5 text-emerald-100/80 text-sm mb-8 space-y-2">
+                    {modalEvent.details.map((item: string, i: number) => <li key={i}>{item}</li>)}
+                  </ul>
+                )}
+
+                {(modalEvent.sourceUrl || modalEvent.source) && (
+                  <div className="mt-auto pt-6 border-t border-emerald-500/20">
+                    <a
+                      href={modalEvent.sourceUrl || modalEvent.source}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-full px-8 py-4 rounded-full font-bold text-base bg-emerald-500 text-black hover:bg-emerald-400 hover:shadow-[0_0_30px_rgba(16,185,129,0.3)] transition-all flex items-center justify-center gap-2"
+                    >
+                      Перейти к источнику <ArrowUpRight size={20} />
+                    </a>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

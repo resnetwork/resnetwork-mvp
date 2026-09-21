@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Ticket, LogOut, ArrowLeft, CalendarDays, PlusCircle, ChevronLeft, ChevronRight, ShieldCheck, Handshake, Users, User } from "lucide-react";
+import { Ticket, LogOut, ArrowLeft, CalendarDays, PlusCircle, ChevronLeft, ChevronRight, ShieldCheck, Handshake, Users, User, Calendar } from "lucide-react";
 
 export default function DashboardSidebar({ user }: { user: any }) {
   const [isOpen, setIsOpen] = useState(true);
@@ -27,14 +27,17 @@ export default function DashboardSidebar({ user }: { user: any }) {
       <div>
         {/* Профиль */}
         <Link href="/res365/dashboard/profile" className={`p-6 border-b border-emerald-900/30 flex items-center gap-3 hover:bg-emerald-900/20 transition-colors cursor-pointer ${!isOpen && 'justify-center px-2'}`}>
-          <div className="w-10 h-10 shrink-0 rounded-xl bg-gradient-to-br from-emerald-500/30 to-emerald-700/10 border border-emerald-500/30 flex items-center justify-center font-bold text-emerald-300">
-            {user.name ? user.name.slice(0, 2).toUpperCase() : user.email?.slice(0, 2).toUpperCase()}
+          <div className="w-10 h-10 shrink-0 rounded-xl bg-gradient-to-br from-emerald-500/30 to-emerald-700/10 border border-emerald-500/30 flex items-center justify-center font-bold text-emerald-300 overflow-hidden">
+            {user.company?.logoUrl ? (
+              <img src={user.company.logoUrl} alt={user.company.name} className="w-full h-full object-cover" />
+            ) : (
+              user.company ? user.company.name.slice(0, 2).toUpperCase() : (user.name ? user.name.slice(0, 2).toUpperCase() : user.email?.slice(0, 2).toUpperCase())
+            )}
           </div>
           {isOpen && (
             <div className="overflow-hidden">
-              <div className="text-sm font-bold truncate text-white hover:text-emerald-300 transition-colors">{user.name || user.email?.split('@')[0]}</div>
-              <div className="text-[10px] text-emerald-400/60 truncate font-mono mt-0.5">
-                {user.company ? user.company.name : "Гость"}
+              <div className="text-sm font-bold truncate text-white hover:text-emerald-300 transition-colors">
+                {user.company ? user.company.name : (user.name || user.email?.split('@')[0])}
               </div>
             </div>
           )}
@@ -64,6 +67,16 @@ export default function DashboardSidebar({ user }: { user: any }) {
               <CalendarDays size={18} className={isActive('/res365/dashboard') ? "text-emerald-400" : ""} />
               {isOpen && <span>Афиша Событий</span>}
             </Link>
+
+            {user.role !== "EMPLOYEE" && (
+              <Link 
+                href="/res365/dashboard/events/my" 
+                className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-bold transition-all ${isActive('/res365/dashboard/events/my') ? 'bg-emerald-900/40 text-emerald-300 border border-emerald-500/20' : 'text-emerald-200/70 hover:text-white hover:bg-emerald-500/10 border border-transparent'} ${!isOpen && 'justify-center'}`}
+              >
+                <Calendar size={18} className={isActive('/res365/dashboard/events/my') ? "text-emerald-400" : ""} />
+                {isOpen && <span>Мои события</span>}
+              </Link>
+            )}
 
             <Link 
               href="/res365/dashboard/tickets" 

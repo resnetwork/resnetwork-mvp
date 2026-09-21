@@ -9,6 +9,7 @@ export default function ProfilePage() {
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
   const [accountType, setAccountType] = useState<string>("STARTUP");
   const [companyName, setCompanyName] = useState("");
+  const [userName, setUserName] = useState("");
 
   const [description, setDescription] = useState("");
   const [email, setEmail] = useState("");
@@ -21,6 +22,7 @@ export default function ProfilePage() {
       if (info.success && info.accountType) {
         setAccountType(info.accountType);
         setCompanyName(info.companyName || "");
+        setUserName(info.userName || "");
         setDescription(info.description || "");
         setEmail(info.email || "");
         setWebsite(info.website || "");
@@ -43,6 +45,7 @@ export default function ProfilePage() {
   };
 
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordMessage, setPasswordMessage] = useState("");
 
   const handleSave = async (e: React.FormEvent) => {
@@ -51,6 +54,7 @@ export default function ProfilePage() {
     
     const result = await updateProfile({
       companyName,
+      userName,
       description,
       email,
       website,
@@ -71,10 +75,15 @@ export default function ProfilePage() {
       setPasswordMessage("Минимум 6 символов");
       return;
     }
+    if (password !== confirmPassword) {
+      setPasswordMessage("Пароли не совпадают");
+      return;
+    }
     const result = await changePassword(password);
     if (result.success) {
       setPasswordMessage("Пароль успешно изменен!");
       setPassword("");
+      setConfirmPassword("");
     } else {
       setPasswordMessage(result.error || "Ошибка при смене");
     }
@@ -147,6 +156,8 @@ export default function ProfilePage() {
               className="w-full px-4 py-3 rounded-2xl bg-emerald-950/40 border border-emerald-500/30 text-[#f2ede2] placeholder:text-emerald-500/40 focus:outline-none focus:border-emerald-400 focus:shadow-[0_0_20px_rgba(74,222,128,0.15)] transition-all"
             />
           </div>
+
+
 
           {/* Описание */}
           <div>
@@ -234,21 +245,32 @@ export default function ProfilePage() {
               className="w-full bg-black/40 border border-emerald-900/50 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-emerald-500 transition-colors"
             />
           </div>
+
+          <div>
+            <label className="block text-xs font-bold text-emerald-500 uppercase tracking-wider mb-2">Подтвердите пароль</label>
+            <input 
+              type="password" 
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              placeholder="••••••••" 
+              className="w-full bg-black/40 border border-emerald-900/50 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-emerald-500 transition-colors"
+            />
+          </div>
+          
+          {passwordMessage && (
+            <div className={`text-sm ${passwordMessage.includes('успешно') ? 'text-emerald-400' : 'text-red-400'}`}>
+              {passwordMessage}
+            </div>
+          )}
           
           <button 
             type="button"
             onClick={handlePasswordChange}
-            disabled={!password}
+            disabled={!password || !confirmPassword}
             className="w-full py-3 rounded-xl font-bold text-sm text-black bg-emerald-500 hover:bg-emerald-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Сменить пароль
           </button>
-          
-          {passwordMessage && (
-            <p className={`text-xs mt-2 font-bold ${passwordMessage.includes('успешно') ? 'text-emerald-400' : 'text-red-400'}`}>
-              {passwordMessage}
-            </p>
-          )}
         </div>
       </div>
     </div>

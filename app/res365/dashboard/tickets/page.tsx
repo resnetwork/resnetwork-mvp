@@ -65,9 +65,6 @@ export default async function TicketsPage() {
                     <div className="absolute inset-0 bg-gradient-to-t from-[#081f16] to-transparent" />
                     
                     <div className="absolute top-4 left-4">
-                      <span className="px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest bg-emerald-500 text-black shadow-[0_0_15px_rgba(16,185,129,0.5)]">
-                        VIP Pass
-                      </span>
                     </div>
                   </div>
 
@@ -95,23 +92,7 @@ export default async function TicketsPage() {
                       </div>
                     </div>
 
-                    {/* Attendee Info */}
-                    <div className="mt-6 pt-5 border-t border-dashed border-emerald-500/30 flex items-center gap-6">
-                      <div>
-                        <div className="text-[10px] text-emerald-500/60 uppercase tracking-widest font-bold mb-1">Делегат</div>
-                        <div className="flex items-center gap-2 text-sm text-white font-medium">
-                          <User size={14} className="text-emerald-500" />
-                          {user.name || user.email?.split('@')[0]}
-                        </div>
-                      </div>
-                      <div>
-                        <div className="text-[10px] text-emerald-500/60 uppercase tracking-widest font-bold mb-1">Компания</div>
-                        <div className="flex items-center gap-2 text-sm text-white font-medium">
-                          <Building2 size={14} className="text-emerald-500" />
-                          {user.company?.name || "Независимый участник"}
-                        </div>
-                      </div>
-                    </div>
+
                   </div>
                 </div>
 
