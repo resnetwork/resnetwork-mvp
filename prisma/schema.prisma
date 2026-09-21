@@ -111,6 +111,7 @@ model Event {
   description      String?
   date             DateTime
   endDate          DateTime? @map("end_date")
+  format           String    @default("Оффлайн") // Оффлайн, Онлайн, Гибрид
   location         String? // Оставляем для совместимости
   locationCity     String?   @map("location_city")
   locationStreet   String?   @map("location_street")

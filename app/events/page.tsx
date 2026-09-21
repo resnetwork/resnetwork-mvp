@@ -3,9 +3,46 @@ import EventsClient from "./EventsClient";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { auth } from "@/auth";
+import { EVENTS } from "@/app/data/events";
+import { formatEventDateRange } from "@/app/utils/dateFormatter";
 
 export default async function EventsPage() {
-  const events = await getPublicEvents();
+  const dbEvents = await getPublicEvents();
+  
+  const mappedDbEvents = dbEvents.map(e => ({
+    id: e.id,
+    slug: e.id,
+    title: e.title,
+    summary: e.description || "Без описания",
+    description: e.description || "",
+    date: formatEventDateRange(new Date(e.date), e.endDate ? new Date(e.endDate) : null),
+    isoDate: new Date(e.date).toISOString(),
+    endDate: e.endDate ? new Date(e.endDate).toISOString() : null,
+    location: e.location,
+    format: (e as any).format || "Оффлайн",
+    image: e.imageUrl || "https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=2070&auto=format&fit=crop",
+    category: e.creatorCompany?.name || "Событие",
+    isPublic: e.isPublic,
+    isDbEvent: true,
+    sourceUrl: e.sourceUrl,
+    twoGisUrl: (e as any).twoGisUrl || null
+  }));
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const upcomingEvents = [...mappedDbEvents, ...EVENTS].filter(ev => {
+    if (ev.isoDate) {
+      return new Date(ev.isoDate) >= today;
+    }
+    const d = new Date(ev.date);
+    return isNaN(d.getTime()) || d >= today;
+  }).sort((a, b) => {
+    const timeA = new Date(a.isoDate || a.date).getTime() || 0;
+    const timeB = new Date(b.isoDate || b.date).getTime() || 0;
+    return timeA - timeB;
+  });
+
   const session = await auth();
   const userId = session?.user?.id || null;
 
@@ -27,7 +64,7 @@ export default async function EventsPage() {
         </header>
 
         {/* Client component with filtering logic */}
-        <EventsClient initialEvents={events} userId={userId} />
+        <EventsClient initialEvents={upcomingEvents} userId={userId} />
         
       </div>
     </main>

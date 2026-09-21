@@ -99,9 +99,10 @@ export async function createEvent(formData: FormData, userId: string, companyId:
     const sourceUrl = formData.get("sourceUrl") as string;
     const imageFile = formData.get("imageFile") as File | null;
     const isPublic = formData.get("isPublic") === "on";
+    const format = formData.get("format") as string || "Оффлайн";
 
-    if (!title || !dateStr || !locationCity) {
-      return { success: false, error: "Название, дата и город обязательны" };
+    if (!title || !dateStr || (format !== "Онлайн" && !locationCity)) {
+      return { success: false, error: "Название, дата и город (для оффлайн/гибрид) обязательны" };
     }
 
     let imageUrl = null;
@@ -117,11 +118,12 @@ export async function createEvent(formData: FormData, userId: string, companyId:
         description,
         date: new Date(dateStr),
         endDate: endDateStr ? new Date(endDateStr) : null,
-        locationCity,
-        locationStreet,
-        locationVenue,
-        twoGisUrl,
-        location: [locationCity, locationStreet, locationVenue].filter(Boolean).join(', '), // Для обратной совместимости
+        format,
+        locationCity: format === "Онлайн" ? null : locationCity,
+        locationStreet: format === "Онлайн" ? null : locationStreet,
+        locationVenue: format === "Онлайн" ? null : locationVenue,
+        twoGisUrl: format === "Онлайн" ? null : twoGisUrl,
+        location: format === "Онлайн" ? null : [locationCity, locationStreet, locationVenue].filter(Boolean).join(', '), // Для обратной совместимости
         imageUrl,
         sourceUrl,
         isPublic,

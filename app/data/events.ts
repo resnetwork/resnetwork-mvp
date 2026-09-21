@@ -122,41 +122,11 @@ export const EVENTS: ResEvent[] = [
     source: "https://www.unescap.org/events/2026/tenth-north-and-central-asia-multi-stakeholder-forum-implementation-sustainable",
     image: "https://images.unsplash.com/photo-1577495508048-b635879837f1?w=1200&q=80&auto=format&fit=crop",
   },
-  {
-    slug: "caspian-sea-conference",
-    title: "Caspian Sea Climate & Water Conference 2026",
-    date: "15–16 октября 2026",
-    isoDate: "2026-10-15T09:00:00",
-    location: "Nazarbayev University, Астана",
-    category: "Климатическая адаптация",
-    summary: "Международная конференция о сохранении бассейна Каспийского моря, климатических рисках и региональном водном сотрудничестве.",
-    details: [
-      "Адаптация к изменению климата бассейна Каспия",
-      "Защита биоразнообразия и экосистем",
-      "Научно-политическое и отраслевое взаимодействие стран региона",
-    ],
-    source: "https://smg.nu.edu.kz/caspian_sea_conference",
-    image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1200&q=80&auto=format&fit=crop",
-  },
-  {
-    slug: "central-asia-climate-finance",
-    title: "Central Asia Climate & ESG Investment Forum",
-    date: "12–13 ноября 2026",
-    isoDate: "2026-11-12T09:30:00",
-    location: "Ташкент, Узбекистан",
-    category: "Зелёное финансирование",
-    summary: "Ежегодный диалог министерств финансов, институтов развития (EBRD, ADB, AIIB, БРК) и частных фондов по мобилизации климатического капитала в регионе.",
-    details: [
-      "Структурирование зеленых облигаций и сукук",
-      "Финансирование трансграничных водных и энергетических проектов",
-      "Инструменты снижения рисков для частных инвесторов",
-    ],
-    image: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1200&q=80&auto=format&fit=crop",
-  },
+
   {
     slug: "res-expo-2027",
     title: "RES+ EXPO 2027: Международная выставка и конгресс",
-    date: "5–7 мая 2027",
+    date: "5–7 мая",
     isoDate: "2027-05-05T09:00:00",
     location: "МВЦ EXPO, Астана, Казахстан",
     category: "Флагманское событие",
@@ -166,6 +136,7 @@ export const EVENTS: ResEvent[] = [
       "Пленарные сессии с участием глав правительств и агентств ООН",
       "B2B-нетворкинг и подписание обязывающих соглашений",
     ],
-    image: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1200&q=80&auto=format&fit=crop",
+    source: "https://www.res2027expo.kz/",
+    image: "/res-expo-logo.png",
   }
 ];

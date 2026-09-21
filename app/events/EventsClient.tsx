@@ -17,22 +17,8 @@ export default function EventsClient({ initialEvents, userId }: { initialEvents:
   const [currentPage, setCurrentPage] = useState(1);
   const EVENTS_PER_PAGE = 8;
 
-  // Генерируем 10 заглушек-событий
-  const dummyEvents = Array.from({ length: 10 }).map((_, i) => ({
-    id: `dummy-${i}`,
-    title: "",
-    date: new Date(new Date().setDate(new Date().getDate() + i * 3)).toISOString(), // раз в 3 дня
-    location: "",
-    imageUrl: null, 
-    isPublic: true,
-    description: "",
-    creatorCompanyId: "dummy",
-    isDummy: true
-  }));
-
-  // Filter events based on selected date (объединяем реальные и тестовые для демо)
-  const allEventsForDemo = [...initialEvents, ...dummyEvents];
-  const filteredEvents = allEventsForDemo.filter(e => {
+  // Filter events based on selected date
+  const filteredEvents = initialEvents.filter(e => {
     const d = new Date(e.date);
     if (selectedDate) {
       return d.getDate() === selectedDate.getDate() && 
@@ -102,12 +88,12 @@ export default function EventsClient({ initialEvents, userId }: { initialEvents:
         ) : (
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {currentEvents.map(event => {
+              {currentEvents.map((event, i) => {
                 if (event.isDummy) {
                   return (
                     <div 
-                      key={event.id} 
-                      className="w-full h-[400px] rounded-[2rem] bg-gradient-to-br from-[#0a2e1d]/50 to-[#061811]/50 border border-emerald-900/20 shadow-inner flex flex-col justify-end p-8"
+                      key={event.id || event.slug || i} 
+                      className="w-full h-[420px] rounded-[2rem] bg-gradient-to-br from-[#0a2e1d]/50 to-[#061811]/50 border border-emerald-900/20 shadow-inner flex flex-col justify-end p-6"
                     >
                       <div className="w-16 h-3 bg-emerald-500/10 rounded-full mb-4" />
                       <div className="w-full h-8 bg-emerald-500/10 rounded-xl mb-3" />
@@ -119,36 +105,59 @@ export default function EventsClient({ initialEvents, userId }: { initialEvents:
 
                 return (
                   <div 
-                    key={event.id}
-                    className="group relative w-full h-[400px] rounded-[2rem] overflow-hidden cursor-pointer shadow-2xl bg-[#06241a] flex flex-col"
-                    onClick={() => setModalEventId(event.id)}
+                    key={event.id || event.slug || i}
+                    className="group relative w-full h-[420px] rounded-[2rem] overflow-hidden cursor-pointer shadow-2xl bg-[#06241a] flex flex-col"
+                    onClick={() => setModalEventId(event.id || event.slug)}
                   >
                     {/* Изображение и градиент */}
                     <div className="absolute inset-0 z-0">
-                      {event.imageUrl ? (
-                        <img src={event.imageUrl} alt={event.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-in-out" />
+                      {(event.image || event.imageUrl) ? (
+                        <img src={event.image || event.imageUrl} alt={event.title} className={`w-full h-full group-hover:scale-110 transition-transform duration-700 ease-in-out ${(event.image || event.imageUrl)?.includes('res-expo-logo') ? 'object-contain p-8 bg-white' : 'object-cover'}`} />
                       ) : (
                         <div className="w-full h-full bg-gradient-to-br from-[#0a3829] to-[#04150f]" />
                       )}
-                      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#06241a]/60 to-[#06241a] transition-opacity duration-300 group-hover:opacity-80" />
+                      <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-[#06241a]/95 via-[#06241a]/60 to-transparent pointer-events-none transition-opacity duration-300 group-hover:opacity-80" />
                     </div>
 
-                    {/* Контент карточки */}
-                    <div className="relative z-10 flex-1 flex flex-col justify-end p-6 md:p-8">
-                      <div className="transform transition-transform duration-500 translate-y-0 group-hover:-translate-y-4">
-                        <span className="block text-emerald-400 font-bold mb-2 text-sm tracking-widest uppercase drop-shadow-md">
-                          {new Date(event.date).toLocaleDateString("ru-RU", { day: 'numeric', month: 'long' })}
-                        </span>
-                        <h3 className="text-2xl font-black text-white leading-tight mb-4 drop-shadow-lg line-clamp-3">
-                          {event.title}
-                        </h3>
-                        <div className="flex items-center gap-2 text-emerald-100/70 text-sm font-medium mb-4">
-                          <MapPin size={16} className="text-emerald-500" />
-                          <span className="truncate">{event.location || "Онлайн"}</span>
+                    {/* Контент карточки - строгая сетка с одинаковыми уровнями для всех карточек */}
+                    <div className="relative z-10 flex-1 flex flex-col justify-end p-6">
+                      <div className="transform transition-transform duration-500 translate-y-0 group-hover:-translate-y-2">
+                        {/* Дата (строго фиксированная высота) */}
+                        <div className="h-8 flex items-center mb-1">
+                          <span className="bg-emerald-50 text-emerald-950 px-3 py-0.5 rounded-full font-extrabold text-sm tracking-widest uppercase shadow-md">
+                            {event.date}
+                          </span>
+                        </div>
+
+                        {/* Название (строго фиксированная высота) */}
+                        <div className="h-[76px] mb-3 flex items-start overflow-hidden">
+                          <h3 className="text-xl font-black text-white leading-snug drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)] line-clamp-3">
+                            {event.title}
+                          </h3>
+                        </div>
+
+                        {/* Формат и локация (строго фиксированная высота для всех карточек) */}
+                        <div className="h-[60px] flex flex-col justify-between mb-4">
+                          <div className="flex items-center">
+                            <span className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-[#10b981]/20 text-[#10b981] border border-[#10b981]/30 text-sm font-bold backdrop-blur-md">
+                              <span className="w-2 h-2 rounded-full bg-[#10b981]" />
+                              {event.format || "Оффлайн"}
+                            </span>
+                          </div>
+                          <div className="h-6 flex items-center text-sm font-medium text-emerald-50 drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)] truncate">
+                            {event.location ? (
+                              <div className="flex items-center gap-2 truncate">
+                                <MapPin size={16} className="text-emerald-400 shrink-0" />
+                                <span className="truncate">{event.location}</span>
+                              </div>
+                            ) : (
+                              <span className="text-emerald-200">Онлайн-мероприятие</span>
+                            )}
+                          </div>
                         </div>
                       </div>
 
-                      <button className="w-full py-3 rounded-full bg-emerald-500/10 border border-emerald-500/50 text-emerald-400 font-bold text-sm backdrop-blur-md opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center gap-2 hover:bg-emerald-500 hover:text-black">
+                      <button className="w-full py-2.5 rounded-full bg-emerald-500/10 border border-emerald-500/50 text-emerald-400 font-bold text-sm backdrop-blur-md opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center gap-2 hover:bg-emerald-500 hover:text-black">
                         Подробнее <ArrowRight size={16} />
                       </button>
                     </div>
@@ -198,15 +207,17 @@ export default function EventsClient({ initialEvents, userId }: { initialEvents:
             </div>
 
             {(() => {
-              const event = allEventsForDemo.find(e => e.id === modalEventId);
+              const event = initialEvents.find(e => (e.id === modalEventId || e.slug === modalEventId));
               if (!event) return null;
+
+              const descriptionText = event.description || event.summary || "";
 
               return (
                 <div className="overflow-y-auto custom-scrollbar flex-1 flex flex-col md:flex-row">
                   {/* Левая колонка */}
                   <div className="w-full md:w-2/5 h-64 md:h-auto shrink-0 relative">
-                    {event.imageUrl ? (
-                      <img src={event.imageUrl} alt={event.title} className="w-full h-full object-cover" />
+                    {(event.image || event.imageUrl) ? (
+                      <img src={event.image || event.imageUrl} alt={event.title} className={`w-full h-full ${(event.image || event.imageUrl)?.includes('res-expo-logo') ? 'object-contain p-8 bg-white' : 'object-cover'}`} />
                     ) : (
                       <div className="w-full h-full bg-gradient-to-br from-emerald-900/60 to-emerald-950/80 flex items-center justify-center border-r border-emerald-500/20">
                         <Calendar size={64} className="text-emerald-500/20" />
@@ -233,7 +244,7 @@ export default function EventsClient({ initialEvents, userId }: { initialEvents:
                         <div>
                           <span className="text-[11px] uppercase tracking-wider text-emerald-500/80 font-bold block">Дата</span>
                           <span className="text-base font-semibold text-[#f2ede2]">
-                            {formatEventDateRange(new Date(event.date), event.endDate ? new Date(event.endDate) : null)}
+                            {event.isoDate ? formatEventDateRange(new Date(event.isoDate), event.endDate ? new Date(event.endDate) : null) : event.date}
                           </span>
                         </div>
                       </div>
@@ -244,7 +255,14 @@ export default function EventsClient({ initialEvents, userId }: { initialEvents:
                         </div>
                         <div>
                           <span className="text-[11px] uppercase tracking-wider text-emerald-500/80 font-bold block">Локация</span>
-                          <span className="text-base font-semibold text-[#f2ede2]">{event.location || "Онлайн"}</span>
+                          <div className="flex items-center gap-2 mt-1">
+                            <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 text-xs font-semibold">
+                              {event.format || "Оффлайн"}
+                            </span>
+                            {event.location && (
+                              <span className="text-base font-semibold text-[#f2ede2]">{event.location}</span>
+                            )}
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -255,21 +273,38 @@ export default function EventsClient({ initialEvents, userId }: { initialEvents:
                           <QRCodeSVG value={event.twoGisUrl} size={80} />
                         </div>
                         <div className="text-center sm:text-left">
-                          <h3 className="text-sm font-bold text-emerald-300 mb-1 flex items-center justify-center sm:justify-start gap-1.5">
-                            <QrCode size={16} />
-                            Маршрут в 2GIS
-                          </h3>
-                          <p className="text-emerald-100/60 text-xs mb-2">
-                            Отсканируйте код для прокладки маршрута.
-                          </p>
-                          <a href={event.twoGisUrl} target="_blank" rel="noopener noreferrer" className="text-[10px] font-bold uppercase tracking-wider text-emerald-400 hover:text-emerald-300 hover:underline">
-                            Или нажмите здесь
+                          <h4 className="text-sm font-bold text-white mb-1 flex items-center justify-center sm:justify-start gap-1.5">
+                            <QrCode size={16} className="text-emerald-400" /> Маршрут до места
+                          </h4>
+                          <p className="text-xs text-emerald-100/70 mb-3">Отсканируйте QR-код для перехода в Google Карты</p>
+                          <a href={event.twoGisUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-[10px] font-bold text-emerald-400 hover:text-emerald-300 transition-colors uppercase tracking-wider hover:underline">
+                            <MapPin size={14} /> Открыть карту
                           </a>
                         </div>
                       </div>
                     )}
 
-                    <div className="prose prose-invert prose-emerald max-w-none mb-8 text-emerald-100/80 text-sm leading-relaxed" dangerouslySetInnerHTML={{ __html: event.description || "Описание отсутствует" }} />
+                    {/* Описание */}
+                    <div className="text-emerald-100/90 text-sm md:text-base leading-relaxed space-y-4 mb-8">
+                      {descriptionText ? (
+                        descriptionText
+                          .split(/\n{2,}/)
+                          .filter((p: string) => p.trim() !== '')
+                          .map((p: string, i: number) => (
+                            <p key={i}>{p.replace(/\n/g, ' ')}</p>
+                          ))
+                      ) : (!event.details || event.details.length === 0) ? (
+                        <p className="text-emerald-500/60 italic">Описание отсутствует</p>
+                      ) : null}
+
+                      {event.details && event.details.length > 0 && (
+                        <ul className="list-disc pl-5 space-y-2 mt-4 text-emerald-100/80 text-sm">
+                          {event.details.map((detail: string, idx: number) => (
+                            <li key={idx}>{detail}</li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
 
                     {(event.sourceUrl || event.source) && (
                       <div className="mt-auto pt-6 border-t border-emerald-500/20">

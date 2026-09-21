@@ -61,9 +61,10 @@ export default function EventCarousel({ initialEvents, userId }: { initialEvents
           >
             {/* Отрисовка фона: если есть картинка, показываем её, иначе градиент */}
             {event.imageUrl ? (
-              <div 
-                className="absolute inset-0 bg-cover bg-center transition-transform duration-1000 ease-out md:hover:scale-110"
-                style={{ backgroundImage: `url(${event.imageUrl})` }}
+              <img 
+                src={event.imageUrl} 
+                alt={event.title} 
+                className={`absolute inset-0 w-full h-full transition-transform duration-1000 ease-out md:hover:scale-110 ${event.imageUrl?.includes('res-expo-logo') ? 'object-contain p-8 bg-white' : 'object-cover'}`}
               />
             ) : null}
 
@@ -96,9 +97,17 @@ export default function EventCarousel({ initialEvents, userId }: { initialEvents
                       {formatEventDateRange(new Date(event.date), event.endDate ? new Date(event.endDate) : null)}
                     </span>
                   </div>
-                  <div className="flex items-center gap-2 md:gap-3">
-                    <MapPin size={16} className="text-emerald-400 shrink-0" />
-                    <span className="truncate">{event.location || "Онлайн"}</span>
+                  <div className="flex flex-wrap items-center gap-3 text-[#A1BB94]">
+                    <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[#10b981]/10 text-[#10b981] border border-[#10b981]/20 text-xs md:text-sm font-semibold">
+                      <span className="w-2 h-2 rounded-full bg-[#10b981]" />
+                      {event.format || "Оффлайн"}
+                    </div>
+                    {event.location && (
+                      <div className="flex items-center gap-2">
+                        <MapPin size={18} className="text-[#02B779] shrink-0" />
+                        <span className="text-base font-semibold text-[#f2ede2] truncate">{event.location}</span>
+                      </div>
+                    )}
                   </div>
                 </div>
 
@@ -189,7 +198,7 @@ export default function EventCarousel({ initialEvents, userId }: { initialEvents
                   {/* Левая колонка с картинкой (на мобильных сверху) */}
                   <div className="w-full md:w-2/5 h-64 md:h-auto shrink-0 relative">
                     {event.imageUrl ? (
-                      <img src={event.imageUrl} alt={event.title} className="w-full h-full object-cover" />
+                      <img src={event.imageUrl} alt={event.title} className={`w-full h-full ${event.imageUrl?.includes('res-expo-logo') ? 'object-contain p-8 bg-white' : 'object-cover'}`} />
                     ) : (
                       <div className="w-full h-full bg-gradient-to-br from-emerald-900/60 to-emerald-950/80 flex items-center justify-center border-r border-emerald-500/20">
                         <Calendar size={64} className="text-emerald-500/20" />
@@ -228,27 +237,31 @@ export default function EventCarousel({ initialEvents, userId }: { initialEvents
                         </div>
                         <div>
                           <span className="text-[11px] uppercase tracking-wider text-emerald-500/80 font-bold block">Локация</span>
-                          <span className="text-base font-semibold text-[#f2ede2]">{event.location || "Онлайн"}</span>
+                          <div className="flex items-center gap-2 mt-1">
+                            <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 text-xs font-semibold">
+                              {event.format || "Оффлайн"}
+                            </span>
+                            {event.location && (
+                              <span className="text-base font-semibold text-[#f2ede2]">{event.location}</span>
+                            )}
+                          </div>
                         </div>
                       </div>
                     </div>
 
-                    {/* QR Код 2GIS */}
+                    {/* QR Код Карты */}
                     {event.twoGisUrl && (
                       <div className="mb-8 p-4 rounded-2xl border border-emerald-500/20 bg-emerald-950/30 flex flex-col sm:flex-row items-center gap-4">
                         <div className="p-2 bg-white rounded-lg shrink-0">
                           <QRCodeSVG value={event.twoGisUrl} size={80} />
                         </div>
                         <div className="text-center sm:text-left">
-                          <h3 className="text-sm font-bold text-emerald-300 mb-1 flex items-center justify-center sm:justify-start gap-1.5">
-                            <QrCode size={16} />
-                            Маршрут в 2GIS
-                          </h3>
-                          <p className="text-emerald-100/60 text-xs mb-2">
-                            Отсканируйте код для прокладки маршрута.
-                          </p>
-                          <a href={event.twoGisUrl} target="_blank" rel="noopener noreferrer" className="text-[10px] font-bold uppercase tracking-wider text-emerald-400 hover:text-emerald-300 hover:underline">
-                            Или нажмите здесь
+                          <h4 className="text-sm font-bold text-white mb-1 flex items-center justify-center sm:justify-start gap-1.5">
+                            <QrCode size={16} className="text-emerald-400" /> Маршрут до места
+                          </h4>
+                          <p className="text-xs text-emerald-100/70 mb-3">Отсканируйте QR-код для перехода в Google Карты</p>
+                          <a href={event.twoGisUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-[10px] font-bold text-emerald-400 hover:text-emerald-300 transition-colors uppercase tracking-wider hover:underline">
+                            <MapPin size={14} /> Открыть карту
                           </a>
                         </div>
                       </div>
@@ -265,9 +278,19 @@ export default function EventCarousel({ initialEvents, userId }: { initialEvents
                       }
                     </div>
 
-                    {/* Кнопка регистрации внизу */}
+                    {/* Кнопка регистрации или ссылка на источник внизу */}
                     <div className="mt-auto pt-6 border-t border-emerald-500/20">
-                      {hasTicket ? (
+                      {event.sourceUrl ? (
+                        <a 
+                          href={event.sourceUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="w-full py-4 rounded-xl font-black text-sm uppercase tracking-widest text-black bg-emerald-500 hover:bg-emerald-400 transition-all shadow-[0_0_20px_rgba(16,185,129,0.2)] flex items-center justify-center gap-2"
+                        >
+                          <span>Перейти к источнику</span>
+                          <ArrowUpRight size={18} />
+                        </a>
+                      ) : hasTicket ? (
                         <button disabled className="w-full py-4 rounded-xl font-bold text-sm text-emerald-100 bg-emerald-900/40 border border-emerald-500/30 cursor-not-allowed flex items-center justify-center gap-2">
                           <span className="w-2 h-2 rounded-full bg-emerald-500" />
                           Вы уже участник события

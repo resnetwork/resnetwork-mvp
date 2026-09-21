@@ -25,17 +25,21 @@ export default function EventsSection() {
         // Map DB events to match the UI structure
         const mapped = events.map(e => ({
           slug: e.id,
+          id: e.id,
           title: e.title,
           summary: e.description || "Без описания",
+          description: e.description || "",
           date: formatEventDateRange(new Date(e.date), e.endDate ? new Date(e.endDate) : null),
           isoDate: new Date(e.date).toISOString(),
           endDate: e.endDate ? new Date(e.endDate).toISOString() : null,
-          location: e.location || "Онлайн",
+          location: e.location,
+          format: (e as any).format || "Оффлайн",
           image: e.imageUrl || "https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=2070&auto=format&fit=crop",
           category: e.creatorCompany?.name || "Событие",
           isPublic: e.isPublic,
           isDbEvent: true,
-          sourceUrl: e.sourceUrl
+          sourceUrl: e.sourceUrl,
+          twoGisUrl: (e as any).twoGisUrl || null
         }));
         
         // Фильтруем события: только БУДУЩИЕ с привязкой к сегодняшней дате (>= today)
@@ -119,11 +123,11 @@ export default function EventsSection() {
               className="snap-start shrink-0 group relative overflow-hidden rounded-3xl border border-[#A1BB94]/20 bg-[#14281E] transition-all duration-300 hover:-translate-y-2 hover:border-[#02B779] hover:shadow-[0_15px_40px_rgba(2,183,121,0.25)] flex flex-col w-[270px] md:w-[320px] h-[450px] cursor-pointer"
             >
               {/* Верхняя половина с картинкой */}
-              <div className="relative h-1/2 overflow-hidden w-full">
+              <div className="relative h-1/2 shrink-0 overflow-hidden w-full">
                 <img
                   src={event.image}
                   alt={event.title}
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-85 group-hover:opacity-100"
+                  className={`w-full h-full transition-transform duration-700 group-hover:scale-110 opacity-85 group-hover:opacity-100 ${event.image?.includes('res-expo-logo') ? 'object-contain p-6 bg-white' : 'object-cover'}`}
                   onError={(e) => {
                     e.currentTarget.style.opacity = "0";
                   }}
@@ -137,14 +141,24 @@ export default function EventsSection() {
                   {dateDisplay}
                 </div>
                 
-                <h3 className="text-lg md:text-xl font-bold text-white leading-tight mb-2 group-hover:text-[#E0EAB8] transition-colors line-clamp-3">
-                  {event.title}
-                </h3>
+                <div className="h-[75px] mb-2">
+                  <h3 className="text-lg md:text-xl font-bold text-white leading-tight group-hover:text-[#E0EAB8] transition-colors line-clamp-3">
+                    {event.title}
+                  </h3>
+                </div>
                 
-                <p className="mt-auto flex items-center gap-2 text-xs font-medium text-[#A1BB94]">
-                  <MapPin size={14} className="text-[#02B779]" />
-                  <span className="truncate">{event.location}</span>
-                </p>
+                <div className="mt-auto flex items-center gap-3 text-xs font-medium">
+                  <div className="flex items-center gap-1.5 px-2 py-1 rounded-md bg-[#10b981]/10 text-[#10b981] border border-[#10b981]/20">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#10b981]" />
+                    {event.format || "Оффлайн"}
+                  </div>
+                  {event.location && (
+                    <div className="flex items-center gap-1.5 text-[#A1BB94] truncate">
+                      <MapPin size={14} className="text-[#02B779] shrink-0" />
+                      <span className="truncate">{event.location}</span>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           );
@@ -173,7 +187,7 @@ export default function EventsSection() {
               {/* Левая колонка */}
               <div className="w-full md:w-2/5 h-64 md:h-auto shrink-0 relative">
                 {modalEvent.image ? (
-                  <img src={modalEvent.image} alt={modalEvent.title} className="w-full h-full object-cover" />
+                  <img src={modalEvent.image} alt={modalEvent.title} className={`w-full h-full ${modalEvent.image?.includes('res-expo-logo') ? 'object-contain p-8 bg-white' : 'object-cover'}`} />
                 ) : (
                   <div className="w-full h-full bg-gradient-to-br from-emerald-900/60 to-emerald-950/80 flex items-center justify-center border-r border-emerald-500/20">
                     <Calendar size={64} className="text-emerald-500/20" />
@@ -218,13 +232,27 @@ export default function EventsSection() {
                   </div>
                 </div>
 
-                <div className="prose prose-invert prose-emerald max-w-none mb-8 text-emerald-100/80 text-sm leading-relaxed" dangerouslySetInnerHTML={{ __html: modalEvent.summary }} />
-                
-                {modalEvent.details && (
-                  <ul className="list-disc pl-5 text-emerald-100/80 text-sm mb-8 space-y-2">
-                    {modalEvent.details.map((item: string, i: number) => <li key={i}>{item}</li>)}
-                  </ul>
-                )}
+                {/* Описание */}
+                <div className="text-emerald-100/90 text-sm md:text-base leading-relaxed space-y-4 mb-8">
+                  {(modalEvent.description || modalEvent.summary || "") ? (
+                    (modalEvent.description || modalEvent.summary)
+                      .split(/\n{2,}/)
+                      .filter((p: string) => p.trim() !== '')
+                      .map((p: string, i: number) => (
+                        <p key={i}>{p.replace(/\n/g, ' ')}</p>
+                      ))
+                  ) : !modalEvent.details || modalEvent.details.length === 0 ? (
+                    <p className="text-emerald-500/60 italic">Описание отсутствует</p>
+                  ) : null}
+
+                  {modalEvent.details && modalEvent.details.length > 0 && (
+                    <ul className="list-disc pl-5 space-y-2 mt-4 text-emerald-100/80 text-sm">
+                      {modalEvent.details.map((item: string, i: number) => (
+                        <li key={i}>{item}</li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
 
                 {(modalEvent.sourceUrl || modalEvent.source) && (
                   <div className="mt-auto pt-6 border-t border-emerald-500/20">
