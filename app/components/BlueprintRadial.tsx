@@ -31,7 +31,7 @@ const WEDGES: WedgeData[] = [
     summary: "Масштабирование солнечной, ветровой и гидрогенерации в Центральной Азии.",
     details: "Комплексное развитие проектов солнечной и ветровой энергетики, внедрение промышленных систем накопления энергии (BESS), модернизация региональных межсистемных линий электропередач для трансграничного обмена чистой энергией.",
     projects: ["СЭС Жанакорган 500 МВт", "ВЭС Ерейментау 250 МВт", "Камбаратинская ГЭС-1", "BESS накопители 100 МВт*ч"],
-    image: "https://images.unsplash.com/photo-1466611653911-95081537e5b7?w=900&q=80&auto=format&fit=crop", // Wind turbines in green hills
+    image: "/dir_1.jpg", 
     path: "M127.85 41.5807C125.089 36.7978 126.719 30.6623 131.61 28.0978C166.771 9.66253 205.926 -0.00126222 245.726 0.00293272C285.526 0.00712766 324.678 9.67917 359.836 28.1218C364.726 30.6874 366.355 36.8232 363.593 41.6056L254.361 230.708C250.511 237.373 240.89 237.372 237.042 230.706L127.85 41.5807Z",
     dotAngle: 0,
     btnPositionClass: "top-[-38px] left-1/2 -translate-x-1/2",
@@ -46,7 +46,7 @@ const WEDGES: WedgeData[] = [
     summary: "Гармонизация законодательства и запуск региональной системы торговли квотами (ETS).",
     details: "Создание единой региональной платформы мониторинга выбросов CO2, гармонизация климатических стандартов стран Центральной Азии с европейским CBAM, развитие рынка верифицированных углеродных офсетов.",
     projects: ["Единый углеродный реестр ЦА", "Национальная система ETS", "ESG-стандарты для листинга"],
-    image: "https://images.unsplash.com/photo-1448375240586-882707db888b?w=900&q=80&auto=format&fit=crop", // Lush forest canopy & carbon sink
+    image: "/dir_2.jpg", 
     path: "M363.549 41.5806C366.31 36.7977 372.439 35.1417 377.105 38.0955C410.651 59.3284 438.597 88.4048 458.494 122.875C478.39 157.345 489.59 196.088 491.197 235.756C491.42 241.274 486.921 245.753 481.398 245.752L263.015 245.706C255.318 245.704 250.509 237.372 254.357 230.706L363.549 41.5806Z",
     dotAngle: 60,
     btnPositionClass: "top-[15%] right-[-45px] md:right-[-90px]",
@@ -61,7 +61,7 @@ const WEDGES: WedgeData[] = [
     summary: "Трансграничное управление бассейнами рек и цифровизация учета воды.",
     details: "Модернизация гидротехнических сооружений, автоматизация шлюзов на трансграничных каналах рек Сырдарья и Амударья, масштабное внедрение систем капельного орошения и восстановление экосистемы Приаралья.",
     projects: ["Smart Water Бассейна Арала", "Автоматизация каналов БАК", "Программа сохранения ледников Тянь-Шаня"],
-    image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=900&q=80&auto=format&fit=crop", // Pure turquoise alpine lake / water resource
+    image: "/dir_3.jpg", 
     path: "M481.403 245.704C486.926 245.704 491.424 250.184 491.2 255.702C489.584 295.371 478.376 334.111 458.472 368.578C438.569 403.044 410.616 432.115 377.065 453.341C372.398 456.293 366.27 454.636 363.51 449.853L254.357 260.703C250.509 254.036 255.321 245.704 263.018 245.704L481.403 245.704Z",
     dotAngle: 120,
     btnPositionClass: "bottom-[15%] right-[-45px] md:right-[-90px]",
@@ -76,7 +76,7 @@ const WEDGES: WedgeData[] = [
     summary: "Привлечение ESG-инвестиций, выпуск зелёных облигаций и синдицированное финансирование.",
     details: "Создание синдицированных пулов международных инвесторов, выпуск суверенных и корпоративных Green Bonds через финансовый хаб AIFC, грантовые программы поддержки зеленых стартапов и МСБ.",
     projects: ["Green Bonds AIFC", "Central Asia Climate Fund", "ESG-верификация банковских портфелей"],
-    image: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=900&q=80&auto=format&fit=crop", // Modern glass financial skyscraper
+    image: "/dir_4.jpg", 
     path: "M238.338 261.448C241.61 255.783 249.788 255.784 253.06 261.45L362.252 450.576C364.607 454.656 363.195 459.83 359.095 461.98C324.148 480.303 285.232 489.908 245.675 489.904C206.117 489.9 167.205 480.287 132.262 461.957C128.161 459.806 126.75 454.631 129.106 450.552L238.338 261.448Z",
     dotAngle: 180,
     btnPositionClass: "bottom-[-38px] left-1/2 -translate-x-1/2",
@@ -91,7 +91,7 @@ const WEDGES: WedgeData[] = [
     summary: "Декарбонизация тяжелой индустрии, энергоэффективность и зеленый водород.",
     details: "Внедрение технологий улавливания и утилизации углерода (CCUS), переход металлургических комбинатов на электродуговую плавку, пилотные заводы по производству зеленого водорода и развитие циркулярной экономики.",
     projects: ["Зеленый водород Мангистау (Hyrasia)", "Электроплавка стали в Темиртау", "CleanTech Акселератор"],
-    image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=900&q=80&auto=format&fit=crop", // High-tech CleanTech automation & industry
+    image: "/dir_industry.jpg", // High-tech CleanTech automation & industry
     path: "M127.849 449.822C125.088 454.605 118.959 456.261 114.293 453.307C80.7467 432.074 52.8008 402.998 32.9044 368.528C13.008 334.058 1.8083 295.316 0.201364 255.648C-0.0221799 250.129 4.47716 245.651 10 245.652L228.382 245.698C236.079 245.699 240.889 254.032 237.04 260.698L127.849 449.822Z",
     dotAngle: 240,
     btnPositionClass: "bottom-[15%] left-[-45px] md:left-[-90px]",
@@ -106,7 +106,7 @@ const WEDGES: WedgeData[] = [
     summary: "Ответственная добыча лития, редкоземельных металлов и меди для энергоперехода.",
     details: "Экологически чистая добыча и глубокая переработка стратегических металлов (литий, никель, кобальт, медь, редкоземельные элементы), необходимых для глобального производства солнечных батарей и тяговых аккумуляторов.",
     projects: ["Литиевый кластер ВКО", "Редкоземельные металлы Аксу", "Медный проект Актогай"],
-    image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=900&q=80&auto=format&fit=crop", // Futuristic crystalline mineral & lithium structure
+    image: "/dir_5.jpg", 
     path: "M10 245.704C4.47716 245.704 -0.0212433 241.224 0.203455 235.706C1.81873 196.037 13.0269 157.296 32.931 122.829C52.8352 88.3629 80.7879 59.2917 114.339 38.0655C119.006 35.1127 125.135 36.77 127.895 41.5535L237.049 230.706C240.896 237.372 236.085 245.704 228.388 245.704L10 245.704Z",
     dotAngle: 300,
     btnPositionClass: "top-[15%] left-[-45px] md:left-[-90px]",
@@ -122,9 +122,9 @@ export default function BlueprintRadial() {
   return (
     <div className="w-full max-w-7xl mx-auto px-4 md:px-12 py-12 md:py-20 relative">
       
-      {/* Заголовок (Слева Title, справа краткое пояснение) */}
+      {/* Заголовок (Слева Title) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-12 mb-8 lg:mb-12 items-end">
-        <div className="lg:col-span-7">
+        <div className="lg:col-span-12">
           <FocusRevealHeading
             tokens={[
               { text: "Ключевые", isAccent: false },
@@ -133,11 +133,6 @@ export default function BlueprintRadial() {
             className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight text-white leading-tight"
             align="left"
           />
-        </div>
-        <div className="lg:col-span-5">
-          <p className="text-res-text-muted text-sm md:text-base leading-relaxed">
-            Отслеживайте региональные данные по ключевым направлениям перехода к чистой энергии Центральной Азии.
-          </p>
         </div>
       </div>
 
@@ -218,13 +213,13 @@ export default function BlueprintRadial() {
                       width="492"
                       height="492"
                       className={`transition-all duration-700 ease-out origin-center ${
-                        isHovered ? "scale-110 brightness-115" : "scale-100 brightness-75 hover:brightness-90"
+                        isHovered ? "scale-105 brightness-110" : "scale-100 brightness-95 hover:brightness-100"
                       }`}
                     />
                     {/* Color tint overlay */}
                     <path
                       d={wedge.path}
-                      fill={isHovered ? "rgba(2, 183, 121, 0.15)" : "rgba(2, 73, 63, 0.35)"}
+                      fill={isHovered ? "transparent" : "rgba(0, 20, 15, 0.25)"}
                       className="transition-colors duration-300"
                     />
                   </g>

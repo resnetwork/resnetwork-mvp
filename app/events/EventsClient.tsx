@@ -19,7 +19,12 @@ export default function EventsClient({ initialEvents, userId }: { initialEvents:
 
   // Filter events based on selected date
   const filteredEvents = initialEvents.filter(e => {
-    const d = new Date(e.date);
+    // Используем isoDate для надежного парсинга, так как e.date может быть в формате "24 СЕНТЯБРЯ"
+    const d = new Date(e.isoDate || e.date);
+    
+    // Если дата не парсится (например, старые фейковые данные), просто показываем ивент
+    if (isNaN(d.getTime())) return true;
+
     if (selectedDate) {
       return d.getDate() === selectedDate.getDate() && 
              d.getMonth() === selectedDate.getMonth() && 
