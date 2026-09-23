@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ArrowUpRight, X, Sparkles, ChevronRight, Sun, CloudSun, Droplet, Leaf, Factory, Gem } from "lucide-react";
+import { ArrowUpRight, X, ChevronRight } from "lucide-react";
 import FocusRevealHeading from "./FocusRevealHeading";
 
 interface WedgeData {
@@ -16,8 +16,10 @@ interface WedgeData {
   projects: string[];
   image: string;
   path: string;
-  dotAngle: number;
-  btnPositionClass: string;
+  labelLines: string[];
+  textX: number;
+  textY: number;
+  textAnchor: "start" | "middle" | "end";
 }
 
 const WEDGES: WedgeData[] = [
@@ -32,24 +34,24 @@ const WEDGES: WedgeData[] = [
     details: "Комплексное развитие проектов солнечной и ветровой энергетики, внедрение промышленных систем накопления энергии (BESS), модернизация региональных межсистемных линий электропередач для трансграничного обмена чистой энергией.",
     projects: ["СЭС Жанакорган 500 МВт", "ВЭС Ерейментау 250 МВт", "Камбаратинская ГЭС-1", "BESS накопители 100 МВт*ч"],
     image: "/dir_1.jpg", 
-    path: "M127.85 41.5807C125.089 36.7978 126.719 30.6623 131.61 28.0978C166.771 9.66253 205.926 -0.00126222 245.726 0.00293272C285.526 0.00712766 324.678 9.67917 359.836 28.1218C364.726 30.6874 366.355 36.8232 363.593 41.6056L254.361 230.708C250.511 237.373 240.89 237.372 237.042 230.706L127.85 41.5807Z",
-    dotAngle: 0,
-    btnPositionClass: "top-[-38px] left-1/2 -translate-x-1/2",
+    path: "M 500,500 L 100.00,500.00 L 100.14,489.53 L 100.55,479.07 L 101.23,468.62 L 102.19,458.19 L 103.42,447.79 L 104.92,437.43 L 106.70,427.11 L 108.74,416.84 L 111.05,406.62 L 113.63,396.47 L 116.47,386.39 L 119.58,376.39 L 122.94,366.48 L 126.57,356.65 L 130.45,346.93 L 134.58,337.31 L 138.97,327.80 L 143.60,318.40 L 148.47,309.14 L 153.59,300.00 Z",
+    labelLines: ["Возобновляемая", "энергетика"],
+    textX: 55, textY: 383, textAnchor: "end",
   },
   {
     id: "climate-policy",
     index: 1,
     title: "Климат и углеродная политика",
-    shortTitle: "Климат & ETS",
+    shortTitle: "Климат и политика",
     tag: "Регулирование и углерод",
     goal: "Carbon Neutrality 2060",
     summary: "Гармонизация законодательства и запуск региональной системы торговли квотами (ETS).",
     details: "Создание единой региональной платформы мониторинга выбросов CO2, гармонизация климатических стандартов стран Центральной Азии с европейским CBAM, развитие рынка верифицированных углеродных офсетов.",
     projects: ["Единый углеродный реестр ЦА", "Национальная система ETS", "ESG-стандарты для листинга"],
     image: "/dir_2.jpg", 
-    path: "M363.549 41.5806C366.31 36.7977 372.439 35.1417 377.105 38.0955C410.651 59.3284 438.597 88.4048 458.494 122.875C478.39 157.345 489.59 196.088 491.197 235.756C491.42 241.274 486.921 245.753 481.398 245.752L263.015 245.706C255.318 245.704 250.509 237.372 254.357 230.706L363.549 41.5806Z",
-    dotAngle: 60,
-    btnPositionClass: "top-[15%] right-[-45px] md:right-[-90px]",
+    path: "M 500,500 L 153.59,300.00 L 158.94,291.00 L 164.53,282.14 L 170.35,273.44 L 176.39,264.89 L 182.66,256.50 L 189.14,248.27 L 195.84,240.22 L 202.74,232.35 L 209.85,224.66 L 217.16,217.16 L 224.66,209.85 L 232.35,202.74 L 240.22,195.84 L 248.27,189.14 L 256.50,182.66 L 264.89,176.39 L 273.44,170.35 L 282.14,164.53 L 291.00,158.94 L 300.00,153.59 Z",
+    labelLines: ["Климат и", "политика"],
+    textX: 170, textY: 175, textAnchor: "end",
   },
   {
     id: "water-resources",
@@ -62,9 +64,9 @@ const WEDGES: WedgeData[] = [
     details: "Модернизация гидротехнических сооружений, автоматизация шлюзов на трансграничных каналах рек Сырдарья и Амударья, масштабное внедрение систем капельного орошения и восстановление экосистемы Приаралья.",
     projects: ["Smart Water Бассейна Арала", "Автоматизация каналов БАК", "Программа сохранения ледников Тянь-Шаня"],
     image: "/dir_3.jpg", 
-    path: "M481.403 245.704C486.926 245.704 491.424 250.184 491.2 255.702C489.584 295.371 478.376 334.111 458.472 368.578C438.569 403.044 410.616 432.115 377.065 453.341C372.398 456.293 366.27 454.636 363.51 449.853L254.357 260.703C250.509 254.036 255.321 245.704 263.018 245.704L481.403 245.704Z",
-    dotAngle: 120,
-    btnPositionClass: "bottom-[15%] right-[-45px] md:right-[-90px]",
+    path: "M 500,500 L 300.00,153.59 L 309.14,148.47 L 318.40,143.60 L 327.80,138.97 L 337.31,134.58 L 346.93,130.45 L 356.65,126.57 L 366.48,122.94 L 376.39,119.58 L 386.39,116.47 L 396.47,113.63 L 406.62,111.05 L 416.84,108.74 L 427.11,106.70 L 437.43,104.92 L 447.79,103.42 L 458.19,102.19 L 468.62,101.23 L 479.07,100.55 L 489.53,100.14 L 500.00,100.00 Z",
+    labelLines: ["Водные ресурсы"],
+    textX: 375, textY: 55, textAnchor: "end",
   },
   {
     id: "green-finance",
@@ -77,39 +79,39 @@ const WEDGES: WedgeData[] = [
     details: "Создание синдицированных пулов международных инвесторов, выпуск суверенных и корпоративных Green Bonds через финансовый хаб AIFC, грантовые программы поддержки зеленых стартапов и МСБ.",
     projects: ["Green Bonds AIFC", "Central Asia Climate Fund", "ESG-верификация банковских портфелей"],
     image: "/dir_4.jpg", 
-    path: "M238.338 261.448C241.61 255.783 249.788 255.784 253.06 261.45L362.252 450.576C364.607 454.656 363.195 459.83 359.095 461.98C324.148 480.303 285.232 489.908 245.675 489.904C206.117 489.9 167.205 480.287 132.262 461.957C128.161 459.806 126.75 454.631 129.106 450.552L238.338 261.448Z",
-    dotAngle: 180,
-    btnPositionClass: "bottom-[-38px] left-1/2 -translate-x-1/2",
+    path: "M 500,500 L 500.00,100.00 L 510.47,100.14 L 520.93,100.55 L 531.38,101.23 L 541.81,102.19 L 552.21,103.42 L 562.57,104.92 L 572.89,106.70 L 583.16,108.74 L 593.38,111.05 L 603.53,113.63 L 613.61,116.47 L 623.61,119.58 L 633.52,122.94 L 643.35,126.57 L 653.07,130.45 L 662.69,134.58 L 672.20,138.97 L 681.60,143.60 L 690.86,148.47 L 700.00,153.59 Z",
+    labelLines: ["Зелёные финансы"],
+    textX: 625, textY: 55, textAnchor: "start",
   },
   {
     id: "sustainable-industry",
     index: 4,
     title: "Устойчивая промышленность",
-    shortTitle: "CleanTech & Индустрия",
+    shortTitle: "Устойчивая индустрия",
     tag: "Декарбонизация",
     goal: "-40% выбросов предприятий",
     summary: "Декарбонизация тяжелой индустрии, энергоэффективность и зеленый водород.",
     details: "Внедрение технологий улавливания и утилизации углерода (CCUS), переход металлургических комбинатов на электродуговую плавку, пилотные заводы по производству зеленого водорода и развитие циркулярной экономики.",
     projects: ["Зеленый водород Мангистау (Hyrasia)", "Электроплавка стали в Темиртау", "CleanTech Акселератор"],
-    image: "/dir_industry.jpg", // High-tech CleanTech automation & industry
-    path: "M127.849 449.822C125.088 454.605 118.959 456.261 114.293 453.307C80.7467 432.074 52.8008 402.998 32.9044 368.528C13.008 334.058 1.8083 295.316 0.201364 255.648C-0.0221799 250.129 4.47716 245.651 10 245.652L228.382 245.698C236.079 245.699 240.889 254.032 237.04 260.698L127.849 449.822Z",
-    dotAngle: 240,
-    btnPositionClass: "bottom-[15%] left-[-45px] md:left-[-90px]",
+    image: "/dir_industry.jpg",
+    path: "M 500,500 L 700.00,153.59 L 709.00,158.94 L 717.86,164.53 L 726.56,170.35 L 735.11,176.39 L 743.50,182.66 L 751.73,189.14 L 759.78,195.84 L 767.65,202.74 L 775.34,209.85 L 782.84,217.16 L 790.15,224.66 L 797.26,232.35 L 804.16,240.22 L 810.86,248.27 L 817.34,256.50 L 823.61,264.89 L 829.65,273.44 L 835.47,282.14 L 841.06,291.00 L 846.41,300.00 Z",
+    labelLines: ["Устойчивая", "индустрия"],
+    textX: 830, textY: 175, textAnchor: "start",
   },
   {
     id: "critical-minerals",
     index: 5,
     title: "Критические минералы",
-    shortTitle: "Критические металлы",
+    shortTitle: "Критические минералы",
     tag: "Батарейные металлы",
     goal: "100% соблюдение стандартов IRMA",
     summary: "Ответственная добыча лития, редкоземельных металлов и меди для энергоперехода.",
     details: "Экологически чистая добыча и глубокая переработка стратегических металлов (литий, никель, кобальт, медь, редкоземельные элементы), необходимых для глобального производства солнечных батарей и тяговых аккумуляторов.",
     projects: ["Литиевый кластер ВКО", "Редкоземельные металлы Аксу", "Медный проект Актогай"],
     image: "/dir_5.jpg", 
-    path: "M10 245.704C4.47716 245.704 -0.0212433 241.224 0.203455 235.706C1.81873 196.037 13.0269 157.296 32.931 122.829C52.8352 88.3629 80.7879 59.2917 114.339 38.0655C119.006 35.1127 125.135 36.77 127.895 41.5535L237.049 230.706C240.896 237.372 236.085 245.704 228.388 245.704L10 245.704Z",
-    dotAngle: 300,
-    btnPositionClass: "top-[15%] left-[-45px] md:left-[-90px]",
+    path: "M 500,500 L 846.41,300.00 L 851.53,309.14 L 856.40,318.40 L 861.03,327.80 L 865.42,337.31 L 869.55,346.93 L 873.43,356.65 L 877.06,366.48 L 880.42,376.39 L 883.53,386.39 L 886.37,396.47 L 888.95,406.62 L 891.26,416.84 L 893.30,427.11 L 895.08,437.43 L 896.58,447.79 L 897.81,458.19 L 898.77,468.62 L 899.45,479.07 L 899.86,489.53 L 900.00,500.00 Z",
+    labelLines: ["Критические", "минералы"],
+    textX: 945, textY: 383, textAnchor: "start",
   },
 ];
 
@@ -117,74 +119,34 @@ export default function BlueprintRadial() {
   const [activeWedge, setActiveWedge] = useState<WedgeData | null>(null);
   const [hoveredWedge, setHoveredWedge] = useState<WedgeData | null>(null);
 
-  const displayWedge = hoveredWedge || activeWedge;
-
   return (
-    <div className="w-full max-w-7xl mx-auto px-4 md:px-12 py-12 md:py-20 relative">
+    <div className="w-full relative overflow-hidden py-16 md:py-24">
       
-      {/* Заголовок (Слева Title) */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-12 mb-8 lg:mb-12 items-end">
-        <div className="lg:col-span-12">
-          <FocusRevealHeading
-            tokens={[
-              { text: "Ключевые", isAccent: false },
-              { text: "направления", isAccent: true },
-            ]}
-            className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight text-white leading-tight"
-            align="left"
-          />
-        </div>
-      </div>
-
-      {/* Центральный визуальный сегментированный круг (OceanCentral Style) */}
-      <div className="relative flex items-center justify-center my-8 md:my-16">
+      {/* Главный контейнер для десктопа */}
+      <div className="hidden md:flex flex-col relative max-w-[1600px] mx-auto w-full px-8 lg:px-12">
         
-        {/* Фоновое свечение */}
-        <div className="absolute w-[350px] h-[350px] md:w-[600px] md:h-[600px] bg-res-accent/10 rounded-full blur-[100px] pointer-events-none" />
-
-        {/* Контейнер колеса с внешними кнопками */}
-        <div className="relative w-[340px] h-[340px] sm:w-[440px] sm:h-[440px] md:w-[540px] md:h-[540px] lg:w-[600px] lg:h-[600px] flex items-center justify-center">
-          
-          {/* Внешняя светящаяся орбита с точками */}
-          <svg
-            className="absolute inset-0 w-full h-full pointer-events-none animate-[spin_120s_linear_infinite]"
-            viewBox="0 0 562 562"
-            fill="none"
-          >
-            <circle
-              cx="281"
-              cy="281"
-              r="268"
-              stroke="url(#orbit_gradient)"
-              strokeWidth="1.2"
-              strokeDasharray="4 6"
-              opacity="0.4"
+        {/* Заголовок (Сверху, по левому краю, в одну строку) */}
+        <div className="w-full flex justify-start z-20 mb-8 -mt-4">
+          <div className="flex gap-4 items-center whitespace-nowrap">
+            <FocusRevealHeading
+              tokens={[
+                { text: "Ключевые ", isAccent: false },
+                { text: "направления", isAccent: true },
+              ]}
+              className="text-4xl lg:text-5xl xl:text-[4rem] font-black tracking-tight text-white leading-none"
+              align="left"
             />
-            {WEDGES.map((wedge) => (
-              <circle
-                key={`dot-${wedge.id}`}
-                cx="281"
-                cy="13"
-                r="4.5"
-                fill={displayWedge?.id === wedge.id ? "#E0EAB8" : "#02B779"}
-                transform={`rotate(${wedge.dotAngle} 281 281)`}
-                className="transition-all duration-300 shadow-[0_0_10px_#02B779]"
-              />
-            ))}
-            <defs>
-              <linearGradient id="orbit_gradient" x1="0" y1="0" x2="562" y2="562" gradientUnits="userSpaceOnUse">
-                <stop stopColor="#02B779" />
-                <stop offset="0.5" stopColor="#E0EAB8" />
-                <stop offset="1" stopColor="#2E8656" />
-              </linearGradient>
-            </defs>
-          </svg>
+          </div>
+        </div>
 
-          {/* SVG Segmented Pie Wheel (Exact OceanCentral geometry) */}
+        {/* Радиальный блок (По центру, крупнее, расширенный viewBox от обрезки) */}
+        <div className="w-full lg:w-[90%] xl:w-[85%] mx-auto relative flex justify-center">
+          
           <svg
-            className="w-[280px] h-[280px] sm:w-[360px] sm:h-[360px] md:w-[440px] md:h-[440px] lg:w-[490px] lg:h-[490px] drop-shadow-[0_15px_40px_rgba(0,0,0,0.8)]"
-            viewBox="0 0 492 492"
+            className="w-full h-auto drop-shadow-[0_15px_50px_rgba(0,255,150,0.15)] max-h-[850px]"
+            viewBox="-150 -50 1300 550"
             fill="none"
+            preserveAspectRatio="xMidYMid meet"
           >
             <defs>
               {WEDGES.map((wedge) => (
@@ -194,10 +156,10 @@ export default function BlueprintRadial() {
               ))}
             </defs>
 
-            {/* Photographic Images for each wedge */}
+            {/* Wedge Images */}
             <g className="wedge-images">
               {WEDGES.map((wedge) => {
-                const isHovered = displayWedge?.id === wedge.id;
+                const isHovered = hoveredWedge?.id === wedge.id;
                 return (
                   <g
                     key={`img-group-${wedge.id}`}
@@ -210,91 +172,90 @@ export default function BlueprintRadial() {
                     <image
                       href={wedge.image}
                       preserveAspectRatio="xMidYMid slice"
-                      width="492"
-                      height="492"
-                      className={`transition-all duration-700 ease-out origin-center ${
-                        isHovered ? "scale-105 brightness-110" : "scale-100 brightness-95 hover:brightness-100"
+                      width="1000"
+                      height="1000"
+                      className={`transition-transform duration-700 origin-[50%_50%] ${
+                        isHovered ? "scale-[1.03]" : "scale-100"
                       }`}
                     />
-                    {/* Color tint overlay */}
+                    {/* Затемнение неактивных */}
                     <path
                       d={wedge.path}
-                      fill={isHovered ? "transparent" : "rgba(0, 20, 15, 0.25)"}
-                      className="transition-colors duration-300"
+                      fill={isHovered ? "transparent" : "rgba(0, 0, 0, 0.45)"}
+                      className="transition-colors duration-300 pointer-events-none"
                     />
                   </g>
                 );
               })}
             </g>
 
-            {/* Wedge outline borders */}
-            <g className="wedge-borders pointer-events-none">
+            {/* Gaps between wedges (Рисуем разделители) */}
+            <g className="wedge-gaps pointer-events-none">
+              {WEDGES.map((wedge) => (
+                <path
+                  key={`gap-${wedge.id}`}
+                  d={wedge.path}
+                  stroke="rgba(255,255,255,0.15)" /* Более заметные разделители */
+                  strokeWidth="8"
+                  strokeLinejoin="round"
+                  fill="none"
+                />
+              ))}
+            </g>
+
+            {/* SVG Текстовые Лейблы */}
+            <g className="wedge-labels pointer-events-none">
               {WEDGES.map((wedge) => {
-                const isHovered = displayWedge?.id === wedge.id;
+                const isHovered = hoveredWedge?.id === wedge.id;
                 return (
-                  <path
-                    key={`border-${wedge.id}`}
-                    d={wedge.path}
-                    stroke={isHovered ? "#E0EAB8" : "rgba(161, 187, 148, 0.4)"}
-                    strokeWidth={isHovered ? "3.5" : "1.8"}
-                    fill="none"
-                    className="transition-all duration-300"
-                  />
+                  <text
+                    key={`text-${wedge.id}`}
+                    x={wedge.textX}
+                    y={wedge.textY}
+                    textAnchor={wedge.textAnchor}
+                    className={`transition-all duration-300 ${
+                      isHovered ? "fill-[#02B779] font-black scale-[1.03] drop-shadow-[0_0_15px_rgba(2,183,121,0.5)]" : "fill-white font-bold scale-100 opacity-100 drop-shadow-lg"
+                    } origin-[${wedge.textX}px_${wedge.textY}px]`}
+                    style={{ fontSize: "22px", letterSpacing: "-0.5px" }}
+                  >
+                    {wedge.labelLines.map((line, idx) => (
+                      <tspan x={wedge.textX} dy={idx === 0 ? 0 : 28} key={idx}>
+                        {line}
+                      </tspan>
+                    ))}
+                  </text>
                 );
               })}
             </g>
           </svg>
 
-          {/* Центральный сияющий значок солнца */}
-          <div
-            className="absolute z-20 w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-full bg-[#02493F]/90 border border-res-accent/50 shadow-[0_0_35px_rgba(2,183,121,0.5)] flex items-center justify-center cursor-pointer hover:scale-110 transition-all duration-300 backdrop-blur-2xl group"
-            onClick={() => setActiveWedge(WEDGES[0])}
-          >
-            {/* Фоновое сияние солнца */}
-            <div className="absolute inset-0 rounded-full bg-[#AFE552]/20 blur-md animate-pulse pointer-events-none" />
-            <div className="relative z-10 flex items-center justify-center text-[#E0EAB8] group-hover:text-white transition-colors">
-              <Sun size={28} className="animate-[spin_30s_linear_infinite] text-[#E0EAB8] group-hover:text-[#AFE552] transition-colors drop-shadow-[0_0_12px_#AFE552]" />
-            </div>
-          </div>
-
-          {/* Интерактивные кнопки вокруг колеса (как на OceanCentral) */}
-          {WEDGES.map((wedge) => {
-            const isHovered = displayWedge?.id === wedge.id;
-            return (
-              <button
-                key={`btn-${wedge.id}`}
-                onClick={() => setActiveWedge(wedge)}
-                onMouseEnter={() => setHoveredWedge(wedge)}
-                onMouseLeave={() => setHoveredWedge(null)}
-                className={`absolute z-30 hidden sm:flex items-center gap-2 px-3.5 py-1.5 md:px-4 md:py-2 rounded-full font-bold text-[10px] md:text-xs tracking-wider uppercase transition-all duration-300 shadow-xl cursor-pointer backdrop-blur-xl border ${
-                  wedge.btnPositionClass
-                } ${
-                  isHovered
-                    ? "bg-res-accent text-[#020b14] border-white shadow-[0_0_25px_rgba(0,240,255,0.6)] scale-105 z-40"
-                    : "glass-panel text-res-text border-res-accent/30 hover:border-res-accent hover:text-white"
-                }`}
-              >
-                <span>{wedge.shortTitle}</span>
-                <ArrowUpRight size={14} className={`transition-transform duration-300 ${isHovered ? "translate-x-0.5 -translate-y-0.5" : ""}`} />
-              </button>
-            );
-          })}
-
         </div>
       </div>
 
-      {/* Мобильный список направлений (для экранов < 640px) */}
-      <div className="grid grid-cols-2 gap-2.5 sm:hidden mt-6">
-        {WEDGES.map((wedge) => (
-          <button
-            key={`mob-${wedge.id}`}
-            onClick={() => setActiveWedge(wedge)}
-            className="flex items-center justify-between p-3 rounded-2xl glass-panel border border-res-accent/30 text-left hover:border-res-accent transition-colors"
-          >
-            <span className="text-xs font-bold text-white leading-tight">{wedge.shortTitle}</span>
-            <ChevronRight size={14} className="text-res-accent shrink-0" />
-          </button>
-        ))}
+      {/* Мобильная версия (Вертикальный список) */}
+      <div className="w-full px-4 md:hidden relative z-20">
+        <div className="mb-8">
+          <FocusRevealHeading
+            tokens={[
+              { text: "Ключевые", isAccent: false },
+              { text: "направления", isAccent: true },
+            ]}
+            className="text-3xl font-bold tracking-tight text-white leading-[1.1]"
+            align="left"
+          />
+        </div>
+        <div className="grid grid-cols-1 gap-2.5">
+          {WEDGES.map((wedge) => (
+            <button
+              key={`mob-${wedge.id}`}
+              onClick={() => setActiveWedge(wedge)}
+              className="flex items-center justify-between p-4 rounded-2xl glass-panel text-left transition-all hover:border-[#02B779]"
+            >
+              <span className="text-sm font-bold text-[#EDF7EE] leading-tight">{wedge.title}</span>
+              <ChevronRight size={16} className="text-[#02B779] shrink-0" />
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Детальный Pop-up / Modal при клике на направление */}
@@ -380,3 +341,4 @@ export default function BlueprintRadial() {
     </div>
   );
 }
+

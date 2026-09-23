@@ -208,11 +208,11 @@ export default function TimelineSection() {
   return (
     <section 
       id="history" 
-      className="relative px-6 md:px-12 lg:px-16 pt-24 pb-36 md:pt-28 md:pb-48 overflow-hidden bg-gradient-to-b from-[#072418] via-[#051a11] to-[#020d08]"
+      className="relative px-6 md:px-12 lg:px-16 pt-24 pb-36 md:pt-28 md:pb-48 overflow-hidden bg-transparent"
     >
       {/* Мягкие глубокие зеленые блики в стиле RES Network */}
-      <div className="absolute top-0 left-1/4 w-[600px] h-[350px] bg-[#02B779]/15 rounded-full blur-[140px] pointer-events-none" />
-      <div className="absolute top-12 right-1/4 w-[500px] h-[300px] bg-[#AFE552]/10 rounded-full blur-[130px] pointer-events-none" />
+      <div className="absolute top-0 left-1/4 w-[600px] h-[350px] bg-[#02B779]/8 rounded-full blur-[140px] pointer-events-none" />
+      <div className="absolute top-12 right-1/4 w-[500px] h-[300px] bg-[#AFE552]/6 rounded-full blur-[130px] pointer-events-none" />
 
       {/* ХЕДЕР СЕКЦИИ */}
       <div className="max-w-7xl mx-auto relative z-20 mb-20 md:mb-28">
@@ -221,7 +221,7 @@ export default function TimelineSection() {
           <div className="md:col-span-12 text-center md:text-left">
             <h2 className="text-3xl md:text-5xl lg:text-[3.5rem] font-black text-white tracking-tight leading-[1.12]">
               От инициативы в ООН <br className="hidden md:block" />
-              <span className="text-[#AFE552]">до экосистемы</span>
+              <span className="text-[#02B779]">до экосистемы</span>
             </h2>
           </div>
 
@@ -244,37 +244,37 @@ export default function TimelineSection() {
               <div 
                 className={`
                   relative w-60 h-60 md:w-72 md:h-72 lg:w-80 lg:h-80 xl:w-[22rem] xl:h-[22rem] rounded-full overflow-hidden 
-                  border-2 border-white/20 group-hover:border-white/80 transition-all duration-500
-                  shadow-[0_15px_40px_rgba(0,0,0,0.6)] group-hover:shadow-[0_20px_60px_rgba(175,229,82,0.3)]
-                  ${era.isCurrent ? 'ring-4 ring-[#AFE552]/90 shadow-[0_0_50px_rgba(175,229,82,0.4)]' : ''}
+                  border border-white/15 group-hover:border-[#02B779] transition-all duration-500
+                  shadow-[0_15px_40px_rgba(0,0,0,0.4)] group-hover:shadow-[0_20px_60px_rgba(2,183,121,0.4)]
+                  ${era.isCurrent ? 'ring-2 ring-[#02B779]/70 shadow-[0_0_40px_rgba(2,183,121,0.3)]' : ''}
                 `}
               >
                 <img
                   src={era.bgImage}
                   alt={era.title}
-                  className={`w-full h-full opacity-90 group-hover:opacity-100 transition-all duration-700 ease-out ${
+                  className={`w-full h-full opacity-80 group-hover:opacity-100 transition-all duration-700 ease-out ${
                     era.id === 3 || era.id === 4
                       ? "object-contain bg-white/95 p-8 group-hover:scale-105"
-                      : "object-cover group-hover:scale-110"
+                      : "object-cover group-hover:scale-110 mix-blend-luminosity group-hover:mix-blend-normal"
                   }`}
                 />
 
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20 group-hover:opacity-40 transition-opacity" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/30 opacity-70 group-hover:opacity-40 transition-opacity" />
 
                 {/* Нижняя стеклянная плашка */}
-                <div className="absolute bottom-6 lg:bottom-8 left-1/2 -translate-x-1/2 w-[75%] lg:w-[80%] flex flex-col items-center z-20 text-center pointer-events-none">
+                <div className="absolute bottom-6 lg:bottom-8 left-1/2 -translate-x-1/2 w-[85%] lg:w-[80%] flex flex-col items-center z-20 text-center pointer-events-none">
                   {era.isCurrent && (
-                    <span className="mb-2 px-3 py-0.5 rounded-full text-[9px] lg:text-[10px] uppercase font-bold tracking-widest bg-[#AFE552] text-black shadow-md">
+                    <span className="mb-2 px-3 py-0.5 rounded-full text-[9px] lg:text-[10px] uppercase font-bold tracking-widest bg-[#02B779] text-white shadow-[0_0_15px_rgba(2,183,121,0.5)]">
                       Текущий этап
                     </span>
                   )}
-                  <div className="bg-[#04140d]/85 backdrop-blur-md px-2 py-2 rounded-xl border border-white/20 shadow-2xl w-full flex flex-col items-center">
+                  <div className="glass-panel px-3 py-2.5 rounded-xl w-full flex flex-col items-center">
                     <h3 className="text-white text-xs lg:text-sm font-bold leading-tight">
                       {era.title}
                     </h3>
                     <span 
                       className="text-[10px] lg:text-xs font-semibold tracking-wider block mt-1"
-                      style={{ color: era.dotColor }}
+                      style={{ color: era.dotColor, textShadow: `0 0 10px ${era.dotColor}` }}
                     >
                       {era.years}
                     </span>
@@ -282,7 +282,7 @@ export default function TimelineSection() {
 
                   {/* Точка под текстом */}
                   <div 
-                    className="absolute -bottom-3 w-2 h-2 rounded-full shadow-[0_0_10px_currentColor]"
+                    className="absolute -bottom-3 w-2.5 h-2.5 rounded-full shadow-[0_0_15px_currentColor]"
                     style={{ backgroundColor: era.dotColor, color: era.dotColor }}
                   />
                 </div>
@@ -290,7 +290,7 @@ export default function TimelineSection() {
 
               {/* Тонкая направляющая линия */}
               <div 
-                className={`w-[1px] bg-gradient-to-b from-white/40 via-white/20 to-transparent mt-3 pointer-events-none ${era.lineHeight}`} 
+                className={`w-[2px] bg-gradient-to-b from-[#02B779]/50 via-[#02B779]/10 to-transparent mt-3 pointer-events-none ${era.lineHeight}`} 
               />
             </div>
           ))}
@@ -302,33 +302,35 @@ export default function TimelineSection() {
             <div
               key={era.id}
               onClick={() => setActiveEra(era.id)}
-              className="relative w-72 h-72 sm:w-80 sm:h-80 rounded-full overflow-hidden border-2 border-white/20 shadow-xl cursor-pointer group"
+              className="relative w-72 h-72 sm:w-80 sm:h-80 rounded-full overflow-hidden border border-white/15 shadow-2xl cursor-pointer group"
             >
               <img
                 src={era.bgImage}
                 alt={era.title}
-                className={`w-full h-full opacity-90 transition-transform duration-500 ${
+                className={`w-full h-full opacity-80 transition-all duration-500 ${
                   era.id === 3 || era.id === 4
                     ? "object-contain bg-white/95 p-6 group-hover:scale-105"
-                    : "object-cover group-hover:scale-105"
+                    : "object-cover group-hover:scale-105 mix-blend-luminosity group-hover:mix-blend-normal"
                 }`}
               />
-              <div className="absolute bottom-6 left-1/2 -translate-x-1/2 w-[80%] flex flex-col items-center text-center">
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/30 opacity-70 group-hover:opacity-40 transition-opacity" />
+
+              <div className="absolute bottom-6 left-1/2 -translate-x-1/2 w-[85%] flex flex-col items-center text-center">
                 {era.isCurrent && (
-                  <span className="mb-2 px-3 py-0.5 rounded-full text-[9px] uppercase font-bold tracking-widest bg-[#AFE552] text-black">
+                  <span className="mb-2 px-3 py-0.5 rounded-full text-[9px] uppercase font-bold tracking-widest bg-[#02B779] text-white shadow-[0_0_15px_rgba(2,183,121,0.5)]">
                     Сейчас
                   </span>
                 )}
-                <div className="bg-[#04140d]/90 backdrop-blur-md px-2 py-2 rounded-xl border border-white/20 w-full flex flex-col items-center">
+                <div className="glass-panel px-3 py-2.5 rounded-xl w-full flex flex-col items-center">
                   <h3 className="text-white text-xs font-bold leading-tight">
                     {era.title}
                   </h3>
-                  <span className="text-[10px] font-bold block mt-1" style={{ color: era.dotColor }}>
+                  <span className="text-[10px] font-bold block mt-1" style={{ color: era.dotColor, textShadow: `0 0 10px ${era.dotColor}` }}>
                     {era.years}
                   </span>
                 </div>
                 <div 
-                  className="absolute -bottom-3 w-2 h-2 rounded-full shadow-[0_0_10px_currentColor]"
+                  className="absolute -bottom-3 w-2.5 h-2.5 rounded-full shadow-[0_0_15px_currentColor]"
                   style={{ backgroundColor: era.dotColor, color: era.dotColor }}
                 />
               </div>
@@ -342,20 +344,19 @@ export default function TimelineSection() {
         <svg 
           viewBox="0 0 1600 200" 
           preserveAspectRatio="none" 
-          className="w-full h-full absolute bottom-4 left-0 opacity-80"
+          className="w-full h-full absolute bottom-4 left-0 opacity-40"
         >
           <path
             d="M -50 170 Q 400 90 800 130 T 1650 60"
             fill="none"
             stroke="url(#res-arc)"
-            strokeWidth="2.5"
+            strokeWidth="3"
           />
           <defs>
             <linearGradient id="res-arc" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="#02B779" />
-              <stop offset="35%" stopColor="#AFE552" />
-              <stop offset="70%" stopColor="#fbbf24" />
-              <stop offset="100%" stopColor="#02B779" />
+              <stop offset="0%" stopColor="#02B779" stopOpacity="0.2" />
+              <stop offset="50%" stopColor="#AFE552" stopOpacity="0.8" />
+              <stop offset="100%" stopColor="#02B779" stopOpacity="0.2" />
             </linearGradient>
           </defs>
         </svg>
@@ -363,14 +364,14 @@ export default function TimelineSection() {
         <svg 
           viewBox="0 0 1600 200" 
           preserveAspectRatio="none" 
-          className="w-full h-full absolute bottom-0 left-0 opacity-70 fill-[#03120b]"
+          className="w-full h-full absolute bottom-0 left-0 opacity-15 fill-[#02B779]"
         >
           <path d="M 0 140 Q 450 70 900 120 T 1600 80 L 1600 200 L 0 200 Z" />
         </svg>
         <svg 
           viewBox="0 0 1600 200" 
           preserveAspectRatio="none" 
-          className="w-full h-full absolute bottom-0 left-0 opacity-90 fill-[#010805]"
+          className="w-full h-full absolute bottom-0 left-0 opacity-10 fill-[#AFE552]"
         >
           <path d="M 0 170 Q 500 110 1000 150 T 1600 120 L 1600 200 L 0 200 Z" />
         </svg>

@@ -175,20 +175,34 @@ export default function Home() {
         </section>
       </div>
 
-      {/* ===== БЛОК 2: НАПРАВЛЕНИЯ (Палитра #1: Сапфировый тил #02493F & Малахит #2E8656) ===== */}
-      <section id="directions" className="relative z-20 py-16 md:py-24 bg-gradient-to-b from-[#080C0A] via-[#02493F] to-[#0C0C0C]">
+      {/* АМБИЕНТНЫЕ ГРАДИЕНТНЫЕ ПЯТНА (Blobs) ДЛЯ ОРГАНИЧНОСТИ */}
+      <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
+        {/* Зеленое свечение слева */}
+        <div className="absolute top-[20%] -left-[20%] w-[50vw] h-[50vw] bg-res-accent/5 rounded-full blur-[120px] mix-blend-screen" />
+        {/* Салатовое свечение справа */}
+        <div className="absolute top-[50%] -right-[15%] w-[40vw] h-[40vw] bg-[#AFE552]/5 rounded-full blur-[150px] mix-blend-screen" />
+        {/* Изумрудное свечение внизу */}
+        <div className="absolute bottom-[-10%] left-[30%] w-[60vw] h-[40vw] bg-[#02493F]/40 rounded-full blur-[150px]" />
+      </div>
+
+      {/* ===== БЛОК 2: НАПРАВЛЕНИЯ ===== */}
+      <section id="directions" className="relative z-20 py-16 md:py-24">
         <BlueprintRadial />
       </section>
 
-      {/* ===== БЛОК 3: RES PLATFORM (Интерактивная витрина модулей) ===== */}
-      <PlatformCallToAction />
+      {/* ===== БЛОК 3: RES PLATFORM ===== */}
+      <div className="relative z-20">
+        <PlatformCallToAction />
+      </div>
 
-      {/* ===== БЛОК 4: ИСТОРИЯ (Палитра #5: Графит) ===== */}
-      <TimelineSection />
+      {/* ===== БЛОК 4: ИСТОРИЯ ===== */}
+      <div className="relative z-20">
+        <TimelineSection />
+      </div>
 
-      {/* ===== БЛОК 5: МЕРОПРИЯТИЯ (Палитра #1: Еловый/Кедровый #41754F & Жемчуг #E0EAB8) ===== */}
-      <section id="events" className="px-6 md:px-12 py-20 md:py-28 bg-gradient-to-b from-[#080C0A] via-[#112318] to-[#081811]">
-        <div className="mb-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+      {/* ===== БЛОК 5: МЕРОПРИЯТИЯ ===== */}
+      <section id="events" className="relative z-20 px-6 md:px-12 py-20 md:py-28">
+        <div className="mb-10 flex flex-col md:flex-row md:items-center justify-between gap-6 max-w-[1400px] mx-auto">
           <FocusRevealHeading
             tokens={[
               { text: "Ближайшие", isAccent: false },
@@ -207,13 +221,13 @@ export default function Home() {
         <EventsSection />
       </section>
 
-      {/* ===== БЛОК 5: НОВОСТИ + 3D ГЛОБУС (Палитра #1: Тёмный сапфировый тил #02493F) ===== */}
-      <section id="news" className="relative px-6 md:px-12 py-12 md:py-28 bg-gradient-to-b from-[#081811] via-[#023B33] to-[#080C0A]">
+      {/* ===== БЛОК 6: НОВОСТИ + 3D ГЛОБУС ===== */}
+      <section id="news" className="relative z-20 px-6 md:px-12 py-12 md:py-28">
         <NewsSection />
       </section>
 
-      {/* ===== БЛОК 7: ПАРТНЁРЫ (Палитра #5: Графит #0C0C0C) ===== */}
-      <section className="px-6 md:px-12 py-12 md:py-28 bg-[#080C0A]">
+      {/* ===== БЛОК 7: ПАРТНЁРЫ ===== */}
+      <section className="relative z-20 px-6 md:px-12 py-12 md:py-28">
         <div className="text-center mb-16">
           <FocusRevealHeading
             tokens={[

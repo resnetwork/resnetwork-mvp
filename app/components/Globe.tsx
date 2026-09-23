@@ -194,6 +194,7 @@ interface GlobeProps {
     graticuleColor?: string;
     showGrid?: boolean;
     outlineWidth?: number;
+    dragSpeed?: number;
     detail?: number;
     style?: CSSProperties;
     onMarkerClick?: (marker: Marker) => void;
