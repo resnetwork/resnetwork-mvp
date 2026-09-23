@@ -10,28 +10,28 @@ const ERAS = [
     years: "2023–2024",
     dotColor: "#22c55e",
     description: "Формирование мандата. Инициатива, заявленная Казахстаном на 78-й сессии Генеральной Ассамблеи ООН, получила поддержку ведущих международных организаций и глав государств региона, закрепившись в официальной Резолюции ООН.",
-    bgImage: "https://images.unsplash.com/photo-1517048676732-d65bc937f952?q=80&w=1200&auto=format&fit=crop",
+    bgImage: "/main-pic-1.jpg",
     events: [
       {
         year: "2023",
         tag: "ГА ООН",
         title: "Инициатива объявлена на Генассамблее ООН",
         text: "Президент Республики Казахстан Касым-Жомарт Токаев на 78-й сессии Генеральной Ассамблеи ООН в 2023 году объявил об инициативе проведения Регионального экологического саммита (RES 2026) в партнёрстве с Организацией Объединённых Наций.",
-        image: "https://images.unsplash.com/photo-1577962917302-cd874c4e31d2?q=80&w=600&auto=format&fit=crop"
+        image: "/1-1.jpg"
       },
       {
         year: "19 декабря 2023",
         tag: "Мандат ООН",
         title: "Резолюция Генеральной Ассамблеи ООН 78/147",
         text: "Поддержка ООН официально закреплена в Резолюции ГА ООН 78/147 «Центральная Азия перед лицом экологических вызовов: укрепление регионального единства в интересах устойчивого развития и процветания». Проект поддержали ООН, ОЭСР, IRENA, МЭА и другие международные институты.",
-        image: "https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=600&auto=format&fit=crop"
+        image: "/1-2.png"
       },
       {
         year: "2024",
         tag: "Главы государств",
         title: "Подтверждение на уровне глав государств",
         text: "Мандат закреплен международными декларациями:\n• Карабахская декларация Неформального саммита Организации тюркских государств (6 июля 2024, Азербайджан)\n• Совместное заявление VI Консультативной встречи глав государств Центральной Азии (9 августа 2024, Казахстан)\n• Бишкекская декларация XI Саммита Организации тюркских государств (6 ноября 2024, Кыргызстан).",
-        image: "https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?q=80&w=600&auto=format&fit=crop"
+        image: "/1-3.jpg"
       }
     ],
     offsetClass: "md:translate-y-6 lg:translate-y-8",
@@ -43,28 +43,28 @@ const ERAS = [
     years: "2025",
     dotColor: "#eab308",
     description: "На 80-й сессии Генеральной Ассамблеи ООН проведение Саммита в апреле 2026 года в Астане было окончательно подтверждено на высшем мировом уровне.",
-    bgImage: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=1200&auto=format&fit=crop",
+    bgImage: "/main-pic-2.jpg",
     events: [
       {
         year: "2025",
         tag: "80-я сессия ГА ООН",
         title: "Подтверждение даты саммита",
         text: "На 80-й сессии Генеральной Ассамблеи ООН Президент Касым-Жомарт Токаев подтвердил проведение Саммита в апреле 2026 года в Астане, обозначив ключевые цели экологического и технологического перехода региона.",
-        image: "https://images.unsplash.com/photo-1505373877841-8d25f7d46678?q=80&w=600&auto=format&fit=crop"
+        image: "/2-1.jpg"
       },
       {
         year: "2025",
         tag: "Генсек ООН",
         title: "Признание Генерального секретаря ООН",
         text: "Инициатива получила особое признание на церемонии открытия Регионального центра ООН по Целям устойчивого развития для Центральной Азии и Афганистана с личным участием Генерального секретаря ООН Антониу Гутерриша.",
-        image: "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?q=80&w=600&auto=format&fit=crop"
+        image: "/2-2.jpg"
       },
       {
         year: "2025",
         tag: "Мировые форумы",
         title: "Презентация на международных площадках",
         text: "Повестка предстоящего саммита представлена на Астанинском международном форуме (AIF), а также на Третьей конференции ООН по развивающимся странам, не имеющим выхода к морю (Туркменистан).",
-        image: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=600&auto=format&fit=crop"
+        image: "/2-3.png"
       }
     ],
     offsetClass: "md:-translate-y-8 lg:-translate-y-12",
@@ -76,35 +76,35 @@ const ERAS = [
     years: "2026",
     dotColor: "#f97316",
     description: "22–24 апреля 2026 года в МВЦ EXPO (Астана) состоялся саммит с участием лидеров 8 государств и руководства ООН. Подписано 17 соглашений на $2,1 млрд и принята Центральноазиатская декларация об экологической солидарности.",
-    bgImage: "https://images.unsplash.com/photo-1466611653911-95081537e5b7?q=80&w=1200&auto=format&fit=crop",
+    bgImage: "/main-pic-3.jpg",
     events: [
       {
         year: "22 апреля 2026",
         tag: "8 стран + ООН",
         title: "Лидеры 8 государств и руководство ООН",
         text: "Президент Казахстана Касым-Жомарт Токаев приветствовал Президентов Кыргызстана (С. Жапаров), Узбекистана (Ш. Мирзиёев), Таджикистана (Э. Рахмон), Туркменистана (С. Бердымухамедов), Армении (В. Хачатурян), Монголии (У. Хурэлсух), Грузии (М. Кавелашвили) и Премьер-министра Азербайджана (А. Асадов). ООН представляли заместитель Генсека Ли Цзюньхуа, глава ЮНЕП Ингер Андерсен и исполнительный секретарь ЕЭК ООН Татьяна Молчан.",
-        image: "https://images.unsplash.com/photo-1541888086425-d81bb19240f5?q=80&w=600&auto=format&fit=crop"
+        image: "/3-1.jpg"
       },
       {
         year: "Инвестиции",
         tag: "$1,3+ млрд",
         title: "Ветроэнергетика: мегапарки на 3,5 ГВт",
         text: "• Karaganda Wind Power — ветроэлектростанция мощностью 500 МВт ($645 млн)\n• Aktas Energy — ветроэнергетический проект мощностью 1 ГВт в рамках механизма JCM\n• China Shanghai Electric — строительство масштабного ветропарка мощностью 2 ГВт в Карагандинской области.",
-        image: "https://images.unsplash.com/photo-1509391365360-2e959784a276?q=80&w=600&auto=format&fit=crop"
+        image: "/3-2.jpg"
       },
       {
         year: "Генерация",
         tag: "560 млн $",
         title: "Солнце, гидро и переработка отходов (Waste-to-Energy)",
         text: "• VIGOR Holding — СЭС 70 МВт в Кызылординской области (74,9 млн японских иен)\n• Taraz Greenpower — каскад ГЭС 18 МВт в Жамбылской области (10,5 млрд ₸)\n• Мусоросжигательные энергокомплексы: East Hope в Астане (50 МВт, $180 млн), Shaanxi в Шымкенте (24 МВт, $100 млн), Junxin в Алматы (60 МВт, $280 млн).",
-        image: "https://images.unsplash.com/photo-1497440001374-f26997328c1b?q=80&w=600&auto=format&fit=crop"
+        image: "/3-3.jpg"
       },
       {
         year: "Индустрия",
         tag: "906,6 млн $",
         title: "Декарбонизация, чистое авиатопливо (SAF) и климатические финансы",
         text: "• Qarmet — газификация и переход на экологичное топливо ($256,6 млн)\n• Qazaq Kalium — завод калийных удобрений на месторождении Сатимола ($650 млн)\n• КМГ, KFP и KBR — соглашение о создании первого в Казахстане завода экологичного авиатоплива SAF\n• Банк развития Казахстана (БРК) и Французское агентство развития (AFD) — кредитная линия на 150 млн евро.",
-        image: "https://images.unsplash.com/photo-1518005020951-eccb494ad742?q=80&w=600&auto=format&fit=crop"
+        image: "/3-4.jpg"
       }
     ],
     offsetClass: "md:translate-y-12 lg:translate-y-16",
@@ -117,14 +117,14 @@ const ERAS = [
     dotColor: "#AFE552",
     isCurrent: true,
     description: "RES Network (Regional Ecological Synergy Network) создан, чтобы продлить эффект Саммита за пределы трёх дней в году. Разовое мероприятие превращается в постоянную круглогодичную экосистему сотрудничества.",
-    bgImage: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1200&auto=format&fit=crop",
+    bgImage: "/main-pic-4.png",
     events: [
       {
         year: "2026",
         tag: "Инфраструктура",
         title: "От разового события — к постоянной экосистеме",
         text: "RES Network обеспечивает непрерывное межгосударственное и B2B-взаимодействие: постоянно действующие рабочие группы, межотраслевые диалоги, выездные деловые миссии, центр знаний и мониторинг инвестиционных инициатив.",
-        image: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=600&auto=format&fit=crop"
+        image: "/4-1.jpg"
       },
       {
         year: "RES365",
@@ -138,7 +138,7 @@ const ERAS = [
         tag: "Трансфер технологий",
         title: "Региональный хаб зеленых технологий",
         text: "Платформа прямого трансфера и пилотирования инноваций в водосбережении, возобновляемой генерации, ESG-финансировании и декарбонизации промышленности для стран Центральной Азии.",
-        image: "https://images.unsplash.com/photo-1508739773434-c26b3d09e071?q=80&w=600&auto=format&fit=crop"
+        image: "/4-3.jpg"
       }
     ],
     offsetClass: "md:-translate-y-6 lg:-translate-y-8",
@@ -150,14 +150,14 @@ const ERAS = [
     years: "2027–2050",
     dotColor: "#02B779",
     description: "Вторая итерация международной выставки и утвержденный стратегический горизонт Центральной Азии по достижению полной углеродной нейтральности к 2050 году.",
-    bgImage: "https://images.unsplash.com/photo-1518005020951-eccb494ad742?q=80&w=1200&auto=format&fit=crop",
+    bgImage: "/main-pic-5.png",
     events: [
       {
         year: "5–7 мая 2027",
         tag: "Астана, МВЦ EXPO",
         title: "RES+ EXPO 2027: Флагманская выставка",
         text: "Вторая итерация международной выставки и конгресса. Встреча всей экосистемы: правительства, международные инвесторы, институты развития, банки, наука и CleanTech-стартапы. Более 1000 участников, B2B-мэтчинг и новые обязывающие соглашения.",
-        image: "https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?q=80&w=600&auto=format&fit=crop"
+        image: "/5-1.png"
       },
       {
         year: "До 2030 года",
@@ -171,7 +171,7 @@ const ERAS = [
         tag: "Углеродная нейтральность",
         title: "Климатический нейтралитет региона",
         text: "• Полная углеродная нейтральность в масштабе Центральной Азии\n• 100% переход на чистые и безуглеродные источники энергии\n• Циркулярная экономика замкнутого цикла во всех секторах\n• Единая региональная система климатического финансирования и торговли квотами.",
-        image: "https://images.unsplash.com/photo-1618037326074-cecb01463991?q=80&w=600&auto=format&fit=crop"
+        image: "/5-3.jpg"
       }
     ],
     offsetClass: "md:translate-y-10 lg:translate-y-14",
@@ -218,17 +218,11 @@ export default function TimelineSection() {
       <div className="max-w-7xl mx-auto relative z-20 mb-20 md:mb-28">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-12 items-end">
           
-          <div className="md:col-span-7">
+          <div className="md:col-span-12 text-center md:text-left">
             <h2 className="text-3xl md:text-5xl lg:text-[3.5rem] font-black text-white tracking-tight leading-[1.12]">
-              От инициативы в ООН <br />
+              От инициативы в ООН <br className="hidden md:block" />
               <span className="text-[#AFE552]">до экосистемы</span>
             </h2>
-          </div>
-
-          <div className="md:col-span-5 pb-1">
-            <p className="text-[#A1BB94] text-base md:text-lg lg:text-xl font-normal leading-relaxed">
-              RES Network вырос не из идеи, а из международного мандата. Узнайте, как формировалась зелёная экономика региона и как развиваются ключевые вехи.
-            </p>
           </div>
 
         </div>
@@ -238,7 +232,7 @@ export default function TimelineSection() {
       <div className="max-w-[1600px] mx-auto relative z-20">
         
         {/* ДЕСКТОП: 5 перекрывающихся сфер */}
-        <div className="hidden md:flex justify-center items-center -space-x-12 lg:-space-x-20 xl:-space-x-24 relative py-12">
+        <div className="hidden md:flex justify-center items-center -space-x-12 lg:-space-x-20 xl:-space-x-28 relative py-12">
           {ERAS.map((era, index) => (
             <div
               key={era.id}
@@ -249,7 +243,7 @@ export default function TimelineSection() {
               {/* Круглая фото-сфера */}
               <div 
                 className={`
-                  relative w-56 h-56 md:w-64 md:h-64 lg:w-72 lg:h-72 xl:w-80 xl:h-80 rounded-full overflow-hidden 
+                  relative w-60 h-60 md:w-72 md:h-72 lg:w-80 lg:h-80 xl:w-[22rem] xl:h-[22rem] rounded-full overflow-hidden 
                   border-2 border-white/20 group-hover:border-white/80 transition-all duration-500
                   shadow-[0_15px_40px_rgba(0,0,0,0.6)] group-hover:shadow-[0_20px_60px_rgba(175,229,82,0.3)]
                   ${era.isCurrent ? 'ring-4 ring-[#AFE552]/90 shadow-[0_0_50px_rgba(175,229,82,0.4)]' : ''}
@@ -258,32 +252,37 @@ export default function TimelineSection() {
                 <img
                   src={era.bgImage}
                   alt={era.title}
-                  className="w-full h-full object-cover opacity-90 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700 ease-out"
+                  className={`w-full h-full opacity-90 group-hover:opacity-100 transition-all duration-700 ease-out ${
+                    era.id === 3 || era.id === 4
+                      ? "object-contain bg-white/95 p-8 group-hover:scale-105"
+                      : "object-cover group-hover:scale-110"
+                  }`}
                 />
 
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20 group-hover:opacity-40 transition-opacity" />
 
-                {/* Центральная стеклянная плашка */}
-                <div className="absolute inset-0 flex flex-col items-center justify-center p-4 z-20 text-center pointer-events-none">
+                {/* Нижняя стеклянная плашка */}
+                <div className="absolute bottom-6 lg:bottom-8 left-1/2 -translate-x-1/2 w-[75%] lg:w-[80%] flex flex-col items-center z-20 text-center pointer-events-none">
                   {era.isCurrent && (
-                    <span className="mb-2 px-3 py-0.5 rounded-full text-[10px] uppercase font-bold tracking-widest bg-[#AFE552] text-black shadow-md">
+                    <span className="mb-2 px-3 py-0.5 rounded-full text-[9px] lg:text-[10px] uppercase font-bold tracking-widest bg-[#AFE552] text-black shadow-md">
                       Текущий этап
                     </span>
                   )}
-                  <div className="bg-[#04140d]/85 backdrop-blur-md px-4 py-2.5 rounded-xl border border-white/20 shadow-2xl max-w-[88%]">
-                    <h3 className="text-white text-sm lg:text-base font-bold leading-tight">
+                  <div className="bg-[#04140d]/85 backdrop-blur-md px-2 py-2 rounded-xl border border-white/20 shadow-2xl w-full flex flex-col items-center">
+                    <h3 className="text-white text-xs lg:text-sm font-bold leading-tight">
                       {era.title}
                     </h3>
                     <span 
-                      className="text-xs font-semibold tracking-wider block mt-1"
+                      className="text-[10px] lg:text-xs font-semibold tracking-wider block mt-1"
                       style={{ color: era.dotColor }}
                     >
                       {era.years}
                     </span>
                   </div>
 
+                  {/* Точка под текстом */}
                   <div 
-                    className="w-2.5 h-2.5 rounded-full mt-2.5 shadow-[0_0_12px_currentColor]"
+                    className="absolute -bottom-3 w-2 h-2 rounded-full shadow-[0_0_10px_currentColor]"
                     style={{ backgroundColor: era.dotColor, color: era.dotColor }}
                   />
                 </div>
@@ -303,29 +302,33 @@ export default function TimelineSection() {
             <div
               key={era.id}
               onClick={() => setActiveEra(era.id)}
-              className="relative w-64 h-64 rounded-full overflow-hidden border-2 border-white/20 shadow-xl cursor-pointer group"
+              className="relative w-72 h-72 sm:w-80 sm:h-80 rounded-full overflow-hidden border-2 border-white/20 shadow-xl cursor-pointer group"
             >
               <img
                 src={era.bgImage}
                 alt={era.title}
-                className="w-full h-full object-cover opacity-90 group-hover:scale-105 transition-transform duration-500"
+                className={`w-full h-full opacity-90 transition-transform duration-500 ${
+                  era.id === 3 || era.id === 4
+                    ? "object-contain bg-white/95 p-6 group-hover:scale-105"
+                    : "object-cover group-hover:scale-105"
+                }`}
               />
-              <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center p-4 text-center">
+              <div className="absolute bottom-6 left-1/2 -translate-x-1/2 w-[80%] flex flex-col items-center text-center">
                 {era.isCurrent && (
                   <span className="mb-2 px-3 py-0.5 rounded-full text-[9px] uppercase font-bold tracking-widest bg-[#AFE552] text-black">
                     Сейчас
                   </span>
                 )}
-                <div className="bg-[#04140d]/90 backdrop-blur-md px-4 py-2 rounded-xl border border-white/20">
-                  <h3 className="text-white text-sm font-bold leading-tight">
+                <div className="bg-[#04140d]/90 backdrop-blur-md px-2 py-2 rounded-xl border border-white/20 w-full flex flex-col items-center">
+                  <h3 className="text-white text-xs font-bold leading-tight">
                     {era.title}
                   </h3>
-                  <span className="text-xs font-bold block mt-1" style={{ color: era.dotColor }}>
+                  <span className="text-[10px] font-bold block mt-1" style={{ color: era.dotColor }}>
                     {era.years}
                   </span>
                 </div>
                 <div 
-                  className="w-2.5 h-2.5 rounded-full mt-2 shadow-[0_0_10px_currentColor]"
+                  className="absolute -bottom-3 w-2 h-2 rounded-full shadow-[0_0_10px_currentColor]"
                   style={{ backgroundColor: era.dotColor, color: era.dotColor }}
                 />
               </div>

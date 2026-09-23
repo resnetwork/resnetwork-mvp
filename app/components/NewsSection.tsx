@@ -49,7 +49,7 @@ export default function NewsSection() {
         lat: item.location.lat,
         lng: item.location.lng
       })),
-      color: "#02B779",
+      color: "#AFE552", // Changed to a brighter color for better visibility
       size: 50
     };
   }, [filtered]);
@@ -105,6 +105,7 @@ export default function NewsSection() {
               return (
                 <div
                   key={item.id}
+                  id={`news-item-${item.id}`}
                   className={`rounded-2xl border transition-all duration-200 ${
                     isOpen
                       ? "border-[#02B779]/60 bg-[#02B779]/[0.08] shadow-[0_4px_24px_rgba(2,183,121,0.18)]"
@@ -212,17 +213,22 @@ export default function NewsSection() {
                   📍 {expandedItem.location.name}, {expandedItem.location.country}
                 </span>
               </div>
-            ) : (
-              <span className="text-[10px] sm:text-xs font-mono uppercase tracking-widest text-[#AFE552] mt-2 sm:mt-0 px-3 py-1 rounded-full bg-[#AFE552]/10 border border-[#AFE552]/20 shadow-[0_0_15px_rgba(175,229,82,0.15)]">
-                Live News Feed · 50 материалов (25 ЦА / 25 Мир)
-              </span>
-            )}
+            ) : null}
           </div>
 
           <Globe
             className="w-full max-w-[500px] aspect-square"
             focusLocation={globeTarget}
             markerConfig={globeMarkers}
+            onMarkerClick={(marker) => {
+              const matchingItem = filtered.find(item => item.location.lat === marker.lat && item.location.lng === marker.lng);
+              if (matchingItem) {
+                setExpandedId(matchingItem.id);
+                // Optional: Scroll the accordion to the selected item
+                const el = document.getElementById(`news-item-${matchingItem.id}`);
+                if (el) el.scrollIntoView({ behavior: "smooth", block: "nearest" });
+              }
+            }}
             dots={{ color: "#ffffff", size: 5, density: 4, allDots: false }}
             detail={8}
             showOutline={true}

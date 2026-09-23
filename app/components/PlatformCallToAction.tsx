@@ -53,7 +53,7 @@ const MODULES: PlatformModule[] = [
   },
   {
     id: "community",
-    tab: "Комьюнити",
+    tab: "Сообщество",
     title: "Каталог компаний и прямые связи",
     badge: "База участников",
     description: "Единый открытый реестр зарегистрированных компаний: изучайте профили участников рынка, сферу деятельности, портфолио и находите надежных партнеров и подрядчиков.",
@@ -67,7 +67,7 @@ const MODULES: PlatformModule[] = [
         { label: "Компания", value: "Qazaq Green Power Consortium" },
         { label: "Специализация", value: "Девелопмент СЭС/ВЭС, EPC-контракты" },
         { label: "Регион присутствия", value: "Казахстан, Узбекистан, Кыргызстан" },
-        { label: "Связь с компанией", value: "Прямой чат и запрос контактов" },
+        { label: "Связь с компанией", value: "Доступ к контактам" },
       ],
     },
   },
@@ -219,7 +219,7 @@ export default function PlatformCallToAction() {
               <div className="flex items-center gap-3">
                 <div className="w-3 h-3 rounded-full bg-emerald-400 animate-pulse" />
                 <span className="text-xs font-mono font-bold text-white tracking-wider uppercase">
-                  RES365 · {currentModule.badge}
+                  RES Network · {currentModule.badge}
                 </span>
               </div>
               <span className="text-[10px] font-mono text-[#AFE552] bg-[#AFE552]/10 px-3 py-1 rounded-full border border-[#AFE552]/30">
@@ -254,11 +254,7 @@ export default function PlatformCallToAction() {
             </div>
 
             {/* Футер виджета с активными кнопками действия */}
-            <div className="pt-4 border-t border-white/10 flex flex-wrap items-center justify-between gap-4">
-              <div className="flex items-center gap-2 text-xs text-res-text-muted">
-                <CheckCircle2 size={16} className="text-emerald-400" />
-                <span>Защищено двухфакторной аутентификацией</span>
-              </div>
+            <div className="pt-4 border-t border-white/10 flex flex-wrap items-center justify-end gap-4">
 
               <a
                 href="/res365"

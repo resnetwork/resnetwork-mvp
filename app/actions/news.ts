@@ -295,6 +295,10 @@ function savePersistentNews(items: NewsItem[]) {
   }
 }
 
+function enforceNewsSorting(news: NewsItem[]): NewsItem[] {
+  return [...news].sort((a, b) => b.pubDate - a.pubDate);
+}
+
 let cachedNews: { ts: number; data: NewsItem[] } | null = null;
 const CACHE_TTL = 15 * 60 * 1000; // 15 минут
 
@@ -302,7 +306,7 @@ export async function getRSSNews(): Promise<NewsItem[]> {
   const now = Date.now();
 
   if (cachedNews && now - cachedNews.ts < CACHE_TTL && cachedNews.data.length >= 25) {
-    return cachedNews.data;
+    return enforceNewsSorting(cachedNews.data);
   }
 
   // Загружаем существующие проверенные новости
@@ -368,13 +372,15 @@ export async function getRSSNews(): Promise<NewsItem[]> {
     console.log(`[mediaIntelligence] Total verified news: ${combined.length} (CA: ${caList.length}, World: ${worldList.length})`);
 
     if (combined.length > 0) {
-      savePersistentNews(combined);
-      cachedNews = { ts: now, data: combined };
-      return combined;
+      const finalCombined = enforceNewsSorting(combined);
+      savePersistentNews(finalCombined);
+      cachedNews = { ts: now, data: finalCombined };
+      return finalCombined;
     }
   } catch (error) {
     console.error("[mediaIntelligence] Aggregation error:", error);
   }
 
-  return existingItems.length > 0 ? existingItems : (cachedNews?.data ?? []);
+  const fallback = existingItems.length > 0 ? existingItems : (cachedNews?.data ?? []);
+  return enforceNewsSorting(fallback);
 }

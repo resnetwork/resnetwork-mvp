@@ -117,56 +117,58 @@ export default function Home() {
                 Связаться с нами
               </button>
             </div>
-            
-            <p className="mt-5 text-xs text-res-text-muted/60 tracking-wider">
-              Powered by RES+ EXPO · Астана, Казахстан · EST. 2026
-            </p>
           </div>
 
-          {/* Правая часть: Бесшовная фото-витрина RES+ EXPO 2027 с ярким фоном и нижним позиционированием */}
-          <div className="flex-1 w-full max-w-lg lg:max-w-xl xl:max-w-2xl relative flex flex-col justify-end min-h-[300px] sm:min-h-[380px] md:min-h-[420px] lg:min-h-[460px] group mt-8 lg:mt-0">
-            {/* Яркая фотография EXPO 2027 без затемнения в коробку */}
-            <div className="absolute inset-0 overflow-hidden pointer-events-none [mask-image:radial-gradient(ellipse_at_center,black_60%,transparent_95%)] md:[mask-image:radial-gradient(ellipse_at_65%_50%,black_65%,transparent_95%)]">
+          {/* Правая часть: Премиальная карточка RES+ EXPO 2027 */}
+          <div className="flex-1 w-full max-w-lg lg:max-w-xl relative flex flex-col justify-end mt-8 lg:mt-0 rounded-[2rem] overflow-hidden border border-[#A1BB94]/20 bg-[#0a1f18]/60 backdrop-blur-2xl shadow-[0_30px_60px_-15px_rgba(2,183,121,0.15)] group transition-all duration-500 hover:border-[#02B779]/50 hover:shadow-[0_30px_60px_-15px_rgba(2,183,121,0.3)] min-h-[400px] sm:min-h-[450px]">
+            
+            {/* Изображение на фоне с градиентом */}
+            <div className="absolute inset-0 z-0">
               <img 
                 src="/expo-card.jpg" 
                 alt="RES+ EXPO 2027" 
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-[2.5s] ease-out opacity-85" 
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-[3s] ease-out opacity-60 mix-blend-luminosity group-hover:mix-blend-normal group-hover:opacity-80" 
               />
-              <div className="absolute inset-0 bg-gradient-to-r from-res-bg via-res-bg/30 to-transparent" />
-              <div className="absolute inset-0 bg-gradient-to-t from-res-bg/90 via-res-bg/20 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#05120e] via-[#05120e]/80 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-r from-[#05120e]/80 via-transparent to-transparent" />
             </div>
 
-            {/* Контент карточки, прижатый к низу как раньше */}
-            <div className="relative z-10 flex flex-col items-start pl-0 lg:pl-6 pb-2">
-              <span className="mb-2.5 text-xs font-bold uppercase tracking-widest text-[#E0EAB8] bg-black/60 px-3.5 py-1.5 rounded-full border border-white/20 backdrop-blur-md">
+            {/* Блик на рамке */}
+            <div className="absolute inset-0 z-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none rounded-[2rem] ring-1 ring-inset ring-white/10" />
+
+            {/* Контент карточки */}
+            <div className="relative z-10 flex flex-col items-start p-8 md:p-10">
+              <span className="mb-4 text-[10px] sm:text-xs font-bold uppercase tracking-widest text-[#E0EAB8] bg-black/40 px-4 py-2 rounded-full border border-[#E0EAB8]/30 backdrop-blur-md shadow-[0_0_15px_rgba(224,234,184,0.1)]">
                 ФЛАГМАНСКОЕ СОБЫТИЕ ЭКОСИСТЕМЫ
               </span>
 
-              <h2 className="text-3xl sm:text-4xl md:text-5xl xl:text-6xl font-black text-white mb-2 tracking-tight leading-tight drop-shadow-md">
-                RES+ EXPO <span className="text-res-accent">2027</span>
+              <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white mb-3 tracking-tight leading-none drop-shadow-lg">
+                RES+ EXPO <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#AFE552] to-[#02B779]">2027</span>
               </h2>
               
-              <div className="flex items-center gap-2.5 mb-3">
-                <span className="px-3.5 py-1.5 bg-res-accent/20 border border-res-accent/40 rounded-full text-res-accent font-bold text-xs uppercase tracking-wider backdrop-blur-md">
+              <div className="flex items-center gap-2 mb-4">
+                <span className="px-4 py-1.5 bg-[#02B779]/20 border border-[#02B779]/40 rounded-full text-[#AFE552] font-semibold text-xs sm:text-sm uppercase tracking-wider backdrop-blur-md">
                   5–7 мая 2027 · МВЦ EXPO, Астана
                 </span>
               </div>
 
-              <p className="text-res-text-muted text-sm md:text-base mb-4 leading-relaxed max-w-lg drop-shadow">
+              <p className="text-gray-300 text-sm sm:text-base mb-6 leading-relaxed max-w-md drop-shadow">
                 Платформа работает круглый год. RES+ EXPO — момент, когда экосистема встречается лично: подписываются соглашения, запускаются проекты, находятся инвесторы.
               </p>
               
-              <p className="text-[#A1BB94] text-xs font-medium mb-6 uppercase tracking-wider drop-shadow-sm">
-                1000+ международных участников <span className="mx-2 text-res-accent/50">•</span> Выставка + конференция + B2B-мэтчинг
+              <p className="text-[#A1BB94] text-[10px] sm:text-xs font-semibold mb-8 uppercase tracking-widest drop-shadow-sm flex flex-wrap items-center gap-2">
+                <span>1000+ участников</span> 
+                <span className="text-[#02B779]">•</span> 
+                <span>Выставка + Конференция</span>
               </p>
 
               <a 
                 href="https://www.res2027expo.kz/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2.5 px-8 py-3.5 bg-white hover:bg-[#E0EAB8] text-black rounded-full font-bold text-sm md:text-base transition-all duration-300 shadow-[0_0_30px_rgba(255,255,255,0.25)] hover:scale-105 cursor-pointer"
+                className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-[#AFE552] to-[#02B779] text-[#05120e] rounded-full font-black text-sm md:text-base transition-all duration-300 shadow-[0_0_20px_rgba(2,183,121,0.4)] hover:shadow-[0_0_30px_rgba(175,229,82,0.6)] hover:scale-105 cursor-pointer"
               >
-                Перейти к событию <ArrowUpRight size={18} />
+                Перейти к событию <ArrowUpRight size={20} strokeWidth={3} />
               </a>
             </div>
           </div>

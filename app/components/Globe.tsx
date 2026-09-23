@@ -194,9 +194,9 @@ interface GlobeProps {
     graticuleColor?: string;
     showGrid?: boolean;
     outlineWidth?: number;
-    dragSpeed?: number;
     detail?: number;
     style?: CSSProperties;
+    onMarkerClick?: (marker: Marker) => void;
 }
 
 export default function Globe({
@@ -232,6 +232,7 @@ export default function Globe({
     dragSpeed = 5,
     detail = 5,
     style,
+    onMarkerClick,
 }: GlobeProps) {
     const containerRef = useRef<HTMLDivElement>(null);
     const [, setIsLoading] = useState(true);
@@ -244,10 +245,13 @@ export default function Globe({
         focusRef.current = focusLocation || null;
     }, [focusLocation]);
 
+    const latestMarkersRef = useRef(markerConfig?.markers || []);
+
     // Dynamically apply marker changes without reloading the globe
     useEffect(() => {
+        latestMarkersRef.current = markerConfig?.markers || [];
         if (updateMarkersRef.current) {
-            updateMarkersRef.current(markerConfig?.markers);
+            updateMarkersRef.current(latestMarkersRef.current);
         }
     }, [markerConfig]);
 
@@ -751,11 +755,14 @@ export default function Globe({
             }
         };
 
+        let markerGroups: Group[] = [];
+
         const updateMarkers = (dynamicMarkers?: Marker[]) => {
-            markerMeshes.forEach((mesh) => globeGroup.remove(mesh));
+            markerGroups.forEach((group) => globeGroup.remove(group));
+            markerGroups = [];
             markerMeshes = [];
             
-            const currentMarkers = dynamicMarkers || markerConfig.markers;
+            const currentMarkers = dynamicMarkers || latestMarkersRef.current;
 
             if (currentMarkers && currentMarkers.length > 0) {
                 currentMarkers.forEach((marker) => {
@@ -769,7 +776,7 @@ export default function Globe({
                     const isFocusMarker = dynamicMarkers !== undefined && marker === dynamicMarkers[dynamicMarkers.length - 1];
                     
                     // Focus marker is much bigger and uses a distinct lime color
-                    const markerSize = isFocusMarker ? 0.035 : (0.01 * markerRadiusMultiplier);
+                    const markerSize = isFocusMarker ? 0.035 : (0.02 * markerRadiusMultiplier);
                     const markerGeometry = new SphereGeometry(markerSize, 16, 16);
                     
                     const markerColorObj = isFocusMarker 
@@ -780,21 +787,37 @@ export default function Globe({
                         color: markerColorObj,
                     });
                     
+                    // Create a subtle glowing halo around the marker
+                    const haloGeometry = new SphereGeometry(markerSize * 1.8, 16, 16);
+                    const haloMaterial = new MeshBasicMaterial({
+                        color: markerColorObj,
+                        transparent: true,
+                        opacity: 0.35,
+                    });
+                    
+                    const markerMesh = new Mesh(markerGeometry, markerMaterial);
+                    const haloMesh = new Mesh(haloGeometry, haloMaterial);
+                    
+                    const markerGroup = new Group();
+                    markerGroup.add(markerMesh);
+                    markerGroup.add(haloMesh);
+                    
                     const pos = latLngToPosition(marker.lat, marker.lng);
-                    const markerMesh = new Mesh(
-                        markerGeometry,
-                        markerMaterial
-                    );
                     
                     // Push out slightly to avoid Z-fighting with the land/ocean surface
                     const markerRadius = globeRadius * 1.03;
-                    markerMesh.position.set(
+                    markerGroup.position.set(
                         pos.x * markerRadius,
                         pos.y * markerRadius,
                         pos.z * markerRadius
                     );
-                    globeGroup.add(markerMesh);
-                    markerMeshes.push(markerMesh);
+                    
+                    markerMesh.userData = { marker };
+                    haloMesh.userData = { marker };
+                    
+                    globeGroup.add(markerGroup);
+                    markerGroups.push(markerGroup);
+                    markerMeshes.push(markerMesh, haloMesh);
                 });
             }
         };
@@ -854,7 +877,7 @@ export default function Globe({
                     
                     // Re-draw markers: combine base markers + newly focused point
                     updateMarkers([
-                        ...(markerConfig?.markers || []),
+                        ...latestMarkersRef.current,
                         { lat: lastAppliedFocus.lat, lng: lastAppliedFocus.lng }
                     ]);
                 }
@@ -932,12 +955,16 @@ export default function Globe({
         // Always start the animation loop so we can intercept focusLocation changes dynamically
         startAnimation();
 
+        let mousedownX = 0;
+        let mousedownY = 0;
         const handleMouseDown = (event: MouseEvent) => {
             isDragging = true;
             velocity.x = 0;
             velocity.y = 0;
             lastMouseX = event.clientX;
             lastMouseY = event.clientY;
+            mousedownX = event.clientX;
+            mousedownY = event.clientY;
             startAnimation();
             const handleMouseMoveDrag = (moveEvent: MouseEvent) => {
                 const sensitivity = mapDragSpeedUiToSensitivity(dragSpeed);
@@ -974,8 +1001,35 @@ export default function Globe({
             raycaster.setFromCamera(mouse, camera);
             const intersects = raycaster.intersectObject(oceanMesh);
             isHovering = intersects.length > 0;
+            
+            // Check if hovering over markers to show pointer cursor
+            const markerIntersects = raycaster.intersectObjects(markerMeshes);
+            if (markerIntersects.length > 0) {
+                canvas.style.cursor = "pointer";
+            } else {
+                canvas.style.cursor = isDragging ? "grabbing" : "grab";
+            }
         };
         canvas.addEventListener("mousemove", handleMouseMove);
+
+        const handleMouseClick = (event: MouseEvent) => {
+            // Only trigger if not dragging
+            if (Math.abs(event.clientX - mousedownX) > 5 || Math.abs(event.clientY - mousedownY) > 5) return;
+            
+            const rect = canvas.getBoundingClientRect();
+            mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+            mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+            raycaster.setFromCamera(mouse, camera);
+            
+            const intersects = raycaster.intersectObjects(markerMeshes);
+            if (intersects.length > 0 && onMarkerClick) {
+                const clickedMesh = intersects[0].object;
+                if (clickedMesh.userData && clickedMesh.userData.marker) {
+                    onMarkerClick(clickedMesh.userData.marker);
+                }
+            }
+        };
+        canvas.addEventListener("click", handleMouseClick);
 
         const resizeObserver = new ResizeObserver(() => {
             const newWidth =
@@ -999,6 +1053,7 @@ export default function Globe({
                 cancelAnimationFrame(animationFrameId);
             canvas.removeEventListener("mousedown", handleMouseDown);
             canvas.removeEventListener("mousemove", handleMouseMove);
+            canvas.removeEventListener("click", handleMouseClick);
             resizeObserver.disconnect();
             renderer.dispose();
             container.removeChild(canvas);

@@ -136,8 +136,8 @@ export function buildSourceSearchQuery(source: MediaSource): {
   
   let keywordPart = "";
   if (keywords.length > 0) {
-    // Собираем в OR блок: (keyword1 OR keyword2)
-    keywordPart = ` (${keywords.map(kw => `"${kw}"`).join(" OR ")})`;
+    // Собираем в OR блок: (keyword1 OR keyword2) без жестких кавычек
+    keywordPart = ` (${keywords.join(" OR ")})`;
   }
 
   // Строгий запрос site:domain + (keywords) гарантирует, что все статьи будут только с этого сайта и по нужной теме
