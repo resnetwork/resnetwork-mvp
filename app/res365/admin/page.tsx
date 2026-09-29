@@ -1,13 +1,23 @@
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { prisma } from "@/app/lib/prisma";
-import { revalidatePath } from "next/cache";
-import { ShieldCheck, Check, X, Building, ArrowLeft, CalendarDays, Users, MessageSquare, Image as ImageIcon, Plus } from "lucide-react";
+import { ShieldCheck, Check, X, Building, ArrowLeft, CalendarDays, Users, MessageSquare, Image as ImageIcon, Plus, ListOrdered } from "lucide-react";
 import Link from "next/link";
 import PartnerUploader from "./PartnerUploader";
 import DeleteAccountButton from "@/app/components/DeleteAccountButton";
 import AdminLoginButton from "@/app/components/AdminLoginButton";
-import { sendApprovalEmail } from "@/app/lib/email";
+import AfishaEventsModal from "./AfishaEventsModal"; // New component we will create
+import {
+  addCategoryAction,
+  deleteCategoryAction,
+  deleteLogoAction,
+  addLogoAction,
+  toggleEventPublicAction,
+  deleteEventAction,
+  processContactRequestAction,
+  approveRegistrationAction,
+  rejectRegistrationAction
+} from "@/app/actions/admin";
 
 export default async function AdminPanel({ searchParams }: { searchParams: Promise<{ tab?: string }> }) {
   const session = await auth();
@@ -63,134 +73,6 @@ export default async function AdminPanel({ searchParams }: { searchParams: Promi
     }
   }) : [];
 
-  // Серверная функция для добавления категории
-  async function addCategoryAction(formData: FormData) {
-    "use server";
-    const title = formData.get("title") as string;
-    const direction = formData.get("direction") as string || "left";
-    if (!title) return;
-    
-    // Определяем максимальный order
-    const lastCat = await prisma.partnerCategory.findFirst({
-      orderBy: { order: 'desc' }
-    });
-    const newOrder = lastCat ? lastCat.order + 1 : 0;
-
-    await prisma.partnerCategory.create({
-      data: { title, direction, order: newOrder }
-    });
-    revalidatePath("/res365/admin");
-  }
-
-  // Серверная функция для удаления категории
-  async function deleteCategoryAction(formData: FormData) {
-    "use server";
-    const id = formData.get("id") as string;
-    await prisma.partnerCategory.delete({ where: { id } });
-    revalidatePath("/res365/admin");
-  }
-
-  // Серверная функция для удаления логотипа
-  async function deleteLogoAction(formData: FormData) {
-    "use server";
-    const id = formData.get("id") as string;
-    await prisma.partnerLogo.delete({ where: { id } });
-    revalidatePath("/res365/admin");
-  }
-
-  // Серверная функция для загрузки логотипа
-  async function addLogoAction(categoryId: string, name: string, base64: string) {
-    "use server";
-    await prisma.partnerLogo.create({
-      data: {
-        name,
-        imageUrl: base64,
-        categoryId
-      }
-    });
-    revalidatePath("/res365/admin");
-  }
-
-  // --- Вынесенные Server Actions для Ивентов ---
-  async function toggleEventPublicAction(id: string, currentStatus: boolean) {
-    "use server";
-    await prisma.event.update({
-      where: { id },
-      data: { isPublic: !currentStatus }
-    });
-    revalidatePath("/res365/admin");
-  }
-
-  async function deleteEventAction(id: string) {
-    "use server";
-    await prisma.event.delete({ where: { id } });
-    revalidatePath("/res365/admin");
-  }
-
-  // --- Вынесенные Server Actions для Заявок ---
-  async function processContactRequestAction(id: string) {
-    "use server";
-    await prisma.contactRequest.update({
-      where: { id },
-      data: { status: "PROCESSED" }
-    });
-    revalidatePath("/res365/admin");
-  }
-
-  // --- Вынесенные Server Actions для Регистраций ---
-  async function approveRegistrationAction(id: string, email: string, name: string, category: string) {
-    "use server";
-    
-    // 1. Обновляем статус заявки
-    const approvedReg = await prisma.registrationRequest.update({
-      where: { id },
-      data: { status: "APPROVED" }
-    });
-
-    // 2. Создаем компанию для любого участника (чтобы он был в сообществе)
-    const newCompany = await prisma.company.create({
-      data: {
-        name: name,
-        bin: `MOCK-${Date.now()}`, // Временный БИН для MVP
-        status: "APPROVED",
-        email: email,
-        category: category // STARTUP, COMPANY, INDIVIDUAL
-      }
-    });
-
-    // 3. Генерируем случайный пароль (MVP: 8 символов)
-    const randomPassword = "res-" + Math.random().toString(36).slice(-6);
-
-    // 4. Создаем пользователя
-    await prisma.user.create({
-      data: {
-        name: name,
-        email: email,
-        password: randomPassword,
-        role: category === "INDIVIDUAL" ? "EMPLOYEE" : "COMPANY_ADMIN",
-        companyId: newCompany.id,
-      }
-    });
-
-    // 5. Отправляем email через Resend
-    if (email) {
-      await sendApprovalEmail(email, name, randomPassword);
-    }
-
-    revalidatePath("/res365/admin");
-  }
-
-  async function rejectRegistrationAction(id: string) {
-    "use server";
-    await prisma.registrationRequest.update({
-      where: { id },
-      data: { status: "REJECTED" }
-    });
-    revalidatePath("/res365/admin");
-  }
-
-
-
   const NavTab = ({ id, label, icon }: { id: string, label: string, icon: React.ReactNode }) => (
     <Link 
       href={`?tab=${id}`}
@@ -242,7 +124,6 @@ export default async function AdminPanel({ searchParams }: { searchParams: Promi
 
         {/* Контент вкладок */}
         
-
         {/* === Вкладка КОМПАНИИ === */}
         {currentTab === "companies" && (
           <div className="animate-in fade-in duration-300">
@@ -413,17 +294,24 @@ export default async function AdminPanel({ searchParams }: { searchParams: Promi
           <div className="animate-in fade-in duration-300">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-lg font-bold">Все события ({events.length})</h2>
-              {/* Тут можно сделать кнопку создания ивента админом от лица любой компании, но для MVP просто перенаправим на стандартную страницу создания */}
-              <Link href="/res365/dashboard/events/create" className="px-4 py-2 bg-emerald-600 rounded-full text-xs font-bold shadow-lg shadow-emerald-900/50 hover:bg-emerald-500 transition-colors">
-                Создать событие
-              </Link>
+              <div className="flex items-center gap-3">
+                <AfishaEventsModal events={events} />
+                <Link href="/res365/dashboard/events/create" className="px-4 py-2 bg-emerald-600 rounded-full text-xs font-bold shadow-lg shadow-emerald-900/50 hover:bg-emerald-500 transition-colors">
+                  Создать событие
+                </Link>
+              </div>
             </div>
             
             <div className="grid grid-cols-1 gap-4">
               {events.map(event => (
                 <div key={event.id} className="flex flex-col md:flex-row md:items-center justify-between p-5 rounded-2xl border border-emerald-500/30 bg-[#06241a] gap-4">
                   <div className="flex-1">
-                    <h3 className="font-bold text-lg text-white">{event.title}</h3>
+                    <h3 className="font-bold text-lg text-white flex items-center gap-2">
+                      {event.title}
+                      {event.featuredOrder && (
+                        <span className="px-2 py-0.5 bg-emerald-500 text-black text-[10px] rounded-full uppercase tracking-wider font-bold">Афиша #{event.featuredOrder}</span>
+                      )}
+                    </h3>
                     <div className="text-xs text-emerald-400/80 font-mono mt-1">
                       Дата: {new Date(event.date).toLocaleDateString()} · Компания: {event.creatorCompany?.name}
                     </div>
@@ -563,7 +451,6 @@ export default async function AdminPanel({ searchParams }: { searchParams: Promi
             </div>
           </div>
         )}
-
 
         {/* === Вкладка ПАРТНЕРЫ (Логотипы на главной) === */}
         {currentTab === "partners" && (

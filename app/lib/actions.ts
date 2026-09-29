@@ -100,6 +100,7 @@ export async function createEvent(formData: FormData, userId: string, companyId:
     const imageFile = formData.get("imageFile") as File | null;
     const isPublic = formData.get("isPublic") === "on";
     const format = formData.get("format") as string || "Оффлайн";
+    const eventType = formData.get("eventType") as string || "EVENT";
 
     if (!title || !dateStr || (format !== "Онлайн" && !locationCity)) {
       return { success: false, error: "Название, дата и город (для оффлайн/гибрид) обязательны" };
@@ -119,6 +120,7 @@ export async function createEvent(formData: FormData, userId: string, companyId:
         date: new Date(dateStr),
         endDate: endDateStr ? new Date(endDateStr) : null,
         format,
+        eventType,
         locationCity: format === "Онлайн" ? null : locationCity,
         locationStreet: format === "Онлайн" ? null : locationStreet,
         locationVenue: format === "Онлайн" ? null : locationVenue,
@@ -331,6 +333,7 @@ export async function updateEvent(eventId: string, formData: FormData, companyId
     const sourceUrl = formData.get("sourceUrl") as string;
     const imageFile = formData.get("imageFile") as File | null;
     const isPublic = formData.get("isPublic") === "on";
+    const eventType = formData.get("eventType") as string || "EVENT";
 
     if (!title || !dateStr || !locationCity) {
       return { success: false, error: "Название, дата и город обязательны" };
@@ -358,6 +361,7 @@ export async function updateEvent(eventId: string, formData: FormData, companyId
         imageUrl,
         sourceUrl,
         isPublic,
+        eventType,
       }
     });
 

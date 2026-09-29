@@ -7,11 +7,14 @@ export async function getPublicEvents() {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    // Выбираем только будущие публичные события, отсортированные по возрастанию даты
+    // Выбираем публичные события: либо дата начала в будущем, либо дата окончания в будущем
     const events = await prisma.event.findMany({
       where: { 
         isPublic: true,
-        date: { gte: today }
+        OR: [
+          { date: { gte: today } },
+          { endDate: { gte: today } }
+        ]
       },
       include: {
         creatorCompany: {

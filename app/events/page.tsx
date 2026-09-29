@@ -24,6 +24,8 @@ export default async function EventsPage() {
     category: e.creatorCompany?.name || "Событие",
     isPublic: e.isPublic,
     isDbEvent: true,
+    eventType: (e as any).eventType || "EVENT",
+    featuredOrder: (e as any).featuredOrder || null,
     sourceUrl: e.sourceUrl,
     twoGisUrl: (e as any).twoGisUrl || null
   }));
@@ -32,12 +34,19 @@ export default async function EventsPage() {
   today.setHours(0, 0, 0, 0);
 
   const upcomingEvents = [...mappedDbEvents, ...EVENTS].filter(ev => {
+    if (ev.endDate) {
+      return new Date(ev.endDate) >= today;
+    }
     if (ev.isoDate) {
       return new Date(ev.isoDate) >= today;
     }
     const d = new Date(ev.date);
     return isNaN(d.getTime()) || d >= today;
   }).sort((a, b) => {
+    if (a.featuredOrder && b.featuredOrder) return a.featuredOrder - b.featuredOrder;
+    if (a.featuredOrder) return -1;
+    if (b.featuredOrder) return 1;
+
     const timeA = new Date(a.isoDate || a.date).getTime() || 0;
     const timeB = new Date(b.isoDate || b.date).getTime() || 0;
     return timeA - timeB;

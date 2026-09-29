@@ -46,32 +46,63 @@ export default function CreateEventForm({
           />
         </div>
         <div>
-          <label className="block text-xs font-bold text-emerald-500 uppercase tracking-wider mb-2">Дата конца</label>
+          <label className="block text-xs font-bold text-emerald-500 uppercase tracking-wider mb-2">Дата конца <span className="text-emerald-500/50 normal-case tracking-normal">(Опционально)</span></label>
           <input 
             type="datetime-local" 
             name="endDate" 
             className="w-full bg-black/40 border border-emerald-900/50 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-emerald-500 transition-colors [color-scheme:dark]"
           />
+          <p className="text-xs text-emerald-400/60 mt-2 font-mono leading-tight">
+            * Если у вас круглогодичный ивент или длительная программа, выберите дату её завершения, чтобы она оставалась в афише.
+          </p>
         </div>
       </div>
 
-      {/* Выбор формата */}
-      <div>
-        <label className="block text-xs font-bold text-emerald-500 uppercase tracking-wider mb-2">Формат проведения</label>
-        <div className="flex flex-wrap gap-4">
-          {["Оффлайн", "Онлайн", "Гибрид"].map((fmt) => (
-            <label key={fmt} className="flex items-center gap-2 cursor-pointer">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Выбор формата */}
+        <div>
+          <label className="block text-xs font-bold text-emerald-500 uppercase tracking-wider mb-2">Формат проведения</label>
+          <div className="flex flex-wrap gap-4">
+            {["Оффлайн", "Онлайн", "Гибрид"].map((fmt) => (
+              <label key={fmt} className="flex items-center gap-2 cursor-pointer">
+                <input 
+                  type="radio" 
+                  name="format" 
+                  value={fmt} 
+                  checked={format === fmt}
+                  onChange={() => setFormat(fmt)}
+                  className="w-4 h-4 accent-emerald-500 bg-black border-emerald-900"
+                />
+                <span className="text-sm font-bold text-white">{fmt}</span>
+              </label>
+            ))}
+          </div>
+        </div>
+
+        {/* Выбор типа (Событие или Программа) */}
+        <div>
+          <label className="block text-xs font-bold text-emerald-500 uppercase tracking-wider mb-2">Тип</label>
+          <div className="flex flex-wrap gap-4">
+            <label className="flex items-center gap-2 cursor-pointer">
               <input 
                 type="radio" 
-                name="format" 
-                value={fmt} 
-                checked={format === fmt}
-                onChange={() => setFormat(fmt)}
+                name="eventType" 
+                value="EVENT" 
+                defaultChecked
                 className="w-4 h-4 accent-emerald-500 bg-black border-emerald-900"
               />
-              <span className="text-sm font-bold text-white">{fmt}</span>
+              <span className="text-sm font-bold text-white">Событие</span>
             </label>
-          ))}
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input 
+                type="radio" 
+                name="eventType" 
+                value="PROGRAM" 
+                className="w-4 h-4 accent-emerald-500 bg-black border-emerald-900"
+              />
+              <span className="text-sm font-bold text-white">Программа</span>
+            </label>
+          </div>
         </div>
       </div>
 

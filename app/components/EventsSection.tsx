@@ -38,18 +38,33 @@ export default function EventsSection() {
           category: e.creatorCompany?.name || "Событие",
           isPublic: e.isPublic,
           isDbEvent: true,
+          featuredOrder: (e as any).featuredOrder || null,
+          eventType: (e as any).eventType || "EVENT",
           sourceUrl: e.sourceUrl,
           twoGisUrl: (e as any).twoGisUrl || null
         }));
         
-        // Фильтруем события: только БУДУЩИЕ с привязкой к сегодняшней дате (>= today)
+        // Фильтруем события: только БУДУЩИЕ или АКТИВНЫЕ с привязкой к сегодняшней дате
         const upcomingEvents = [...mapped, ...EVENTS].filter(ev => {
+          // Если есть дата окончания, программа актуальна, пока эта дата не прошла
+          if (ev.endDate) {
+            return new Date(ev.endDate) >= today;
+          }
+          // Иначе проверяем по дате начала
           if (ev.isoDate) {
             return new Date(ev.isoDate) >= today;
           }
           const d = new Date(ev.date);
           return isNaN(d.getTime()) || d >= today;
         }).sort((a, b) => {
+          // Сначала сортируем по featuredOrder (1, 2, 3...)
+          if (a.featuredOrder && b.featuredOrder) {
+            return a.featuredOrder - b.featuredOrder;
+          }
+          if (a.featuredOrder) return -1;
+          if (b.featuredOrder) return 1;
+
+          // Затем по дате
           const timeA = new Date(a.isoDate || a.date).getTime() || 0;
           const timeB = new Date(b.isoDate || b.date).getTime() || 0;
           return timeA - timeB;
@@ -112,7 +127,9 @@ export default function EventsSection() {
           let dateDisplay = event.date; // default to whatever was mapped
           
           // Для MOCK данных оставляем хардкод, для БД используем нашу функцию
-          if (event.isoDate) {
+          if (event.eventType === "PROGRAM") {
+            dateDisplay = "Программа";
+          } else if (event.isoDate) {
             dateDisplay = formatEventDateRange(new Date(event.isoDate), event.endDate ? new Date(event.endDate) : null);
           }
 
@@ -215,7 +232,7 @@ export default function EventsSection() {
                       <span className="text-[11px] uppercase tracking-wider text-emerald-500/80 font-bold block">Дата</span>
                       <span className="text-base font-semibold text-[#f2ede2]">
                         {modalEvent.isoDate 
-                          ? formatEventDateRange(new Date(modalEvent.isoDate), modalEvent.endDate ? new Date(modalEvent.endDate) : null) 
+                          ? formatEventDateRange(new Date(modalEvent.isoDate), modalEvent.endDate ? new Date(modalEvent.endDate) : null, true) 
                           : modalEvent.date}
                       </span>
                     </div>

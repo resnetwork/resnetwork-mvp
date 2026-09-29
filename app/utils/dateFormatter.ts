@@ -3,27 +3,33 @@ const months = [
   "июля", "августа", "сентября", "октября", "ноября", "декабря"
 ];
 
-export function formatEventDateRange(startDate: Date, endDate?: Date | null): string {
+export function formatEventDateRange(startDate: Date, endDate?: Date | null, includeYear: boolean = false): string {
   const startDay = startDate.getDate();
   const startMonth = months[startDate.getMonth()];
+  const startYear = startDate.getFullYear();
   
   if (!endDate) {
-    return `${startDay} ${startMonth}`;
+    return `${startDay} ${startMonth}${includeYear ? ` ${startYear}` : ''}`;
   }
 
   const endDay = endDate.getDate();
   const endMonth = months[endDate.getMonth()];
+  const endYear = endDate.getFullYear();
 
   // Если даты совпадают
-  if (startDay === endDay && startMonth === endMonth) {
-    return `${startDay} ${startMonth}`;
+  if (startDay === endDay && startMonth === endMonth && startYear === endYear) {
+    return `${startDay} ${startMonth}${includeYear ? ` ${startYear}` : ''}`;
   }
 
-  // Если месяц совпадает: "12-14 октября"
-  if (startMonth === endMonth) {
-    return `${startDay}-${endDay} ${startMonth}`;
+  // Если месяц и год совпадают: "12-14 октября"
+  if (startMonth === endMonth && startYear === endYear) {
+    return `${startDay}-${endDay} ${startMonth}${includeYear ? ` ${startYear}` : ''}`;
   }
 
-  // Если месяцы разные: "30 сентября - 2 октября"
-  return `${startDay} ${startMonth} - ${endDay} ${endMonth}`;
+  // Если годы разные (или месяцы разные)
+  if (startYear !== endYear && includeYear) {
+    return `${startDay} ${startMonth} ${startYear} - ${endDay} ${endMonth} ${endYear}`;
+  }
+
+  return `${startDay} ${startMonth} - ${endDay} ${endMonth}${includeYear ? ` ${endYear}` : ''}`;
 }

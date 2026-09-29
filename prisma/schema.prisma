@@ -124,6 +124,9 @@ model Event {
   creatorCompanyId String   @map("creator_company_id")
   creatorCompany   Company  @relation(fields: [creatorCompanyId], references: [id])
   
+  featuredOrder    Int?     @map("featured_order") // Для порядка отображения в афише на главной (1, 2, 3...)
+  eventType        String   @default("EVENT") @map("event_type") // EVENT, PROGRAM
+
   createdAt        DateTime @default(now()) @map("created_at")
   updatedAt        DateTime @updatedAt @map("updated_at")
 

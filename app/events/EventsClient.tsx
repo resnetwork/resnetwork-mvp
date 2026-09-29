@@ -130,7 +130,7 @@ export default function EventsClient({ initialEvents, userId }: { initialEvents:
                         {/* Дата (строго фиксированная высота) */}
                         <div className="h-8 flex items-center mb-1">
                           <span className="bg-emerald-50 text-emerald-950 px-3 py-0.5 rounded-full font-extrabold text-sm tracking-widest uppercase shadow-md">
-                            {event.date}
+                            {event.eventType === "PROGRAM" ? "Программа" : event.date}
                           </span>
                         </div>
 
@@ -249,7 +249,7 @@ export default function EventsClient({ initialEvents, userId }: { initialEvents:
                         <div>
                           <span className="text-[11px] uppercase tracking-wider text-emerald-500/80 font-bold block">Дата</span>
                           <span className="text-base font-semibold text-[#f2ede2]">
-                            {event.isoDate ? formatEventDateRange(new Date(event.isoDate), event.endDate ? new Date(event.endDate) : null) : event.date}
+                            {event.isoDate ? formatEventDateRange(new Date(event.isoDate), event.endDate ? new Date(event.endDate) : null, true) : event.date}
                           </span>
                         </div>
                       </div>
