@@ -13,10 +13,11 @@ export default async function DashboardPage() {
     // Получаем будущие ивенты с привязкой к текущей дате
     events = await prisma.event.findMany({
       where: {
-        date: { gte: today },
-        creatorCompany: {
-          name: { not: "RES Network (System)" }
-        }
+        isPublic: false,
+        OR: [
+          { date: { gte: today } },
+          { endDate: { gte: today } }
+        ]
       },
       orderBy: { date: 'asc' },
       include: {

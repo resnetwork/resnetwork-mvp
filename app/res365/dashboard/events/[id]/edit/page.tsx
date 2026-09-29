@@ -127,16 +127,29 @@ export default async function EditEventPage({ params }: { params: Promise<{ id: 
               className="w-full bg-black/40 border border-emerald-900/50 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-emerald-500 transition-colors placeholder:text-white/20"
             />
           </div>
-          <div>
-            <label className="block text-xs font-bold text-emerald-500 uppercase tracking-wider mb-2">Ссылка на 2GIS</label>
-            <input 
-              type="url" 
-              name="twoGisUrl" 
-              defaultValue={event.twoGisUrl || ""}
-              placeholder="https://2gis.kz/..." 
-              className="w-full bg-black/40 border border-emerald-900/50 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-emerald-500 transition-colors placeholder:text-white/20"
-            />
-          </div>
+          {event.isPublic ? (
+            <div>
+              <label className="block text-xs font-bold text-emerald-500 uppercase tracking-wider mb-2">Ссылка на первоисточник</label>
+              <input 
+                type="url" 
+                name="sourceUrl" 
+                defaultValue={event.sourceUrl || ""}
+                placeholder="https://..." 
+                className="w-full bg-black/40 border border-emerald-900/50 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-emerald-500 transition-colors placeholder:text-white/20"
+              />
+            </div>
+          ) : (
+            <div>
+              <label className="block text-xs font-bold text-emerald-500 uppercase tracking-wider mb-2">Ссылка на Google карты</label>
+              <input 
+                type="url" 
+                name="twoGisUrl" 
+                defaultValue={event.twoGisUrl || ""}
+                placeholder="https://maps.google.com/..." 
+                className="w-full bg-black/40 border border-emerald-900/50 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-emerald-500 transition-colors placeholder:text-white/20"
+              />
+            </div>
+          )}
         </div>
 
         <div>
@@ -155,30 +168,20 @@ export default async function EditEventPage({ params }: { params: Promise<{ id: 
           />
         </div>
 
-        {user.role === "SYSTEM_ADMIN" && (
-          <div>
-            <label className="block text-xs font-bold text-emerald-500 uppercase tracking-wider mb-2">Ссылка на первоисточник</label>
-            <input 
-              type="url" 
-              name="sourceUrl" 
-              defaultValue={event.sourceUrl || ""}
-              placeholder="https://..." 
-              className="w-full bg-black/40 border border-emerald-900/50 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-emerald-500 transition-colors placeholder:text-white/20"
-            />
+        <div className="flex items-center gap-3 p-4 bg-emerald-950/20 border border-emerald-900/30 rounded-xl opacity-70">
+          <input type="hidden" name="isPublic" value={event.isPublic ? "on" : "off"} />
+          <div className="w-5 h-5 flex items-center justify-center rounded bg-emerald-500/20 text-emerald-500 border border-emerald-900">
+            {event.isPublic && (
+              <svg viewBox="0 0 14 14" fill="none" className="w-3 h-3">
+                <path d="M3 8L6 11L11 3.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            )}
           </div>
-        )}
-
-        <div className="flex items-center gap-3 p-4 bg-emerald-950/20 border border-emerald-900/30 rounded-xl">
-          <input 
-            type="checkbox" 
-            name="isPublic" 
-            id="isPublic"
-            defaultChecked={event.isPublic}
-            className="w-5 h-5 accent-emerald-500 bg-black border-emerald-900 rounded focus:ring-emerald-500 focus:ring-offset-black"
-          />
           <div>
-            <label htmlFor="isPublic" className="font-bold text-white cursor-pointer">Открытое событие</label>
-            <p className="text-xs text-emerald-400/60 mt-0.5">Событие будет доступно всем резидентам платформы</p>
+            <label className="font-bold text-white cursor-not-allowed">Открытое событие</label>
+            <p className="text-xs text-emerald-400/60 mt-0.5">
+              Тип события ({event.isPublic ? "Открытое" : "Закрытое"}) нельзя изменить после создания.
+            </p>
           </div>
         </div>
 

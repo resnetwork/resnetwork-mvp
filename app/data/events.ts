@@ -3,6 +3,7 @@ export type ResEvent = {
   title: string;
   date: string;
   isoDate: string; // ISO date for chronological filtering and comparison
+  endDate?: string | null;
   location: string;
   category: string;
   summary: string;
@@ -10,6 +11,9 @@ export type ResEvent = {
   contact?: string[];
   source?: string;
   image: string;
+  featuredOrder?: number | null;
+  eventType?: string;
+  isDbEvent?: boolean;
 };
 
 export const EVENTS: ResEvent[] = [
