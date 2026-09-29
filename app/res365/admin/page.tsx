@@ -111,6 +111,84 @@ export default async function AdminPanel({ searchParams }: { searchParams: Promi
     revalidatePath("/res365/admin");
   }
 
+  // --- Вынесенные Server Actions для Ивентов ---
+  async function toggleEventPublicAction(id: string, currentStatus: boolean) {
+    "use server";
+    await prisma.event.update({
+      where: { id },
+      data: { isPublic: !currentStatus }
+    });
+    revalidatePath("/res365/admin");
+  }
+
+  async function deleteEventAction(id: string) {
+    "use server";
+    await prisma.event.delete({ where: { id } });
+    revalidatePath("/res365/admin");
+  }
+
+  // --- Вынесенные Server Actions для Заявок ---
+  async function processContactRequestAction(id: string) {
+    "use server";
+    await prisma.contactRequest.update({
+      where: { id },
+      data: { status: "PROCESSED" }
+    });
+    revalidatePath("/res365/admin");
+  }
+
+  // --- Вынесенные Server Actions для Регистраций ---
+  async function approveRegistrationAction(id: string, email: string, name: string, category: string) {
+    "use server";
+    
+    // 1. Обновляем статус заявки
+    const approvedReg = await prisma.registrationRequest.update({
+      where: { id },
+      data: { status: "APPROVED" }
+    });
+
+    // 2. Создаем компанию для любого участника (чтобы он был в сообществе)
+    const newCompany = await prisma.company.create({
+      data: {
+        name: name,
+        bin: `MOCK-${Date.now()}`, // Временный БИН для MVP
+        status: "APPROVED",
+        email: email,
+        category: category // STARTUP, COMPANY, INDIVIDUAL
+      }
+    });
+
+    // 3. Генерируем случайный пароль (MVP: 8 символов)
+    const randomPassword = "res-" + Math.random().toString(36).slice(-6);
+
+    // 4. Создаем пользователя
+    await prisma.user.create({
+      data: {
+        name: name,
+        email: email,
+        password: randomPassword,
+        role: category === "INDIVIDUAL" ? "EMPLOYEE" : "COMPANY_ADMIN",
+        companyId: newCompany.id,
+      }
+    });
+
+    // 5. Отправляем email через Resend
+    if (email) {
+      await sendApprovalEmail(email, name, randomPassword);
+    }
+
+    revalidatePath("/res365/admin");
+  }
+
+  async function rejectRegistrationAction(id: string) {
+    "use server";
+    await prisma.registrationRequest.update({
+      where: { id },
+      data: { status: "REJECTED" }
+    });
+    revalidatePath("/res365/admin");
+  }
+
 
 
   const NavTab = ({ id, label, icon }: { id: string, label: string, icon: React.ReactNode }) => (
@@ -352,24 +430,13 @@ export default async function AdminPanel({ searchParams }: { searchParams: Promi
                   </div>
                   
                   <div className="flex items-center gap-3">
-                    <form action={async () => {
-                      "use server";
-                      await prisma.event.update({
-                        where: { id: event.id },
-                        data: { isPublic: !event.isPublic }
-                      });
-                      revalidatePath("/res365/admin");
-                    }}>
+                    <form action={toggleEventPublicAction.bind(null, event.id, event.isPublic)}>
                       <button className={`px-3 py-1.5 rounded-full border text-xs font-bold transition-colors ${event.isPublic ? 'border-emerald-500/50 text-emerald-300 bg-emerald-500/10 hover:bg-emerald-500/20' : 'border-gray-500/50 text-gray-400 bg-gray-500/10 hover:bg-gray-500/20'}`}>
                         {event.isPublic ? 'Публичный' : 'Скрытый'}
                       </button>
                     </form>
                     
-                    <form action={async () => {
-                      "use server";
-                      await prisma.event.delete({ where: { id: event.id } });
-                      revalidatePath("/res365/admin");
-                    }}>
+                    <form action={deleteEventAction.bind(null, event.id)}>
                       <button className="p-2 rounded-full border border-red-500/30 text-red-400 hover:bg-red-500/20 transition-colors" title="Удалить">
                         <X size={16} />
                       </button>
@@ -400,14 +467,7 @@ export default async function AdminPanel({ searchParams }: { searchParams: Promi
                       </div>
                     </div>
                     {req.status === 'NEW' && (
-                      <form action={async () => {
-                        "use server";
-                        await prisma.contactRequest.update({
-                          where: { id: req.id },
-                          data: { status: "PROCESSED" }
-                        });
-                        revalidatePath("/res365/admin");
-                      }}>
+                      <form action={processContactRequestAction.bind(null, req.id)}>
                         <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-500/20 border border-emerald-500/50 text-emerald-300 font-bold text-xs hover:bg-emerald-500 hover:text-white transition-colors">
                           <Check size={14} /> Обработано
                         </button>
@@ -471,60 +531,13 @@ export default async function AdminPanel({ searchParams }: { searchParams: Promi
                     </div>
                     {reg.status === 'PENDING' && (
                       <div className="flex items-center gap-2 mt-3 md:mt-0">
-                        <form action={async () => {
-                          "use server";
-                          
-                          // 1. Обновляем статус заявки
-                          const approvedReg = await prisma.registrationRequest.update({
-                            where: { id: reg.id },
-                            data: { status: "APPROVED" }
-                          });
-
-                          // 2. Создаем компанию для любого участника (чтобы он был в сообществе)
-                          const newCompany = await prisma.company.create({
-                            data: {
-                              name: approvedReg.name,
-                              bin: `MOCK-${Date.now()}`, // Временный БИН для MVP
-                              status: "APPROVED",
-                              email: approvedReg.email,
-                              category: approvedReg.category // STARTUP, COMPANY, INDIVIDUAL
-                            }
-                          });
-
-                          // 3. Генерируем случайный пароль (MVP: 8 символов)
-                          const randomPassword = "res-" + Math.random().toString(36).slice(-6);
-
-                          // 4. Создаем пользователя
-                          await prisma.user.create({
-                            data: {
-                              name: approvedReg.name,
-                              email: approvedReg.email,
-                              password: randomPassword,
-                              role: approvedReg.category === "INDIVIDUAL" ? "EMPLOYEE" : "COMPANY_ADMIN",
-                              companyId: newCompany.id,
-                            }
-                          });
-
-                          // 5. Отправляем email через Resend
-                          if (approvedReg.email) {
-                            await sendApprovalEmail(approvedReg.email, approvedReg.name, randomPassword);
-                          }
-
-                          revalidatePath("/res365/admin");
-                        }}>
+                        <form action={approveRegistrationAction.bind(null, reg.id, reg.email, reg.name, reg.category)}>
                           <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-500/20 border border-emerald-500/50 text-emerald-300 font-bold text-xs hover:bg-emerald-500 hover:text-white transition-colors whitespace-nowrap">
                             <Check size={14} /> Одобрить и Создать
                           </button>
                         </form>
 
-                        <form action={async () => {
-                          "use server";
-                          await prisma.registrationRequest.update({
-                            where: { id: reg.id },
-                            data: { status: "REJECTED" }
-                          });
-                          revalidatePath("/res365/admin");
-                        }}>
+                        <form action={rejectRegistrationAction.bind(null, reg.id)}>
                           <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-red-500/10 border border-red-500/30 text-red-400 font-bold text-xs hover:bg-red-500 hover:text-white transition-colors whitespace-nowrap">
                             <X size={14} /> Отклонить
                           </button>
