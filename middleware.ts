@@ -5,7 +5,7 @@ export const { auth: middleware } = NextAuth(authConfig)
 export default middleware;
 
 export const config = {
-  // Защищаем все роуты внутри /res365, кроме самой страницы входа /res365
-  // Исключаем статику, картинки, api и публичные роуты
-  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
+  // Защищаем только роуты внутри /res365 (платформа)
+  // Публичные страницы (/, /events, /api) не проходят через middleware вообще
+  matcher: ["/res365/:path*"],
 }

@@ -1,7 +1,6 @@
 import { auth } from "@/auth";
 import { prisma } from "@/app/lib/prisma";
 import EventCarousel from "@/app/components/EventCarousel";
-import { EVENTS } from "@/app/data/events";
 
 export default async function DashboardPage() {
   const session = await auth();
@@ -10,7 +9,7 @@ export default async function DashboardPage() {
   
   let events: any[] = [];
   try {
-    // Получаем будущие ивенты с привязкой к текущей дате
+    // Получаем только закрытые будущие ивенты для платформы
     events = await prisma.event.findMany({
       where: {
         isPublic: false,
@@ -20,19 +19,21 @@ export default async function DashboardPage() {
         ]
       },
       orderBy: { date: 'asc' },
+      take: 20,
       include: {
-        creatorCompany: true,
-        tickets: {
-          where: { userId: session?.user?.id }
-        }
+        creatorCompany: {
+          select: { name: true, logoUrl: true }
+        },
+        tickets: session?.user?.id ? {
+          where: { userId: session.user.id },
+          select: { id: true }
+        } : false
       }
     });
   } catch (error) {
     console.error("Ошибка загрузки событий из БД в дашборде:", error);
   }
 
-  // Если БД пуста или локально нет соединения, подтягиваем будущие события из данных платформы
-  // (Закомментировано, чтобы публичные события не попадали в приватный дашборд)
   if (!events) {
     events = [];
   }

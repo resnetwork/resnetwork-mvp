@@ -20,10 +20,11 @@ export default function EventsSection() {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    import("@/app/actions/events").then(({ getPublicEvents }) => {
-      getPublicEvents().then(events => {
+    fetch("/api/events/public")
+      .then(res => res.json())
+      .then(events => {
         // Map DB events to match the UI structure
-        const mapped = events.map(e => ({
+        const mapped = events.map((e: any) => ({
           slug: e.id,
           id: e.id,
           title: e.title,
@@ -32,25 +33,23 @@ export default function EventsSection() {
           date: formatEventDateRange(new Date(e.date), e.endDate ? new Date(e.endDate) : null),
           isoDate: new Date(e.date).toISOString(),
           endDate: e.endDate ? new Date(e.endDate).toISOString() : null,
-          location: e.location,
-          format: (e as any).format || "Оффлайн",
+          location: [e.locationCity, e.locationStreet, e.locationVenue].filter(Boolean).join(", ") || null,
+          format: e.format || "Оффлайн",
           image: e.imageUrl || "https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=2070&auto=format&fit=crop",
           category: e.creatorCompany?.name || "Событие",
           isPublic: e.isPublic,
           isDbEvent: true,
-          featuredOrder: (e as any).featuredOrder || null,
-          eventType: (e as any).eventType || "EVENT",
+          featuredOrder: e.featuredOrder || null,
+          eventType: e.eventType || "EVENT",
           sourceUrl: e.sourceUrl,
-          twoGisUrl: (e as any).twoGisUrl || null
+          twoGisUrl: e.twoGisUrl || null
         }));
         
         // Фильтруем события: только БУДУЩИЕ или АКТИВНЫЕ с привязкой к сегодняшней дате
         const upcomingEvents = [...mapped, ...EVENTS].filter(ev => {
-          // Если есть дата окончания, программа актуальна, пока эта дата не прошла
           if (ev.endDate) {
             return new Date(ev.endDate) >= today;
           }
-          // Иначе проверяем по дате начала
           if (ev.isoDate) {
             return new Date(ev.isoDate) >= today;
           }
@@ -71,8 +70,12 @@ export default function EventsSection() {
         });
 
         setDbEvents(upcomingEvents);
+      })
+      .catch(err => {
+        console.error("Ошибка загрузки событий:", err);
+        // Fallback to EVENTS only
+        setDbEvents(EVENTS);
       });
-    });
   }, []);
 
   const totalPages = Math.ceil(dbEvents.length / PAGE_SIZE);

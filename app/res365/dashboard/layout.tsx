@@ -13,7 +13,21 @@ export default async function DashboardLayout({ children }: { children: ReactNod
 
   const user = await prisma.user.findUnique({
     where: { id: session.user.id },
-    include: { company: true },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      role: true,
+      companyId: true,
+      company: {
+        select: {
+          id: true,
+          name: true,
+          logoUrl: true,
+          category: true,
+        }
+      }
+    }
   });
 
   if (!user) {
